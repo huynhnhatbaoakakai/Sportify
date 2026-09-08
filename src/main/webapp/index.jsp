@@ -37,10 +37,16 @@
             <a href="#featured">Nổi bật</a>
         </nav>
 
-        <a class="btn btn-outline"
-           href="<%= contextPath %>/login.jsp">
-            Đăng nhập
-        </a>
+        <div class="nav-auth" style="display: flex; gap: 12px; align-items: center;">
+            <a class="btn btn-outline"
+               href="<%= contextPath %>/login.jsp">
+                Đăng nhập
+            </a>
+            <a class="btn" style="background: var(--primary); color: var(--white);"
+               href="<%= contextPath %>/register.jsp">
+                Đăng ký
+            </a>
+        </div>
     </div>
 </header>
 
