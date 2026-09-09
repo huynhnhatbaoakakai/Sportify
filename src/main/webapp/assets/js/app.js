@@ -29,16 +29,24 @@ function filterServices(keyword) {
         }
     });
 
-    resultMessage.textContent = normalizedKeyword
-        ? `Tìm thấy ${visibleCount} dịch vụ cho "${keyword}".`
-        : "Đang hiển thị tất cả dịch vụ.";
+    const queryLabels = {
+    venue: "thuê sân/phòng tập",
+    clothing: "thuê quần áo",
+    gear: "thuê gear",
+    pt: "thuê PT"
+};
 
-    emptyState.hidden = visibleCount !== 0;
+    const displayQuery = queryLabels[query] || query;
 
-    document.querySelector("#featured").scrollIntoView({
-        behavior: "smooth"
-    });
-}
+    resultMessage.textContent =
+        `Tìm thấy ${visibleCount} dịch vụ cho "${displayQuery}".`;
+
+        emptyState.hidden = visibleCount !== 0;
+
+        document.querySelector("#featured").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
 
 searchForm.addEventListener("submit", (event) => {
     event.preventDefault();

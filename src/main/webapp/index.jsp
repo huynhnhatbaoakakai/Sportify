@@ -13,6 +13,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Sportify - Dịch vụ thể thao</title>
+    <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"
+    rel="stylesheet">
+
+<link
+    rel="stylesheet"
+    href="<%= contextPath %>/assets/css/style.css">
 
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/style.css">
@@ -24,29 +31,28 @@
 <body>
 
 <header class="header">
-    <div class="container navbar">
-        <a class="brand" href="<%= contextPath %>/">
-            <span class="brand-icon">S</span>
-            <span>SPORTIFY</span>
+    <div class="container header-inner">
+
+        <a class="header-logo" href="<%= contextPath %>/">
+            <img src="<%= contextPath %>/assets/images/logo.jpeg"
+                 alt="Sportify">
         </a>
 
-        <nav class="nav-links">
-            <a href="#home">Trang chủ</a>
+        <nav class="header-menu">
+            <a href="<%= contextPath %>/">Trang chủ</a>
             <a href="#sports">Môn thể thao</a>
             <a href="#services">Dịch vụ</a>
             <a href="#featured">Nổi bật</a>
         </nav>
 
-        <div class="nav-auth" style="display: flex; gap: 12px; align-items: center;">
+        <div class="header-actions">
             <a class="btn btn-outline"
-               href="<%= contextPath %>/login.jsp">
-                Đăng nhập
-            </a>
-            <a class="btn" style="background: var(--primary); color: var(--white);"
-               href="<%= contextPath %>/register.jsp">
-                Đăng ký
-            </a>
+               href="<%= contextPath %>/login.jsp">Đăng nhập</a>
+
+            <a class="btn btn-primary"
+               href="<%= contextPath %>/register.jsp">Đăng ký</a>
         </div>
+
     </div>
 </header>
 
@@ -85,10 +91,10 @@
 
             <div class="hero-visual">
                 <div class="hero-circle">
-                    <span>🏋️</span>
-                    <span>🏀</span>
-                    <span>🏊</span>
-                    <span>🏓</span>
+                    <span class="material-symbols-rounded">fitness_center</span>
+                    <span class="material-symbols-rounded">sports_basketball</span>
+                    <span class="material-symbols-rounded">pool</span>
+                    <span class="material-symbols-rounded">sports_tennis</span>
                 </div>
             </div>
         </div>
@@ -110,7 +116,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="gym">
-                    <span class="category-icon">🏋️</span>
+                    <span class="category-icon material-symbols-rounded">fitness_center</span>
                     <strong>Gym</strong>
                     <small>Phòng tập, quần áo và PT</small>
                 </button>
@@ -118,7 +124,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="bóng rổ">
-                    <span class="category-icon">🏀</span>
+                    <span class="category-icon material-symbols-rounded">sports_basketball</span>
                     <strong>Bóng rổ</strong>
                     <small>Sân, bóng và trang phục</small>
                 </button>
@@ -126,7 +132,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="bơi">
-                    <span class="category-icon">🏊</span>
+                  <span class="category-icon material-symbols-rounded">pool</span>
                     <strong>Bơi</strong>
                     <small>Hồ bơi, đồ bơi và HLV</small>
                 </button>
@@ -134,7 +140,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="pickleball">
-                    <span class="category-icon">🏓</span>
+                  <span class="category-icon material-symbols-rounded">sports_tennis</span>
                     <strong>Pickleball</strong>
                     <small>Sân, vợt và huấn luyện viên</small>
                 </button>
@@ -157,8 +163,8 @@
             <div class="grid four-columns">
                 <button class="service-type filter-button"
                         type="button"
-                        data-query="sân phòng tập">
-                    <span>📅</span>
+                        data-query="venue">
+                    <span class="type-icon material-symbols-rounded">calendar_month</span>
                     <div>
                         <strong>Thuê sân/phòng tập</strong>
                         <small>Chọn ngày và khung giờ</small>
@@ -167,8 +173,8 @@
 
                 <button class="service-type filter-button"
                         type="button"
-                        data-query="quần áo">
-                    <span>👕</span>
+                        data-query="quần áo">   
+                    <span class="type-icon material-symbols-rounded">checkroom</span>
                     <div>
                         <strong>Thuê quần áo</strong>
                         <small>Chọn kích thước và thời gian thuê</small>
@@ -178,7 +184,7 @@
                 <button class="service-type filter-button"
                         type="button"
                         data-query="gear dụng cụ">
-                    <span>🎒</span>
+                  <span class="type-icon material-symbols-rounded">sports</span>
                     <div>
                         <strong>Thuê gear</strong>
                         <small>Vợt, bóng và phụ kiện</small>
@@ -188,7 +194,7 @@
                 <button class="service-type filter-button"
                         type="button"
                         data-query="pt huấn luyện viên">
-                    <span>💪</span>
+                    <span class="type-icon material-symbols-rounded">sports_gymnastics</span>
                     <div>
                         <strong>Thuê PT</strong>
                         <small>Đặt lịch huấn luyện cá nhân</small>
@@ -219,8 +225,10 @@
             <div class="grid service-grid" id="serviceGrid">
 
                 <article class="service-card"
-                         data-search="gym phòng tập quận 7">
-                    <div class="service-image green">🏋️</div>
+                         data-search="venue gym phòng tập quận 7">
+                   <div class="service-image">
+                         <img src="<%= contextPath %>/assets/images/services/gymfitzone.jfif" alt="Phòng Gym FitZone">
+</div>
 
                     <div class="service-body">
                         <span class="badge">Gym</span>
@@ -235,8 +243,12 @@
                 </article>
 
                 <article class="service-card"
-                         data-search="bóng rổ sân quận 3">
-                    <div class="service-image orange">🏀</div>
+                         data-search="venue sân bóng rổ quận 3">
+                    <div class="service-image">
+                            <img
+                                src="<%= contextPath %>/assets/images/services/basketballcourt1.jpg"
+                                alt="Sân bóng rổ Sunrise">
+                        </div>
 
                     <div class="service-body">
                         <span class="badge">Bóng rổ</span>
@@ -251,8 +263,12 @@
                 </article>
 
                 <article class="service-card"
-                         data-search="bơi hồ bơi quận 1">
-                    <div class="service-image blue">🏊</div>
+                        data-search="venue bơi hồ bơi quận 1">
+                    <div class="service-image">
+                                <img
+                                    src="<%= contextPath %>/assets/images/services/swimmingpoolaqua.jfif"
+                                    alt="Hồ bơi Aqua Center">
+                            </div>
 
                     <div class="service-body">
                         <span class="badge">Bơi</span>
@@ -267,8 +283,12 @@
                 </article>
 
                 <article class="service-card"
-                         data-search="pickleball sân vợt quận 7">
-                    <div class="service-image yellow">🏓</div>
+                         data-search="venue pickleball sân quận 7">
+                   <div class="service-image">
+                    <img
+                        src="<%= contextPath %>/assets/images/services/greenpickleballcourt.jfif"
+                        alt="Green Pickleball Court">
+                </div>
 
                     <div class="service-body">
                         <span class="badge">Pickleball</span>
@@ -284,7 +304,11 @@
 
                 <article class="service-card"
                          data-search="gear dụng cụ vợt pickleball">
-                    <div class="service-image purple">🎒</div>
+                                    <div class="service-image">
+                        <img
+                            src="<%= contextPath %>/assets/images/services/pickleballloan.jfif"
+                            alt="Bộ vợt Pickleball">
+                    </div>
 
                     <div class="service-body">
                         <span class="badge">Gear</span>
@@ -297,10 +321,43 @@
                         </div>
                     </div>
                 </article>
+<article class="service-card"
+         data-search="quần áo đồ bơi mũ bơi kính bơi kiếng bơi phụ kiện">
 
-                <article class="service-card"
-                         data-search="pt huấn luyện viên gym cá nhân">
-                    <div class="service-image red">💪</div>
+    <div class="service-image">
+        <img
+            src="<%= contextPath %>/assets/images/services/swimset.jfif"
+            alt="Combo đồ bơi trọn bộ">
+    </div>
+
+    <div class="service-body">
+        <span class="badge">Trang phục & phụ kiện</span>
+
+        <h3>Combo đồ bơi trọn bộ</h3>
+
+        <p>
+            Bao gồm đồ bơi, mũ bơi và kính bơi
+        </p>
+
+        <div class="service-footer">
+            <strong>
+                90.000đ <small>/ ngày</small>
+            </strong>
+
+            <button type="button">
+                Xem chi tiết
+            </button>
+        </div>
+    </div>
+</article>
+                        <article class="service-card"
+                        data-search="pt huấn luyện viên gym cá nhân">
+
+                    <div class="service-image">
+                        <img
+                            src="<%= contextPath %>/assets/images/services/pt1.png"
+                            alt="PT Nguyễn Minh Anh">
+                    </div>
 
                     <div class="service-body">
                         <span class="badge">PT</span>
@@ -308,7 +365,10 @@
                         <p>5 năm kinh nghiệm huấn luyện</p>
 
                         <div class="service-footer">
-                            <strong>250.000đ <small>/ buổi</small></strong>
+                            <strong>
+                                250.000đ <small>/ buổi</small>
+                            </strong>
+
                             <button type="button">Xem chi tiết</button>
                         </div>
                     </div>
@@ -345,7 +405,7 @@
         <div>
             <strong>Liên hệ</strong>
             <p>Email: support@sportify.vn</p>
-            <p>Hotline: 0123 456 789</p>
+            <p>Hotline: 0767615217  </p>
         </div>
     </div>
 
