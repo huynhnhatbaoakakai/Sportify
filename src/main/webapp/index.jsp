@@ -1,9 +1,11 @@
 <%@ page language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
+<%@ page import="com.sportify.model.User" %>
 
 <%
     String contextPath = request.getContextPath();
+    User currentUser = (User) session.getAttribute("user");
 %>
 
 <!DOCTYPE html>
@@ -14,12 +16,8 @@
 
     <title>Sportify - Dịch vụ thể thao</title>
     <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"
-    rel="stylesheet">
-
-<link
-    rel="stylesheet"
-    href="<%= contextPath %>/assets/css/style.css">
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"
+        rel="stylesheet">
 
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/style.css">
@@ -43,14 +41,30 @@
             <a href="#sports">Môn thể thao</a>
             <a href="#services">Dịch vụ</a>
             <a href="#featured">Nổi bật</a>
+            <% if (currentUser != null) { %>
+            <a href="<%= contextPath %>/newsfeed">Newsfeed</a>
+            <a href="<%= contextPath %>/appointments">Lịch hẹn</a>
+            <a href="<%= contextPath %>/chat">Tin nhắn</a>
+            <% } %>
         </nav>
 
         <div class="header-actions">
+            <a class="btn" style="background: #0d2d1c; color: white;"
+               href="<%= contextPath %>/owner/fields">
+                🏟️ Quản lý dịch vụ
+            </a>
+            <% if (currentUser == null) { %>
             <a class="btn btn-outline"
-               href="<%= contextPath %>/login.jsp">Đăng nhập</a>
+               href="<%= contextPath %>/login">Đăng nhập</a>
 
             <a class="btn btn-primary"
-               href="<%= contextPath %>/register.jsp">Đăng ký</a>
+               href="<%= contextPath %>/register">Đăng ký</a>
+            <% } else { %>
+            <a class="btn btn-outline"
+               href="<%= contextPath %>/home">🏠 <%= currentUser.getFullname() %></a>
+            <a class="btn" style="background: #ef4444; color: white;"
+               href="<%= contextPath %>/logout">Đăng xuất</a>
+            <% } %>
         </div>
 
     </div>
@@ -237,7 +251,7 @@
 
                         <div class="service-footer">
                             <strong>60.000đ <small>/ giờ</small></strong>
-                            <button type="button">Xem chi tiết</button>
+                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Phòng+Gym+FitZone&type=court">Đặt ngay</a>
                         </div>
                     </div>
                 </article>
@@ -257,7 +271,7 @@
 
                         <div class="service-footer">
                             <strong>180.000đ <small>/ giờ</small></strong>
-                            <button type="button">Xem chi tiết</button>
+                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Sân+bóng+Sunrise&type=court">Đặt ngay</a>
                         </div>
                     </div>
                 </article>
@@ -277,7 +291,7 @@
 
                         <div class="service-footer">
                             <strong>50.000đ <small>/ lượt</small></strong>
-                            <button type="button">Xem chi tiết</button>
+                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Hồ+bơi+Aqua+Center&type=court">Đặt ngay</a>
                         </div>
                     </div>
                 </article>
@@ -297,7 +311,7 @@
 
                         <div class="service-footer">
                             <strong>150.000đ <small>/ giờ</small></strong>
-                            <button type="button">Xem chi tiết</button>
+                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Green+Pickleball+Court&type=court">Đặt ngay</a>
                         </div>
                     </div>
                 </article>
@@ -317,7 +331,7 @@
 
                         <div class="service-footer">
                             <strong>80.000đ <small>/ ngày</small></strong>
-                            <button type="button">Xem chi tiết</button>
+                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Bộ+vợt+Pickleball&type=gear">Thuê ngay</a>
                         </div>
                     </div>
                 </article>
@@ -344,9 +358,7 @@
                 90.000đ <small>/ ngày</small>
             </strong>
 
-            <button type="button">
-                Xem chi tiết
-            </button>
+            <a class="btn-book" href="<%= contextPath %>/appointments?title=Combo+đồ+bơi+trọn+bộ&type=clothing">Thuê ngay</a>
         </div>
     </div>
 </article>
@@ -369,7 +381,7 @@
                                 250.000đ <small>/ buổi</small>
                             </strong>
 
-                            <button type="button">Xem chi tiết</button>
+                            <a class="btn-book" href="<%= contextPath %>/appointments?title=PT+Nguyễn+Minh+Anh&type=pt">Thuê PT</a>
                         </div>
                     </div>
                 </article>

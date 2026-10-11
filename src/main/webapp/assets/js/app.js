@@ -36,10 +36,11 @@ function filterServices(keyword) {
     pt: "thuê PT"
 };
 
-    const displayQuery = queryLabels[query] || query;
+    const displayQuery = queryLabels[keyword] || keyword;
 
-    resultMessage.textContent =
-        `Tìm thấy ${visibleCount} dịch vụ cho "${displayQuery}".`;
+    resultMessage.textContent = keyword.trim()
+        ? `Tìm thấy ${visibleCount} dịch vụ cho "${displayQuery}".`
+        : "Đang hiển thị tất cả dịch vụ.";
 
         emptyState.hidden = visibleCount !== 0;
 

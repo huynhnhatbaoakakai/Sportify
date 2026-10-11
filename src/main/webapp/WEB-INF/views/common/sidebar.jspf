@@ -1,0 +1,54 @@
+<%@ page pageEncoding="UTF-8" %>
+<%--
+    Sidebar dùng chung cho các trang của người dùng.
+
+    Cách dùng (trong trang JSP, sau khi đã khai báo biến contextPath):
+        <% String activeMenu = "home"; %>
+        <%@ include file="/WEB-INF/views/common/sidebar.jspf" %>
+
+    Giá trị activeMenu: home | newsfeed | chat | chat-friends | appointments | profile
+--%>
+<%!
+    private static String menuClass(String activeMenu, String key) {
+        return key.equals(activeMenu) ? "menu-item active" : "menu-item";
+    }
+%>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <a class="brand" href="<%= contextPath %>/home">
+            <span class="brand-icon">S</span><span>SPORTIFY</span>
+        </a>
+    </div>
+    <nav class="sidebar-menu">
+        <a href="<%= contextPath %>/home" class="<%= menuClass(activeMenu, "home") %>">
+            <span class="menu-icon">🏠</span><span>Trang chủ</span>
+        </a>
+        <a href="<%= contextPath %>/newsfeed" class="<%= menuClass(activeMenu, "newsfeed") %>">
+            <span class="menu-icon">📰</span><span>Newsfeed</span>
+        </a>
+
+        <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Giao tiếp</div>
+        <a href="<%= contextPath %>/chat" class="<%= menuClass(activeMenu, "chat") %>">
+            <span class="menu-icon">💬</span><span>Chat Dịch vụ</span>
+        </a>
+        <a href="<%= contextPath %>/chat-friends" class="<%= menuClass(activeMenu, "chat-friends") %>">
+            <span class="menu-icon">👥</span><span>Chat Bạn bè</span>
+        </a>
+
+        <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Cá nhân</div>
+        <a href="<%= contextPath %>/appointments" class="<%= menuClass(activeMenu, "appointments") %>">
+            <span class="menu-icon">📅</span><span>Lịch hẹn & Đặt chỗ</span>
+        </a>
+        <a href="<%= contextPath %>/profile" class="<%= menuClass(activeMenu, "profile") %>">
+            <span class="menu-icon">👤</span><span>Hồ sơ cá nhân</span>
+        </a>
+
+        <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Dịch vụ</div>
+        <a href="<%= contextPath %>/owner/fields" class="menu-item">
+            <span class="menu-icon">🏟️</span><span>Quản lý dịch vụ</span>
+        </a>
+        <a href="<%= contextPath %>/logout" class="menu-item" style="color: #ef4444;">
+            <span class="menu-icon">🚪</span><span>Đăng xuất</span>
+        </a>
+    </nav>
+</aside>
