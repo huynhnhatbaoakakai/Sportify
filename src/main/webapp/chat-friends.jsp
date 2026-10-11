@@ -304,7 +304,7 @@
         
         <nav class="sidebar-menu">
             <a href="<%= contextPath %>/home.jsp" class="menu-item">
-                <span class="menu-icon">🏠</span>
+                <span class="menu-icon"></span>
                 <span>Trang chủ</span>
             </a>
             
@@ -313,7 +313,7 @@
             </div>
             
             <a href="<%= contextPath %>/chat.jsp" class="menu-item">
-                <span class="menu-icon">💬</span>
+                <span class="menu-icon"></span>
                 <span>Chat với Dịch vụ</span>
             </a>
             
@@ -490,8 +490,7 @@
         const conv = friendsConversations.find(c => c.id === currentConvId);
         if (conv) {
             const now = new Date();
-            const timeStr = \`\${now.getHours().toString().padStart(2,'0')}:\${now.getMinutes().toString().padStart(2,'0')}\`;
-            
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             conv.messages.push({
                 sender: 'me',
                 text: text,

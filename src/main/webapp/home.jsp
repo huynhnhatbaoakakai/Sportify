@@ -231,11 +231,17 @@
             <div style="margin: 15px 0 5px 20px; font-size: 12px; color: var(--muted); font-weight: bold; text-transform: uppercase;">
                 Cá nhân
             </div>
-            
+
             <a href="<%= contextPath %>/profile.jsp" class="menu-item">
                 <span class="menu-icon">👤</span>
                 <span>Hồ sơ cá nhân</span>
             </a>
+
+            <a href="<%= request.getContextPath() %>/owner/access" class="menu-item">
+                <span class="menu-icon">🏟️</span>
+                <span>Kênh chủ sân</span>
+            </a>
+
             <a href="<%= contextPath %>/index.jsp" class="menu-item" style="color: #ef4444; margin-top: auto;">
                 <span class="menu-icon">🚪</span>
                 <span>Đăng xuất</span>

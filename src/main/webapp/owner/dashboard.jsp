@@ -1,9 +1,91 @@
 <%@ page language="java"
          contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
+<%@ page import="com.sportify.model.SportField" %>
+<%@ page import="com.sportify.model.Booking" %>
+<%@ page import="java.math.BigDecimal" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="java.util.Collections" %>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale" %>
+
+<%!
+    private static String escapeHtml(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 
 <%
     String contextPath = request.getContextPath();
+    java.net.URL dashboardScript = application.getResource("/assets/js/owner-dashboard.js");
+    String dashboardScriptVersion = dashboardScript == null ? "2"
+            : String.valueOf(dashboardScript.openConnection().getLastModified());
+
+    List<SportField> fields =
+            (List<SportField>) request.getAttribute("fields");
+
+    if (fields == null) {
+        response.sendRedirect(contextPath + "/owner/fields");
+        return;
+    }
+
+    long activeFieldCount = 0;
+
+    for (SportField field : fields) {
+        if ("ACTIVE".equalsIgnoreCase(field.getStatus())) {
+            activeFieldCount++;
+        }
+    }
+
+    NumberFormat priceFormat =
+            NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+
+    List<Booking> bookings = (List<Booking>) request.getAttribute("bookings");
+    if (bookings == null) bookings = Collections.emptyList();
+    boolean bookingLoadFailed = Boolean.TRUE.equals(request.getAttribute("bookingLoadFailed"));
+    boolean bookingPage = Boolean.TRUE.equals(request.getAttribute("bookingPage"));
+    String bookingCsrfToken = (String) request.getAttribute("bookingCsrfToken");
+    long todayBookingCount = request.getAttribute("todayBookingCount") == null ? 0
+            : ((Number) request.getAttribute("todayBookingCount")).longValue();
+    long pendingBookingCount = request.getAttribute("pendingBookingCount") == null ? 0
+            : ((Number) request.getAttribute("pendingBookingCount")).longValue();
+    BigDecimal todayBookingRevenue = (BigDecimal) request.getAttribute("todayBookingRevenue");
+    if (todayBookingRevenue == null) todayBookingRevenue = BigDecimal.ZERO;
+    DateTimeFormatter bookingDateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter bookingTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
+    String bookingNotice = null;
+    boolean bookingNoticeError = false;
+    String bookingSuccess = request.getParameter("success");
+    if ("booking_confirmed".equals(bookingSuccess)) bookingNotice = "Đã xác nhận đơn đặt sân.";
+    if ("booking_rejected".equals(bookingSuccess)) bookingNotice = "Đã từ chối đơn đặt sân.";
+    String bookingError = request.getParameter("error");
+    if (bookingError != null) {
+        switch (bookingError) {
+            case "booking_csrf": bookingNotice = "Biểu mẫu đã hết hiệu lực. Vui lòng tải lại trang rồi thử lại."; break;
+            case "booking_invalid": bookingNotice = "Mã đơn hoặc thao tác không hợp lệ."; break;
+            case "booking_not_found": bookingNotice = "Không tìm thấy đơn đặt sân thuộc sân của bạn."; break;
+            case "booking_not_pending": bookingNotice = "Đơn đã được xử lý. Vui lòng kiểm tra trạng thái hiện tại."; break;
+            case "booking_field_inactive": bookingNotice = "Sân đang tạm ngưng, không thể xác nhận đơn."; break;
+            case "booking_invalid_time": bookingNotice = "Lịch đặt đã qua hoặc nằm ngoài giờ hoạt động của sân."; break;
+            case "booking_conflict": bookingNotice = "Khung giờ này đã có lịch được xác nhận. Đơn vẫn ở trạng thái chờ."; break;
+            case "booking_save": bookingNotice = "Không thể cập nhật đơn. Vui lòng thử lại sau."; break;
+            default: break;
+        }
+        if (bookingError.startsWith("booking_")) bookingNoticeError = true;
+    }
+    if (bookingLoadFailed) {
+        bookingNotice = "Không thể tải lịch đặt sân. Vui lòng thử tải lại trang.";
+        bookingNoticeError = true;
+    }
 %>
 
 <!DOCTYPE html>
@@ -13,7 +95,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Bảng điều khiển quản lý sân Sportify">
 
-    <title>Tổng quan chủ sân - Sportify</title>
+    <title><%= bookingPage ? "Quản lý đặt sân" : "Tổng quan chủ sân" %> - Sportify</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +104,7 @@
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/owner-dashboard.css">
     <script defer
-            src="<%= contextPath %>/assets/js/owner-dashboard.js"></script>
+            src="<%= contextPath %>/assets/js/owner-dashboard.js?v=<%= dashboardScriptVersion %>"></script>
 </head>
 
 <body>
@@ -51,24 +133,24 @@
         <nav class="sidebar-nav">
             <p class="nav-label">Quản lý</p>
 
-            <a class="nav-item active" href="#overview" aria-current="page">
+            <a class="nav-item <%= bookingPage ? "" : "active" %>" href="<%= contextPath %>/owner/fields#overview" <%= bookingPage ? "" : "aria-current=\"page\"" %>>
                 <span class="material-symbols-rounded" aria-hidden="true">dashboard</span>
                 <span>Tổng quan</span>
             </a>
-            <a class="nav-item" href="#booking-section">
+            <a class="nav-item <%= bookingPage ? "active" : "" %>" href="<%= contextPath %>/owner/bookings#booking-section" <%= bookingPage ? "aria-current=\"page\"" : "" %>>
                 <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span>
                 <span>Lịch đặt sân</span>
-                <span class="nav-count" data-pending-nav-count>4</span>
+                <span class="nav-count" data-pending-nav-count><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %></span>
             </a>
             <a class="nav-item" href="#fields">
                 <span class="material-symbols-rounded" aria-hidden="true">sports_tennis</span>
                 <span>Quản lý sân</span>
             </a>
-            <a class="nav-item" href="#booking-section">
+            <a class="nav-item" href="<%= contextPath %>/owner/customers">
                 <span class="material-symbols-rounded" aria-hidden="true">groups</span>
                 <span>Khách hàng</span>
             </a>
-            <a class="nav-item" href="#booking-section">
+            <a class="nav-item" href="<%= contextPath %>/owner/reviews">
                 <span class="material-symbols-rounded" aria-hidden="true">star</span>
                 <span>Đánh giá</span>
             </a>
@@ -85,7 +167,7 @@
             </a>
         </nav>
 
-        <a class="logout-link" href="<%= contextPath %>/index.jsp">
+        <a class="logout-link" href="<%= contextPath %>/owner/access/logout">
             <span class="material-symbols-rounded" aria-hidden="true">logout</span>
             <span>Đăng xuất</span>
         </a>
@@ -101,7 +183,7 @@
 
                 <div>
                     <p class="topbar-label">Khu vực chủ sân</p>
-                    <h1>Dashboard chủ sân</h1>
+                    <h1><%= bookingPage ? "Quản lý đặt sân" : "Dashboard chủ sân" %></h1>
                 </div>
             </div>
 
@@ -113,7 +195,7 @@
 
                 <button class="notification-button" type="button" aria-label="Thông báo mới">
                     <span class="material-symbols-rounded" aria-hidden="true">notifications</span>
-                    <span class="notification-dot" aria-hidden="true"></span>
+                    <span class="notification-dot" aria-hidden="true" <%= pendingBookingCount == 0 ? "hidden" : "" %>></span>
                 </button>
 
                 <div class="topbar-owner">
@@ -131,11 +213,11 @@
                 <div>
                     <span class="eyebrow">TỔNG QUAN HOẠT ĐỘNG</span>
                     <h2 id="welcome-title">Chào Minh!</h2>
-                    <p>Bạn có <strong data-pending-message-count>4 lịch đặt</strong> đang chờ xác nhận.</p>
+                    <p>Bạn có <strong data-pending-message-count><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %> lịch đặt</strong> đang chờ xác nhận.</p>
                 </div>
                 <div class="demo-label">
                     <span class="material-symbols-rounded" aria-hidden="true">info</span>
-                    Dữ liệu minh họa
+                    Lịch đặt từ cơ sở dữ liệu
                 </div>
             </section>
 
@@ -148,8 +230,8 @@
                         <span class="stat-caption">Đang mở</span>
                     </div>
                     <p>Sân đang hoạt động</p>
-                    <strong data-active-field-count>4</strong>
-                    <small>Trong hệ thống minh họa</small>
+                    <strong data-active-field-count><%= activeFieldCount %></strong>
+                  
                 </article>
 
                 <article class="stat-card stat-bookings">
@@ -160,8 +242,8 @@
                         <span class="stat-caption">Hôm nay</span>
                     </div>
                     <p>Lịch đặt hôm nay</p>
-                    <strong>12</strong>
-                    <small>Theo dữ liệu minh họa</small>
+                    <strong data-today-booking-count><%= bookingLoadFailed ? "—" : String.valueOf(todayBookingCount) %></strong>
+                    <small>Không tính đơn từ chối hoặc đã hủy</small>
                 </article>
 
                 <article class="stat-card stat-pending">
@@ -172,7 +254,7 @@
                         <span class="stat-caption warning">Cần xử lý</span>
                     </div>
                     <p>Yêu cầu chờ xác nhận</p>
-                    <strong data-pending-count>4</strong>
+                    <strong data-pending-count data-pending-value="<%= pendingBookingCount %>"><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %></strong>
                     <small>Yêu cầu đặt sân mới</small>
                 </article>
 
@@ -181,18 +263,20 @@
                         <span class="stat-icon">
                             <span class="material-symbols-rounded" aria-hidden="true">payments</span>
                         </span>
-                        <span class="stat-trend positive">
-                            <span class="material-symbols-rounded" aria-hidden="true">trending_up</span>
-                            12,5%
-                        </span>
+                        <span class="stat-caption">Lịch hoàn thành</span>
                     </div>
                     <p>Doanh thu hôm nay</p>
-                    <strong>4.850.000đ</strong>
-                    <small>So với ngày hôm qua</small>
+                    <strong data-today-booking-revenue><%= bookingLoadFailed ? "—" : priceFormat.format(todayBookingRevenue) + "đ" %></strong>
+                    <small>Tổng giá lịch đã hoàn thành hôm nay</small>
                 </article>
             </section>
 
-            <section class="booking-panel" id="booking-section" aria-labelledby="booking-title">
+            <section class="booking-panel" id="booking-section" aria-labelledby="booking-title"
+                     data-booking-load-failed="<%= bookingLoadFailed %>">
+                <% if (bookingNotice != null) { %>
+                <p class="booking-notice <%= bookingNoticeError ? "booking-notice-error" : "booking-notice-success" %>"
+                   role="<%= bookingNoticeError ? "alert" : "status" %>"><%= escapeHtml(bookingNotice) %></p>
+                <% } %>
                 <div class="booking-header">
                     <div>
                         <span class="section-kicker">QUẢN LÝ ĐẶT SÂN</span>
@@ -218,6 +302,8 @@
                                 aria-pressed="false">Hoàn thành</button>
                         <button class="filter-button" type="button" data-status-filter="rejected"
                                 aria-pressed="false">Đã từ chối</button>
+                        <button class="filter-button" type="button" data-status-filter="cancelled"
+                                aria-pressed="false">Đã hủy</button>
                     </div>
 
                     <label class="booking-search">
@@ -244,119 +330,63 @@
                         </tr>
                         </thead>
                         <tbody data-booking-body>
-                        <tr data-booking-row data-status="pending" data-date-offset="0" data-search="sp1024 tran gia huy pickleball court 01">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#SP1024</strong></td>
+                        <% for (Booking booking : bookings) {
+                            String bookingStatus = booking.getStatus().toLowerCase(Locale.ROOT);
+                            String bookingSearch = booking.getBookingCode() + " " + booking.getCustomerName()
+                                    + " " + booking.getField().getFieldName() + " "
+                                    + (booking.getCustomerPhone() == null ? "" : booking.getCustomerPhone());
+                        %>
+                        <tr data-booking-row data-booking-id="<%= booking.getBookingId() %>"
+                            data-status="<%= escapeHtml(bookingStatus) %>" data-search="<%= escapeHtml(bookingSearch) %>">
+                            <td data-label="Mã đặt sân"><strong class="booking-code">#<%= booking.getBookingCode() %></strong></td>
                             <td data-label="Khách hàng">
                                 <div class="customer-cell">
-                                    <span class="customer-avatar avatar-green">TH</span>
-                                    <div><strong>Trần Gia Huy</strong><span>0901 234 567</span></div>
+                                    <span class="customer-avatar"><span class="material-symbols-rounded" aria-hidden="true">person</span></span>
+                                    <div><strong><%= escapeHtml(booking.getCustomerName()) %></strong>
+                                        <span><%= booking.getCustomerPhone() == null || booking.getCustomerPhone().trim().isEmpty() ? "Chưa có SĐT" : escapeHtml(booking.getCustomerPhone()) %></span></div>
                                 </div>
                             </td>
-                            <td data-label="Sân"><strong>Pickleball Court 01</strong><span class="cell-note">Pickleball</span></td>
-                            <td data-label="Thời gian"><strong><time datetime="2026-09-10T08:00">08:00 - 09:30</time></strong><span class="cell-note">Hôm nay, 10/09</span></td>
-                            <td data-label="Tổng tiền"><strong>450.000đ</strong></td>
-                            <td data-label="Trạng thái"><span class="status-badge status-pending">Chờ xác nhận</span></td>
+                            <td data-label="Sân"><strong><%= escapeHtml(booking.getField().getFieldName()) %></strong></td>
+                            <td data-label="Thời gian">
+                                <strong><time datetime="<%= booking.getStartsAt() %>"><%= booking.getStartsAt().format(bookingTimeFormat) %> - <%= booking.getEndsAt().format(bookingTimeFormat) %></time></strong>
+                                <span class="cell-note"><%= booking.getStartsAt().format(bookingDateFormat) %></span>
+                            </td>
+                            <td data-label="Tổng tiền"><strong><%= priceFormat.format(booking.getTotalPrice()) %>đ</strong></td>
+                            <td data-label="Trạng thái"><span class="status-badge status-<%= escapeHtml(bookingStatus) %>"><%= booking.getStatusLabel() %></span></td>
                             <td data-label="Thao tác" class="booking-actions">
-                                <button class="action-button confirm-button" type="button" data-booking-action="confirm" aria-label="Xác nhận đơn SP1024">Xác nhận</button>
-                                <button class="action-button reject-button" type="button" data-booking-action="reject" aria-label="Từ chối đơn SP1024">Từ chối</button>
+                                <% if ("PENDING".equals(booking.getStatus())) { %>
+                                <form class="booking-action-form" method="post"
+                                      action="<%= contextPath %>/owner/bookings/status" data-booking-action-form>
+                                    <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
+                                    <input type="hidden" name="status" value="CONFIRMED">
+                                    <input type="hidden" name="csrfToken" value="<%= escapeHtml(bookingCsrfToken) %>">
+                                    <button class="action-button confirm-button" type="submit"
+                                            aria-label="Xác nhận đơn <%= booking.getBookingCode() %>">Xác nhận</button>
+                                </form>
+                                <form class="booking-action-form" method="post"
+                                      action="<%= contextPath %>/owner/bookings/status" data-booking-action-form>
+                                    <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
+                                    <input type="hidden" name="status" value="REJECTED">
+                                    <input type="hidden" name="csrfToken" value="<%= escapeHtml(bookingCsrfToken) %>">
+                                    <button class="action-button reject-button" type="submit"
+                                            aria-label="Từ chối đơn <%= booking.getBookingCode() %>">Từ chối</button>
+                                </form>
+                                <% } else { %><span class="action-finished">Đã xử lý</span><% } %>
                             </td>
                         </tr>
-
-                        <tr data-booking-row data-status="pending" data-date-offset="0" data-search="sp1025 le thu trang basketball court a">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#SP1025</strong></td>
-                            <td data-label="Khách hàng">
-                                <div class="customer-cell">
-                                    <span class="customer-avatar avatar-blue">LT</span>
-                                    <div><strong>Lê Thu Trang</strong><span>0934 567 890</span></div>
-                                </div>
-                            </td>
-                            <td data-label="Sân"><strong>Basketball Court A</strong><span class="cell-note">Bóng rổ</span></td>
-                            <td data-label="Thời gian"><strong><time datetime="2026-09-10T10:00">10:00 - 11:30</time></strong><span class="cell-note">Hôm nay, 10/09</span></td>
-                            <td data-label="Tổng tiền"><strong>520.000đ</strong></td>
-                            <td data-label="Trạng thái"><span class="status-badge status-pending">Chờ xác nhận</span></td>
-                            <td data-label="Thao tác" class="booking-actions">
-                                <button class="action-button confirm-button" type="button" data-booking-action="confirm" aria-label="Xác nhận đơn SP1025">Xác nhận</button>
-                                <button class="action-button reject-button" type="button" data-booking-action="reject" aria-label="Từ chối đơn SP1025">Từ chối</button>
-                            </td>
-                        </tr>
-
-                        <tr data-booking-row data-status="confirmed" data-date-offset="0" data-search="sp1022 nguyen quoc bao pickleball court 02">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#SP1022</strong></td>
-                            <td data-label="Khách hàng">
-                                <div class="customer-cell">
-                                    <span class="customer-avatar avatar-purple">NB</span>
-                                    <div><strong>Nguyễn Quốc Bảo</strong><span>0988 112 233</span></div>
-                                </div>
-                            </td>
-                            <td data-label="Sân"><strong>Pickleball Court 02</strong><span class="cell-note">Pickleball</span></td>
-                            <td data-label="Thời gian"><strong><time datetime="2026-09-10T14:00">14:00 - 15:30</time></strong><span class="cell-note">Hôm nay, 10/09</span></td>
-                            <td data-label="Tổng tiền"><strong>450.000đ</strong></td>
-                            <td data-label="Trạng thái"><span class="status-badge status-confirmed">Đã xác nhận</span></td>
-                            <td data-label="Thao tác" class="booking-actions"><span class="action-finished">Đã xử lý</span></td>
-                        </tr>
-
-                        <tr data-booking-row data-status="pending" data-date-offset="0" data-search="sp1026 pham hoang nam gym room 02">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#SP1026</strong></td>
-                            <td data-label="Khách hàng">
-                                <div class="customer-cell">
-                                    <span class="customer-avatar avatar-orange">PN</span>
-                                    <div><strong>Phạm Hoàng Nam</strong><span>0912 445 566</span></div>
-                                </div>
-                            </td>
-                            <td data-label="Sân"><strong>Gym Room 02</strong><span class="cell-note">Gym</span></td>
-                            <td data-label="Thời gian"><strong><time datetime="2026-09-10T17:30">17:30 - 19:00</time></strong><span class="cell-note">Hôm nay, 10/09</span></td>
-                            <td data-label="Tổng tiền"><strong>380.000đ</strong></td>
-                            <td data-label="Trạng thái"><span class="status-badge status-pending">Chờ xác nhận</span></td>
-                            <td data-label="Thao tác" class="booking-actions">
-                                <button class="action-button confirm-button" type="button" data-booking-action="confirm" aria-label="Xác nhận đơn SP1026">Xác nhận</button>
-                                <button class="action-button reject-button" type="button" data-booking-action="reject" aria-label="Từ chối đơn SP1026">Từ chối</button>
-                            </td>
-                        </tr>
-
-                        <tr data-booking-row data-status="completed" data-date-offset="-1" data-search="sp1018 do minh anh swimming lane 03">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#SP1018</strong></td>
-                            <td data-label="Khách hàng">
-                                <div class="customer-cell">
-                                    <span class="customer-avatar avatar-pink">DA</span>
-                                    <div><strong>Đỗ Minh Anh</strong><span>0977 221 144</span></div>
-                                </div>
-                            </td>
-                            <td data-label="Sân"><strong>Swimming Lane 03</strong><span class="cell-note">Bơi</span></td>
-                            <td data-label="Thời gian"><strong><time datetime="2026-09-09T18:00">18:00 - 19:00</time></strong><span class="cell-note">Hôm qua, 09/09</span></td>
-                            <td data-label="Tổng tiền"><strong>320.000đ</strong></td>
-                            <td data-label="Trạng thái"><span class="status-badge status-completed">Hoàn thành</span></td>
-                            <td data-label="Thao tác" class="booking-actions"><span class="action-finished">Đã xử lý</span></td>
-                        </tr>
-
-                        <tr data-booking-row data-status="pending" data-date-offset="1" data-search="sp1027 vu khanh linh pickleball court 03">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#SP1027</strong></td>
-                            <td data-label="Khách hàng">
-                                <div class="customer-cell">
-                                    <span class="customer-avatar avatar-teal">VL</span>
-                                    <div><strong>Vũ Khánh Linh</strong><span>0908 776 655</span></div>
-                                </div>
-                            </td>
-                            <td data-label="Sân"><strong>Pickleball Court 03</strong><span class="cell-note">Pickleball</span></td>
-                            <td data-label="Thời gian"><strong><time datetime="2026-09-11T07:00">07:00 - 08:30</time></strong><span class="cell-note">Ngày mai, 11/09</span></td>
-                            <td data-label="Tổng tiền"><strong>400.000đ</strong></td>
-                            <td data-label="Trạng thái"><span class="status-badge status-pending">Chờ xác nhận</span></td>
-                            <td data-label="Thao tác" class="booking-actions">
-                                <button class="action-button confirm-button" type="button" data-booking-action="confirm" aria-label="Xác nhận đơn SP1027">Xác nhận</button>
-                                <button class="action-button reject-button" type="button" data-booking-action="reject" aria-label="Từ chối đơn SP1027">Từ chối</button>
-                            </td>
-                        </tr>
+                        <% } %>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="empty-state" data-empty-state hidden>
+                <div class="empty-state" data-empty-state <%= bookings.isEmpty() ? "" : "hidden" %>>
                     <span class="material-symbols-rounded" aria-hidden="true">event_busy</span>
-                    <strong>Không tìm thấy lịch đặt</strong>
-                    <p>Hãy thử chọn trạng thái hoặc từ khóa khác.</p>
+                    <strong><%= bookingLoadFailed ? "Chưa thể tải lịch đặt" : "Chưa có lịch đặt phù hợp" %></strong>
+                    <p><%= bookingLoadFailed ? "Vui lòng thử lại sau ít phút." : "Đơn đặt sân sẽ xuất hiện tại đây. Bạn cũng có thể thử đổi bộ lọc hoặc từ khóa." %></p>
                 </div>
 
                 <div class="table-footer">
-                    <p data-booking-result aria-live="polite">Hiển thị 6 lịch đặt</p>
+                    <p data-booking-result aria-live="polite">Hiển thị <%= bookings.size() %> lịch đặt</p>
                     <span>Cập nhật vừa xong</span>
                 </div>
             </section>
@@ -375,73 +405,82 @@
                 </div>
 
                 <div class="fields-grid" data-fields-grid>
-                    <article class="field-card" data-field-card data-status="active" data-price="180000">
-                        <div class="field-card-top">
-                            <span class="field-sport" data-field-sport>Gym</span>
-                            <span class="field-status status-active" data-field-status>Đang hoạt động</span>
-                        </div>
-                        <h3 data-field-name>Phòng Gym FitZone</h3>
-                        <p class="field-address">
-                            <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
-                            <span data-field-address>123 Nguyễn Trãi, Quận 1, TP.HCM</span>
-                        </p>
-                        <div class="field-price"><strong data-field-price>180.000đ</strong><span>/ giờ</span></div>
-                        <div class="field-actions">
-                            <button class="field-edit-button" type="button" data-field-edit>Chỉnh sửa</button>
-                            <button class="field-toggle-button" type="button" data-field-toggle>Tạm ngưng</button>
-                        </div>
-                    </article>
+                    <% if (fields.isEmpty()) { %>
+                    <div class="empty-state">
+                        <span class="material-symbols-rounded" aria-hidden="true">sports_soccer</span>
+                        <strong>Chưa có sân nào</strong>
+                        <p>Hãy thêm dữ liệu vào bảng sports_fields.</p>
+                    </div>
+                    <% } else { %>
+                        <% for (SportField field : fields) {
+                            boolean isActive = "ACTIVE".equalsIgnoreCase(field.getStatus());
+                            String sportType = field.getSportType();
+                            String sportLabel;
 
-                    <article class="field-card" data-field-card data-status="active" data-price="300000">
-                        <div class="field-card-top">
-                            <span class="field-sport" data-field-sport>Bóng rổ</span>
-                            <span class="field-status status-active" data-field-status>Đang hoạt động</span>
-                        </div>
-                        <h3 data-field-name>Sân bóng rổ Sunrise</h3>
-                        <p class="field-address">
-                            <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
-                            <span data-field-address>45 Võ Văn Tần, Quận 3, TP.HCM</span>
-                        </p>
-                        <div class="field-price"><strong data-field-price>300.000đ</strong><span>/ giờ</span></div>
-                        <div class="field-actions">
-                            <button class="field-edit-button" type="button" data-field-edit>Chỉnh sửa</button>
-                            <button class="field-toggle-button" type="button" data-field-toggle>Tạm ngưng</button>
-                        </div>
-                    </article>
+                            switch (sportType == null ? "" : sportType.toUpperCase(Locale.ROOT)) {
+                                case "GYM":
+                                    sportLabel = "Gym";
+                                    break;
+                                case "BASKETBALL":
+                                    sportLabel = "Bóng rổ";
+                                    break;
+                                case "SWIMMING":
+                                    sportLabel = "Bơi";
+                                    break;
+                                case "PICKLEBALL":
+                                    sportLabel = "Pickleball";
+                                    break;
+                                default:
+                                    sportLabel = sportType == null ? "" : sportType;
+                            }
+                        %>
+                        <article class="field-card"
+                                 data-field-card
+                                 data-field-id="<%= field.getFieldId() %>"
+                                 data-sport-type="<%= field.getSportType() %>"
+                                 data-open-time="<%= field.getOpenTime() %>"
+                                 data-close-time="<%= field.getCloseTime() %>"
+                                 data-status="<%= isActive ? "active" : "paused" %>"
+                                 data-price="<%= field.getPricePerHour() %>">
+                            <div class="field-card-top">
+                                <span class="field-sport" data-field-sport><%= escapeHtml(sportLabel) %></span>
+                                <span class="field-status <%= isActive ? "status-active" : "status-paused" %>"
+                                      data-field-status><%= isActive ? "Đang hoạt động" : "Tạm ngưng" %></span>
+                            </div>
+                            <h3 data-field-name><%= escapeHtml(field.getFieldName()) %></h3>
+                            <p class="field-address">
+                                <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
+                                <span data-field-address><%= escapeHtml(field.getAddress()) %></span>
+                            </p>
+                            <div class="field-price">
+                                <strong data-field-price><%= priceFormat.format(field.getPricePerHour()) %>đ</strong>
+                                <span>/ giờ</span>
+                            </div>
+                            <div class="field-actions">
+                                <button class="field-edit-button"
+                                        type="button"
+                                        data-field-edit>
+                                    Chỉnh sửa
+                                </button>
 
-                    <article class="field-card" data-field-card data-status="active" data-price="150000">
-                        <div class="field-card-top">
-                            <span class="field-sport" data-field-sport>Bơi</span>
-                            <span class="field-status status-active" data-field-status>Đang hoạt động</span>
-                        </div>
-                        <h3 data-field-name>Hồ bơi Aqua Center</h3>
-                        <p class="field-address">
-                            <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
-                            <span data-field-address>78 Phan Xích Long, Phú Nhuận, TP.HCM</span>
-                        </p>
-                        <div class="field-price"><strong data-field-price>150.000đ</strong><span>/ giờ</span></div>
-                        <div class="field-actions">
-                            <button class="field-edit-button" type="button" data-field-edit>Chỉnh sửa</button>
-                            <button class="field-toggle-button" type="button" data-field-toggle>Tạm ngưng</button>
-                        </div>
-                    </article>
+                                <form class="field-toggle-form"
+                                      method="post"
+                                      action="<%= contextPath %>/owner/fields/toggle"
+                                      data-field-toggle-form>
+                                    <input type="hidden"
+                                           name="fieldId"
+                                           value="<%= field.getFieldId() %>">
 
-                    <article class="field-card" data-field-card data-status="active" data-price="220000">
-                        <div class="field-card-top">
-                            <span class="field-sport" data-field-sport>Pickleball</span>
-                            <span class="field-status status-active" data-field-status>Đang hoạt động</span>
-                        </div>
-                        <h3 data-field-name>Green Pickleball Court</h3>
-                        <p class="field-address">
-                            <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
-                            <span data-field-address>21 Nguyễn Hữu Cảnh, Bình Thạnh, TP.HCM</span>
-                        </p>
-                        <div class="field-price"><strong data-field-price>220.000đ</strong><span>/ giờ</span></div>
-                        <div class="field-actions">
-                            <button class="field-edit-button" type="button" data-field-edit>Chỉnh sửa</button>
-                            <button class="field-toggle-button" type="button" data-field-toggle>Tạm ngưng</button>
-                        </div>
-                    </article>
+                                    <button class="field-toggle-button"
+                                            type="submit"
+                                            data-field-toggle>
+                                        <%= isActive ? "Tạm ngưng" : "Kích hoạt" %>
+                                    </button>
+                                </form>
+                            </div>
+                        </article>
+                        <% } %>
+                    <% } %>
                 </div>
             </section>
 
@@ -478,38 +517,104 @@
                 <span class="material-symbols-rounded" aria-hidden="true">close</span>
             </button>
         </div>
-        <form class="field-form" data-field-form>
-            <label for="field-name">Tên sân
-                <input id="field-name" name="name" type="text" maxlength="100" required>
-            </label>
-            <label for="field-sport">Môn thể thao
-                <select id="field-sport" name="sport" required>
-                    <option value="">Chọn môn thể thao</option>
-                    <option value="Gym">Gym</option>
-                    <option value="Bóng rổ">Bóng rổ</option>
-                    <option value="Bơi">Bơi</option>
-                    <option value="Pickleball">Pickleball</option>
-                </select>
-            </label>
-            <label for="field-address">Địa chỉ
-                <input id="field-address" name="address" type="text" maxlength="200" required>
-            </label>
-            <div class="field-form-row">
-                <label for="field-price">Giá theo giờ (đ)
-                    <input id="field-price" name="price" type="number" min="0" step="1000" required>
-                </label>
-                <label for="field-status">Trạng thái
-                    <select id="field-status" name="status" required>
-                        <option value="active">Đang hoạt động</option>
-                        <option value="paused">Tạm ngưng</option>
-                    </select>
-                </label>
-            </div>
-            <div class="modal-actions">
-                <button class="secondary-button" type="button" data-field-modal-close>Hủy</button>
-                <button class="primary-button" type="submit" data-field-submit>Thêm sân</button>
-            </div>
-        </form>
+        <form class="field-form"
+              data-field-form
+              method="post"
+              action="<%= contextPath %>/owner/fields/create"
+              data-create-action="<%= contextPath %>/owner/fields/create"
+              data-update-action="<%= contextPath %>/owner/fields/update">
+
+    <input type="hidden"
+           name="fieldId"
+           data-field-id-input>
+
+    <label for="field-name">
+        Tên sân
+        <input id="field-name"
+               name="fieldName"
+               type="text"
+               maxlength="150"
+               required>
+    </label>
+
+    <label for="field-sport">
+        Môn thể thao
+        <select id="field-sport"
+                name="sportType"
+                required>
+            <option value="">Chọn môn thể thao</option>
+            <option value="GYM">Gym</option>
+            <option value="BASKETBALL">Bóng rổ</option>
+            <option value="SWIMMING">Bơi</option>
+            <option value="PICKLEBALL">Pickleball</option>
+        </select>
+    </label>
+
+    <label for="field-address">
+        Địa chỉ
+        <input id="field-address"
+               name="address"
+               type="text"
+               maxlength="255"
+               required>
+    </label>
+
+    <div class="field-form-row">
+        <label for="field-price">
+            Giá theo giờ (đ)
+            <input id="field-price"
+                   name="pricePerHour"
+                   type="number"
+                   min="1000"
+                   step="1000"
+                   required>
+        </label>
+
+        <label for="field-status">
+            Trạng thái
+            <select id="field-status"
+                    name="status"
+                    required>
+                <option value="ACTIVE">Đang hoạt động</option>
+                <option value="INACTIVE">Tạm ngưng</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="field-form-row">
+        <label for="field-open-time">
+            Giờ mở cửa
+            <input id="field-open-time"
+                   name="openTime"
+                   type="time"
+                   value="06:00"
+                   required>
+        </label>
+
+        <label for="field-close-time">
+            Giờ đóng cửa
+            <input id="field-close-time"
+                   name="closeTime"
+                   type="time"
+                   value="22:00"
+                   required>
+        </label>
+    </div>
+
+    <div class="modal-actions">
+        <button class="secondary-button"
+                type="button"
+                data-field-modal-close>
+            Hủy
+        </button>
+
+        <button class="primary-button"
+                type="submit"
+                data-field-submit>
+            Thêm sân
+        </button>
+    </div>
+</form>
     </div>
 </div>
 

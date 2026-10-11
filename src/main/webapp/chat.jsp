@@ -1,8 +1,46 @@
+<%@ page import="com.sportify.model.ChatMessage" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="java.util.List" %>
+
+<%!
+    private String escapeHtml(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <%@ page language="java"
     contentType="text/html; charset=UTF-8"
+    isELIgnored="true"
     pageEncoding="UTF-8" %>
 <%
     String contextPath = request.getContextPath();
+
+    List<ChatMessage> messages =
+            (List<ChatMessage>) request.getAttribute("messages");
+
+    String currentSender =
+            (String) request.getAttribute("sender");
+
+    String currentReceiver =
+            (String) request.getAttribute("receiver");
+
+    if (currentSender == null) {
+        currentSender = "Khách hàng";
+    }
+
+    if (currentReceiver == null) {
+        currentReceiver = "Sân bóng Sunrise";
+    }
+
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -20,7 +58,9 @@
             overflow: hidden;
         }
         
-        .header { flex-shrink: 0; }
+        .header {
+            flex-shrink: 0;
+        }
 
         .chat-layout {
             display: flex;
@@ -52,7 +92,10 @@
             align-items: center;
         }
         
-        .chat-sidebar-header h2 { font-size: 20px; color: var(--dark); }
+        .chat-sidebar-header h2 {
+            color: var(--dark);
+            font-size: 20px;
+        }
 
         .chat-search {
             padding: 15px 20px;
@@ -88,7 +131,8 @@
             border-bottom: 1px solid #f5f5f5;
         }
 
-        .chat-item:hover, .chat-item.active {
+        .chat-item:hover,
+        .chat-item.active {
             background: var(--primary-light);
         }
 
@@ -154,9 +198,20 @@
             font-weight: 600;
         }
         
-        .role-pt { background: #fee2e2; color: #dc2626; }
-        .role-shop { background: #fef3c7; color: #d97706; }
-        .role-court { background: #dcfce7; color: #16a34a; }
+        .role-pt {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .role-shop {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .role-court {
+            background: #dcfce7;
+            color: #16a34a;
+        }
 
         .chat-item-preview {
             font-size: 13px;
@@ -208,8 +263,14 @@
             max-width: 65%;
         }
 
-        .message-received { align-self: flex-start; }
-        .message-sent { align-self: flex-end; align-items: flex-end; }
+        .message-received {
+            align-self: flex-start;
+        }
+
+        .message-sent {
+            align-items: flex-end;
+            align-self: flex-end;
+        }
 
         .message-bubble {
             padding: 12px 18px;
@@ -258,7 +319,15 @@
             transition: 0.2s;
         }
 
-        .attach-btn:hover { color: var(--primary); }
+        .attach-btn:hover {
+            color: var(--primary);
+        }
+
+        .chat-empty {
+            margin: auto;
+            color: var(--muted);
+            text-align: center;
+        }
 
         .chat-input {
             flex: 1;
@@ -324,236 +393,219 @@
     </style>
 </head>
 <body>
-
-<header class="header">
-    <div class="container navbar" style="min-height: 60px;">
-        <a class="brand" href="<%= contextPath %>/home.jsp">
-            <span class="brand-icon" style="width: 30px; height: 30px; font-size: 16px;">S</span>
-            <span style="font-size: 18px;">SPORTIFY</span>
-        </a>
-        <nav class="nav-links">
-            <a href="<%= contextPath %>/home.jsp">Trang chủ</a>
-            <a href="#">Lịch đặt</a>
-            <a href="#" style="color: var(--primary); font-weight: bold;">Tin nhắn</a>
-        </nav>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <div class="avatar" style="width: 35px; height: 35px; font-size: 16px; background: var(--primary-light); color: var(--primary);">
-                K
-            </div>
-            <span style="font-size: 14px; font-weight: 600;">Khách hàng</span>
-        </div>
-    </div>
-</header>
-
-<main class="chat-layout">
-    <!-- Sidebar -->
-    <aside class="chat-sidebar">
-        <div class="chat-sidebar-header">
-            <h2>Tin nhắn Dịch vụ</h2>
-        </div>
-        <div class="chat-search">
-            <input type="text" placeholder="Tìm kiếm hội thoại...">
-        </div>
-        
-        <div class="chat-list" id="chatList">
-            <!-- Items rendered via JS -->
-        </div>
-    </aside>
-
-    <!-- Main Chat -->
-    <section class="chat-main">
-        <div class="chat-header">
-            <div class="avatar avatar-online" id="currentChatAvatar">🏢</div>
-            <div class="chat-header-info">
-                <h3><span id="currentChatName">Sân bóng Sunrise</span> <span class="chat-item-role role-court" id="currentChatRole" style="font-size: 10px; margin-left: 8px;">Chủ sân</span></h3>
-                <div class="status">Đang hoạt động</div>
-            </div>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <!-- Messages rendered via JS -->
-        </div>
-
-        <div class="chat-input-area">
-            <button class="attach-btn" title="Đính kèm hình ảnh/file">📎</button>
-            <input type="text" id="messageInput" class="chat-input" placeholder="Nhập tin nhắn..." onkeypress="handleEnter(event)">
-            <button class="send-btn" title="Gửi" onclick="sendMessage()">➤</button>
-        </div>
-    </section>
-</main>
-
-
-
-</body>
-</html>
-
-
-<script>
-    // Mock Data cho các cuộc hội thoại
-    const conversations = [
-        {
-            id: 'c1',
-            name: 'Sân bóng Sunrise',
-            icon: '🏢',
-            roleName: 'Chủ sân',
-            roleClass: 'role-court',
-            time: '10:45',
-            online: true,
-            messages: [
-                { type: 'divider', text: 'Hôm nay' },
-                { sender: 'me', text: 'Chào bạn, cho mình hỏi tối nay (khoảng 19h) sân 5 bên bạn còn trống không ạ?', time: '10:30' },
-                { sender: 'them', text: 'Chào bạn! Để mình kiểm tra lịch một chút nhé.', time: '10:32' },
-                { sender: 'them', text: 'Vâng ạ, sân 5 người đang trống vào lúc 19h tối nay nhé bạn. Bạn có muốn đặt luôn không ạ? Giá là 250k/giờ.', time: '10:45' },
-                { sender: 'me', text: 'Tuyệt quá, bạn đặt cho mình từ 19h đến 20h30 nhé. Tên mình là Khoa.', time: '10:46' }
-            ]
-        },
-        {
-            id: 'c2',
-            name: 'PT Nguyễn Minh Anh',
-            icon: '💪',
-            roleName: 'Huấn luyện viên',
-            roleClass: 'role-pt',
-            time: 'Hôm qua',
-            online: false,
-            messages: [
-                { type: 'divider', text: 'Hôm qua' },
-                { sender: 'them', text: 'Chào Khoa, lịch tập gym tuần này của mình là thứ 3, thứ 5 và thứ 7 nhé.', time: '08:00' },
-                { sender: 'me', text: 'Ok anh, em sẽ đến đúng giờ.', time: '08:15' },
-                { sender: 'them', text: 'Bạn nhớ uống đủ nước trước buổi tập ngày mai nhé!', time: '20:30' }
-            ]
-        },
-        {
-            id: 'c3',
-            name: 'Sport Gear Q7',
-            icon: '🎒',
-            roleName: 'Shop dụng cụ',
-            roleClass: 'role-shop',
-            time: 'Thứ 2',
-            online: true,
-            messages: [
-                { type: 'divider', text: 'Thứ 2' },
-                { sender: 'me', text: 'Shop ơi, bên mình còn vợt Pickleball loại carbon không?', time: '14:00' },
-                { sender: 'them', text: 'Dạ còn anh nhé, vợt Pickleball loại anh hỏi đã có hàng rồi ạ. Giá thuê là 50k/ngày.', time: '14:20' }
-            ]
-        }
-    ];
-
-    let currentConversationId = 'c1';
-
-    function renderChatList() {
-        const chatListEl = document.getElementById('chatList');
-        chatListEl.innerHTML = '';
-
-        conversations.forEach(conv => {
-            const lastMsg = conv.messages.filter(m => m.type !== 'divider').slice(-1)[0];
-            const previewText = lastMsg ? lastMsg.text : '...';
-            
-            const div = document.createElement('div');
-            div.className = `chat-item \${conv.id == currentConversationId ? 'active' : ''}`;
-            div.onclick = () => selectConversation(conv.id);
-            
-            div.innerHTML = `
-                <div class="avatar \${conv.online ? 'avatar-online' : ''}">\${conv.icon}</div>
-                <div class="chat-item-content">
-                    <div class="chat-item-header">
-                        <span class="chat-item-name">\${conv.name}</span>
-                        <span class="chat-item-time">\${conv.time}</span>
-                    </div>
-                    <span class="chat-item-role \${conv.roleClass}">\${conv.roleName}</span>
-                    <div class="chat-item-preview">\${previewText}</div>
+    <header class="header">
+        <div class="container navbar" style="min-height: 60px;">
+            <a class="brand" href="<%= contextPath %>/home.jsp">
+                <span class="brand-icon" style="width: 30px; height: 30px; font-size: 16px;">S</span>
+                <span style="font-size: 18px;">SPORTIFY</span>
+            </a>
+            <nav class="nav-links">
+                <a href="<%= contextPath %>/home.jsp">Trang chủ</a>
+                <a href="#">Lịch đặt</a>
+                <a href="#" style="color: var(--primary); font-weight: bold;">Tin nhắn</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="avatar" style="width: 35px; height: 35px; font-size: 16px; background: var(--primary-light); color: var(--primary);">
+                    K
                 </div>
-            `;
-            chatListEl.appendChild(div);
-        });
-    }
+                <span style="font-size: 14px; font-weight: 600;">Khách hàng</span>
+            </div>
+        </div>
+    </header>
 
-    function renderMessages() {
-        const chatMessagesEl = document.getElementById('chatMessages');
-        chatMessagesEl.innerHTML = '';
-        
-        const conv = conversations.find(c => c.id === currentConversationId);
-        if(!conv) return;
+    <main class="chat-layout">
+        <!-- Sidebar -->
+        <aside class="chat-sidebar">
+            <div class="chat-sidebar-header">
+                <h2>Tin nhắn Dịch vụ</h2>
+            </div>
+            <div class="chat-search">
+                <input type="text" placeholder="Tìm kiếm hội thoại...">
+            </div>
 
-        conv.messages.forEach(msg => {
-            if (msg.type === 'divider') {
-                chatMessagesEl.innerHTML += `
-                    <div class="date-divider">
-                        <span>\${msg.text}</span>
+            <div class="chat-list" id="chatList">
+                <!-- Items rendered via JS -->
+            </div>
+        </aside>
+
+        <!-- Main Chat -->
+        <section class="chat-main">
+            <div class="chat-header">
+                <div class="avatar avatar-online" id="currentChatAvatar">🏢</div>
+                <div class="chat-header-info">
+                    <h3>
+                        <span id="currentChatName">Sân bóng Sunrise</span>
+                        <span class="chat-item-role role-court"
+                              id="currentChatRole"
+                              style="font-size: 10px; margin-left: 8px;">Chủ sân</span>
+                    </h3>
+                    <div class="status">Đang hoạt động</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="date-divider">
+                    <span>Hôm nay</span>
+                </div>
+
+                <%
+                    if (messages == null || messages.isEmpty()) {
+                %>
+                    <div class="chat-empty">
+                        Chưa có tin nhắn. Hãy gửi tin nhắn đầu tiên.
                     </div>
-                `;
-            } else {
-                const isSent = msg.sender === 'me';
-                chatMessagesEl.innerHTML += `
-                    <div class="message \${isSent ? 'message-sent' : 'message-received'}">
-                        <div class="message-bubble">\${msg.text}</div>
-                        <div class="message-time">\${msg.time}</div>
+                <%
+                    } else {
+                        for (ChatMessage message : messages) {
+                            boolean isSent = currentSender.equals(message.getSenderName());
+                            String messageTime = message.getSentAt() == null
+                                    ? ""
+                                    : timeFormatter.format(message.getSentAt());
+                %>
+                    <div class="message <%= isSent ? "message-sent" : "message-received" %>">
+                        <div class="message-bubble">
+                            <%= escapeHtml(message.getMessageText()) %>
+                        </div>
+                        <div class="message-time"><%= messageTime %></div>
                     </div>
-                `;
+                <%
+                        }
+                    }
+                %>
+            </div>
+
+            <form class="chat-input-area"
+                  action="<%= contextPath %>/chat"
+                  method="post">
+                <input type="hidden"
+                       name="senderName"
+                       value="<%= escapeHtml(currentSender) %>">
+                <input type="hidden"
+                       name="receiverName"
+                       value="<%= escapeHtml(currentReceiver) %>">
+                <button class="attach-btn"
+                        type="button"
+                        title="Đính kèm hình ảnh/file">📎</button>
+                <input type="text"
+                       id="messageInput"
+                       name="messageText"
+                       class="chat-input"
+                       maxlength="1000"
+                       placeholder="Nhập tin nhắn..."
+                       required>
+                <button class="send-btn"
+                        type="submit"
+                        title="Gửi">➤</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        // Mock data cho các cuộc hội thoại
+        const conversations = [
+            {
+                id: 'c1',
+                name: 'Sân bóng Sunrise',
+                icon: '🏢',
+                roleName: 'Chủ sân',
+                roleClass: 'role-court',
+                time: '10:45',
+                online: true,
+                messages: [
+                    { type: 'divider', text: 'Hôm nay' },
+                    { sender: 'me', text: 'Chào bạn, cho mình hỏi tối nay (khoảng 19h) sân 5 bên bạn còn trống không ạ?', time: '10:30' },
+                    { sender: 'them', text: 'Chào bạn! Để mình kiểm tra lịch một chút nhé.', time: '10:32' },
+                    { sender: 'them', text: 'Vâng ạ, sân 5 người đang trống vào lúc 19h tối nay nhé bạn. Bạn có muốn đặt luôn không ạ? Giá là 250k/giờ.', time: '10:45' },
+                    { sender: 'me', text: 'Tuyệt quá, bạn đặt cho mình từ 19h đến 20h30 nhé. Tên mình là Khoa.', time: '10:46' }
+                ]
+            },
+            {
+                id: 'c2',
+                name: 'PT Nguyễn Minh Anh',
+                icon: '💪',
+                roleName: 'Huấn luyện viên',
+                roleClass: 'role-pt',
+                time: 'Hôm qua',
+                online: false,
+                messages: [
+                    { type: 'divider', text: 'Hôm qua' },
+                    { sender: 'them', text: 'Chào Khoa, lịch tập gym tuần này của mình là thứ 3, thứ 5 và thứ 7 nhé.', time: '08:00' },
+                    { sender: 'me', text: 'Ok anh, em sẽ đến đúng giờ.', time: '08:15' },
+                    { sender: 'them', text: 'Bạn nhớ uống đủ nước trước buổi tập ngày mai nhé!', time: '20:30' }
+                ]
+            },
+            {
+                id: 'c3',
+                name: 'Sport Gear Q7',
+                icon: '🎒',
+                roleName: 'Shop dụng cụ',
+                roleClass: 'role-shop',
+                time: 'Thứ 2',
+                online: true,
+                messages: [
+                    { type: 'divider', text: 'Thứ 2' },
+                    { sender: 'me', text: 'Shop ơi, bên mình còn vợt Pickleball loại carbon không?', time: '14:00' },
+                    { sender: 'them', text: 'Dạ còn anh nhé, vợt Pickleball loại anh hỏi đã có hàng rồi ạ. Giá thuê là 50k/ngày.', time: '14:20' }
+                ]
             }
-        });
-        
-        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-    }
+        ];
 
-    function updateHeader() {
-        const conv = conversations.find(c => c.id === currentConversationId);
-        if(!conv) return;
-        
-        document.getElementById('currentChatAvatar').innerText = conv.icon;
-        if(conv.online) {
-            document.getElementById('currentChatAvatar').classList.add('avatar-online');
-        } else {
-            document.getElementById('currentChatAvatar').classList.remove('avatar-online');
-        }
-        document.getElementById('currentChatName').innerText = conv.name;
-        
-        const roleEl = document.getElementById('currentChatRole');
-        roleEl.innerText = conv.roleName;
-        roleEl.className = `chat-item-role \${conv.roleClass}`;
-    }
+        let currentConversationId = 'c1';
 
-    function selectConversation(id) {
-        currentConversationId = id;
-        renderChatList();
-        updateHeader();
-        renderMessages();
-    }
+        function renderChatList() {
+            const chatListEl = document.getElementById('chatList');
+            chatListEl.innerHTML = '';
 
-    function sendMessage() {
-        const input = document.getElementById('messageInput');
-        const text = input.value.trim();
-        if (text === '') return;
+            conversations.forEach((conversation) => {
+                const lastMessage = conversation.messages
+                        .filter((message) => message.type !== 'divider')
+                        .slice(-1)[0];
+                const previewText = lastMessage ? lastMessage.text : '...';
+                const item = document.createElement('div');
 
-        const conv = conversations.find(c => c.id === currentConversationId);
-        if (conv) {
-            const now = new Date();
-            const timeStr = \`\${now.getHours().toString().padStart(2,'0')}:\${now.getMinutes().toString().padStart(2,'0')}\`;
-            
-            conv.messages.push({
-                sender: 'me',
-                text: text,
-                time: timeStr
+                item.className = `chat-item ${conversation.id === currentConversationId ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="avatar ${conversation.online ? 'avatar-online' : ''}">${conversation.icon}</div>
+                    <div class="chat-item-content">
+                        <div class="chat-item-header">
+                            <span class="chat-item-name">${conversation.name}</span>
+                            <span class="chat-item-time">${conversation.time}</span>
+                        </div>
+                        <span class="chat-item-role ${conversation.roleClass}">${conversation.roleName}</span>
+                        <div class="chat-item-preview">${previewText}</div>
+                    </div>
+                `;
+
+                chatListEl.appendChild(item);
             });
-            conv.time = timeStr; // update preview time
-            
-            input.value = '';
+        }
+
+        function updateHeader() {
+            const conversation = conversations.find(
+                    (item) => item.id === currentConversationId
+            );
+
+            if (!conversation) {
+                return;
+            }
+
+            const avatar = document.getElementById('currentChatAvatar');
+            const role = document.getElementById('currentChatRole');
+
+            avatar.innerText = conversation.icon;
+            avatar.classList.toggle('avatar-online', conversation.online);
+            document.getElementById('currentChatName').innerText = conversation.name;
+            role.innerText = conversation.roleName;
+            role.className = `chat-item-role ${conversation.roleClass}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
             renderChatList();
-            renderMessages();
-        }
-    }
+            updateHeader();
 
-    function handleEnter(event) {
-        if (event.key === 'Enter') {
-            sendMessage();
-        }
-    }
-
-    // Initialize
-    window.onload = () => {
-        renderChatList();
-        updateHeader();
-        renderMessages();
-    };
-</script>
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    </script>
 </body>
 </html>

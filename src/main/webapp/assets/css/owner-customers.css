@@ -1,0 +1,205 @@
+.owner-customers-page .customer-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.owner-customers-page .customer-notice {
+    margin-top: 20px;
+    padding: 14px 18px;
+    color: #a62f2f;
+    background: #fff0f0;
+    border: 1px solid #f0c4c4;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.owner-customers-page .customer-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.owner-customers-page .customer-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.owner-customers-page .customer-toolbar h2 {
+    margin: 6px 0;
+}
+
+.owner-customers-page .customer-toolbar p {
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.owner-customers-page .customer-search {
+    display: grid;
+    gap: 7px;
+    font-size: 13px;
+}
+
+.owner-customers-page .customer-search label {
+    font-weight: 700;
+}
+
+.owner-customers-page .customer-search-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.owner-customers-page .customer-search input {
+    width: 250px;
+    min-height: 42px;
+    padding: 9px 12px;
+    color: var(--text);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.owner-customers-page .customer-search input:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
+.owner-customers-page .customer-clear-search {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+.owner-customers-page .customer-table-wrap {
+    overflow-x: auto;
+}
+
+.owner-customers-page .customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.owner-customers-page .customer-table th,
+.owner-customers-page .customer-table td {
+    padding: 18px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.owner-customers-page .customer-table th {
+    color: var(--text-light);
+    font-size: 12px;
+    background: #fbfcfb;
+}
+
+.owner-customers-page .customer-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.owner-customers-page .customer-name {
+    min-width: 190px;
+    overflow-wrap: anywhere;
+}
+
+.owner-customers-page .customer-cell {
+    line-height: 1.6;
+}
+
+.owner-customers-page .customer-avatar {
+    flex: 0 0 36px;
+}
+
+.owner-customers-page .customer-average {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.owner-customers-page .customer-average > span {
+    color: #d99113;
+}
+
+.owner-customers-page .customer-table time {
+    color: var(--text-light);
+}
+
+.owner-customers-page .customer-empty p {
+    margin: 10px 0 18px;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+@media (max-width: 1100px) {
+    .owner-customers-page .customer-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .owner-customers-page .customer-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .owner-customers-page .customer-toolbar {
+        padding: 18px;
+    }
+
+    .owner-customers-page .customer-search,
+    .owner-customers-page .customer-search-controls {
+        width: 100%;
+    }
+
+    .owner-customers-page .customer-search input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .owner-customers-page .customer-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    .owner-customers-page .customer-table tbody {
+        display: grid;
+        gap: 14px;
+        padding: 14px;
+        background: #f9fbfa;
+    }
+
+    .owner-customers-page .customer-table tr {
+        display: block;
+        padding: 8px 14px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+    }
+
+    .owner-customers-page .customer-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 0;
+    }
+
+    .owner-customers-page .customer-table td::before {
+        content: attr(data-label);
+        color: var(--text-light);
+        font-size: 12px;
+    }
+
+    .owner-customers-page .customer-table .customer-name {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .owner-customers-page .customer-table .customer-name::before {
+        display: none;
+    }
+}
