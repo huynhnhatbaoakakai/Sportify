@@ -44,9 +44,9 @@ public class SportFieldDAO {
             ps.setString(3, field.getSportType());
             ps.setString(4, field.getAddress());
             ps.setString(5, field.getDescription());
-            ps.setDouble(6, field.getPricePerHour());
-            ps.setString(7, field.getOpenTime());
-            ps.setString(8, field.getCloseTime());
+            ps.setBigDecimal(6, field.getPricePerHour());
+            ps.setString(7, field.getOpenTime() != null ? field.getOpenTime().toString() : null);
+            ps.setString(8, field.getCloseTime() != null ? field.getCloseTime().toString() : null);
             ps.setString(9, field.getStatus() != null ? field.getStatus() : "ACTIVE");
 
             ps.executeUpdate();
@@ -67,9 +67,9 @@ public class SportFieldDAO {
             ps.setString(2, field.getSportType());
             ps.setString(3, field.getAddress());
             ps.setString(4, field.getDescription());
-            ps.setDouble(5, field.getPricePerHour());
-            ps.setString(6, field.getOpenTime());
-            ps.setString(7, field.getCloseTime());
+            ps.setBigDecimal(5, field.getPricePerHour());
+            ps.setString(6, field.getOpenTime() != null ? field.getOpenTime().toString() : null);
+            ps.setString(7, field.getCloseTime() != null ? field.getCloseTime().toString() : null);
             ps.setLong(8, field.getFieldId());
             ps.setLong(9, ownerId);
 

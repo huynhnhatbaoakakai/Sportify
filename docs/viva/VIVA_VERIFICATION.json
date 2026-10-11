@@ -1,0 +1,29 @@
+{
+  "verified_at_utc": "2026-10-11T14:21:08.615503+00:00",
+  "checks": {
+    "all_required_sections": true,
+    "no_unfilled_placeholders": true,
+    "all_flows_13_steps": true,
+    "30_questions": true,
+    "10_deep_questions": true,
+    "all_markdown_links_exist": true,
+    "source_snapshot_unchanged_since_manifest": true,
+    "reported_removed_sql_absent": true,
+    "java_production20": true,
+    "slide354_coverage125_groups": true
+  },
+  "flow_count": 10,
+  "flow_step_count": 130,
+  "slides": 354,
+  "slide_groups": 125,
+  "questions": [
+    30,
+    10
+  ],
+  "missing_links": [],
+  "changed_source_since_manifest": [],
+  "artifact": "D:\\Projects\\Sportify\\docs\\viva\\SPORTIFY_VIVA_MAP.md",
+  "artifact_bytes": 119240,
+  "artifact_sha256": "02985942122e370dc4b43a9b8dbd9056a331e73dc62e907aa1d3c61490c37cf6",
+  "runtime_limit": "Only DB SELECT metadata/count and HTTP GET; no Maven/JSP compilation or POST writes."
+}

@@ -1,0 +1,432 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-11T14:06:21.777584+00:00",
+  "repository_root": "D:/Projects/Sportify",
+  "source_roots": [
+    "src/main",
+    "src/test",
+    "database",
+    "pom.xml"
+  ],
+  "scope": "All regular UTF-8 text files recursively under src and database plus pom.xml; includes untracked files; excludes binaries; no target/build/cache/docs; SHA256 over original raw bytes; splitlines UTF-8-sig counts including blank lines",
+  "hash_algorithm": "SHA256",
+  "counts": {
+    "candidate_files": 64,
+    "included_text": {
+      "files": 50,
+      "lines": 8972,
+      "bytes": 288887,
+      "by_extension": {
+        ".css": 5,
+        ".java": 24,
+        ".js": 4,
+        ".jsp": 13,
+        ".md": 1,
+        ".xml": 3
+      }
+    },
+    "src_main_text": {
+      "files": 44,
+      "lines": 8425,
+      "bytes": 264805,
+      "by_extension": {
+        ".css": 5,
+        ".java": 20,
+        ".js": 4,
+        ".jsp": 13,
+        ".xml": 2
+      }
+    },
+    "src_test_text": {
+      "files": 4,
+      "lines": 403,
+      "bytes": 18202,
+      "by_extension": {
+        ".java": 4
+      }
+    },
+    "database_text": {
+      "files": 1,
+      "lines": 52,
+      "bytes": 2985,
+      "by_extension": {
+        ".md": 1
+      }
+    },
+    "excluded_binary_files": 14
+  },
+  "files": [
+    {
+      "path": "database/CUSTOMERS.md",
+      "bytes": 2985,
+      "lines": 52,
+      "sha256": "5cea49175017f8fe1d506bede3f63dd8ed1af686d04b5b3fcc0df9302a587807"
+    },
+    {
+      "path": "pom.xml",
+      "bytes": 2895,
+      "lines": 92,
+      "sha256": "66e244b92d774ba5f89ee644f00553412b5757d9551c3f9f1da7c2ffb8ef3cab"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/ChatServlet.java",
+      "bytes": 3089,
+      "lines": 99,
+      "sha256": "775d58f92873385e81ceaa452d7f54a95ccc4f00e19f3e0d2f8f295712158d3c"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/CreateFieldServlet.java",
+      "bytes": 4344,
+      "lines": 138,
+      "sha256": "7cde557e0d85b35e6036e43fea408b4c943b3b1895e623fc247e020388647fc1"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/ManageCustomersServlet.java",
+      "bytes": 2604,
+      "lines": 57,
+      "sha256": "e7c013af81b5a2da9832ac08a30fd96ad353b60197c022961c9b6667d08c1445"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/ManageFieldsServlet.java",
+      "bytes": 1326,
+      "lines": 43,
+      "sha256": "d18a7b0c52b511c467366d915f17b64e362c4a3ddaab52922d20f2dbba476e9a"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/ManageReviewsServlet.java",
+      "bytes": 2729,
+      "lines": 63,
+      "sha256": "f6df2b0913e7ce6cb4ae3ebb4cf6ffe69e1274de083fe097f12689c132801334"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/OwnerAccessLogoutServlet.java",
+      "bytes": 893,
+      "lines": 33,
+      "sha256": "00ab9222ebf625ce75f8b182fbd1e479d8a73176e49e9df7ab281701feece154"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/OwnerAccessServlet.java",
+      "bytes": 2171,
+      "lines": 77,
+      "sha256": "2a5488f47acd8d1dcb505b097fd273eb78c23bd449b7f80091169495e7f86cb9"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/ReplyReviewServlet.java",
+      "bytes": 2527,
+      "lines": 63,
+      "sha256": "d40034a4d69b1e22cc04be9f4190b8df9119da460f45726a38a92fbb71bdd01c"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/ToggleFieldStatusServlet.java",
+      "bytes": 1793,
+      "lines": 59,
+      "sha256": "ef8b40e04fdcf7649d05eec56c9141b4f2922533fb08beaafaf66ee8f17a1191"
+    },
+    {
+      "path": "src/main/java/com/sportify/controller/UpdateFieldServlet.java",
+      "bytes": 3975,
+      "lines": 130,
+      "sha256": "e19353fc0fad4b4cc1ca5614cd913a5521be4f83e1f460797242ce47bf214f43"
+    },
+    {
+      "path": "src/main/java/com/sportify/data/ChatMessageDB.java",
+      "bytes": 1824,
+      "lines": 65,
+      "sha256": "f74480bedab6677eac17eb2fcba84100b805771bc0778a4298945b59ce1572bb"
+    },
+    {
+      "path": "src/main/java/com/sportify/data/CustomerDB.java",
+      "bytes": 4177,
+      "lines": 112,
+      "sha256": "f165c61c78ee2e2db606162405e42b8ee3b48c551a7301e464a57b3f5eb2efa6"
+    },
+    {
+      "path": "src/main/java/com/sportify/data/DBUtil.java",
+      "bytes": 603,
+      "lines": 23,
+      "sha256": "0a23b64e72d464ec188691413a455d3f457d12a1f1d28e2bf69abbf27e4f6479"
+    },
+    {
+      "path": "src/main/java/com/sportify/data/ReviewDB.java",
+      "bytes": 5098,
+      "lines": 149,
+      "sha256": "a631993eeea348e65b9a961dd64d0537f506585022b49bf3cc96440e7c3ce6a9"
+    },
+    {
+      "path": "src/main/java/com/sportify/data/SportFieldDB.java",
+      "bytes": 5341,
+      "lines": 194,
+      "sha256": "041aca09dd99d65d00a4f479f3bd419beaaabe57a1539002afdc353e293c5abd"
+    },
+    {
+      "path": "src/main/java/com/sportify/filter/OwnerAccessFilter.java",
+      "bytes": 1751,
+      "lines": 63,
+      "sha256": "a9f745f1faa82ec179a0da85913249b43ceff0c839c3773926d94ccfa1180ecc"
+    },
+    {
+      "path": "src/main/java/com/sportify/model/ChatMessage.java",
+      "bytes": 2166,
+      "lines": 88,
+      "sha256": "082622edee71b2e171ece39b2ec4ee6f6b2fa2405c8772ab3188479e2a74b671"
+    },
+    {
+      "path": "src/main/java/com/sportify/model/CustomerOverview.java",
+      "bytes": 1127,
+      "lines": 43,
+      "sha256": "85c09b9646d5d8cee60e34b120a31581ed3d256a8b8c20e22768ebfdc7d49181"
+    },
+    {
+      "path": "src/main/java/com/sportify/model/Review.java",
+      "bytes": 2774,
+      "lines": 116,
+      "sha256": "cfcb8cf1454e8cf4d3402c1dfc10915bedce8ad8d360e2c215afcf09f84a6f24"
+    },
+    {
+      "path": "src/main/java/com/sportify/model/SportField.java",
+      "bytes": 5041,
+      "lines": 214,
+      "sha256": "49dc908b5a73530e02eac3702feb307b5cc2132e1b76764642c0f2040f5b9073"
+    },
+    {
+      "path": "src/main/resources/META-INF/persistence.xml",
+      "bytes": 1806,
+      "lines": 62,
+      "sha256": "55036548f16055cb331c37f4e222c892b12b6bcd99c364e8db4ed61d5f6d19d2"
+    },
+    {
+      "path": "src/main/webapp/WEB-INF/views/owner-access.jsp",
+      "bytes": 2480,
+      "lines": 80,
+      "sha256": "3f145e75bb7c27e299ba3ed1a502532a7211a982076586b447f243c36f43dea9"
+    },
+    {
+      "path": "src/main/webapp/WEB-INF/web.xml",
+      "bytes": 476,
+      "lines": 10,
+      "sha256": "9be0ec34ad9254ab962c42539a27f9899dc974e1c82072951005fa2b1f800061"
+    },
+    {
+      "path": "src/main/webapp/assets/css/owner-access.css",
+      "bytes": 3543,
+      "lines": 184,
+      "sha256": "d5b5f4f20908bf29d0bba3ccac899a2098a6dbb10556f3a0021aef8d2d886946"
+    },
+    {
+      "path": "src/main/webapp/assets/css/owner-customers.css",
+      "bytes": 4382,
+      "lines": 205,
+      "sha256": "1bed96aa520662eded340ce3e862b23b590f592c77b135e83efb19fa3b046df5"
+    },
+    {
+      "path": "src/main/webapp/assets/css/owner-dashboard.css",
+      "bytes": 18452,
+      "lines": 1087,
+      "sha256": "1e94897e4e1e73dea14de79aa67bf489cfea21623012f0bf8238da7e6ecdf1fd"
+    },
+    {
+      "path": "src/main/webapp/assets/css/owner-reviews.css",
+      "bytes": 5512,
+      "lines": 266,
+      "sha256": "b4f7024ff330c626db9c2fb7126253b81ce24b48958341b11b683fb2a7dc5309"
+    },
+    {
+      "path": "src/main/webapp/assets/css/style.css",
+      "bytes": 10970,
+      "lines": 626,
+      "sha256": "e5dee652747dd06b33aed5973c8c4d58493388b1a6b027bbfff4e7fb0aeaef3d"
+    },
+    {
+      "path": "src/main/webapp/assets/js/app.js",
+      "bytes": 1987,
+      "lines": 67,
+      "sha256": "6fbb697c6d05f220d0dd68b4a868d1813e357de168a280fcb4892d357a3d07df"
+    },
+    {
+      "path": "src/main/webapp/assets/js/owner-customers.js",
+      "bytes": 1163,
+      "lines": 27,
+      "sha256": "d87d719bc2a1a2a4d4892b3efb6ea50fb52551ca04f12633d815915abd92d0b5"
+    },
+    {
+      "path": "src/main/webapp/assets/js/owner-dashboard.js",
+      "bytes": 11363,
+      "lines": 231,
+      "sha256": "1b016e0e388abe689ad0c22d3d36e86f645fc8ed0d26b7457a9ae3ecd534d959"
+    },
+    {
+      "path": "src/main/webapp/assets/js/owner-reviews.js",
+      "bytes": 2570,
+      "lines": 58,
+      "sha256": "a69b4a79fc65fbf60a151a99eea23371b5186fe11a6e59c36dbdd2165dcd806c"
+    },
+    {
+      "path": "src/main/webapp/chat-friends.jsp",
+      "bytes": 16214,
+      "lines": 522,
+      "sha256": "705a70bbd457d33a56c4c50fff3921f1a668a5cccd6ca45b8b7c0efb4f705229"
+    },
+    {
+      "path": "src/main/webapp/chat.jsp",
+      "bytes": 19851,
+      "lines": 611,
+      "sha256": "e24daf0cd7879a8000335bf95ab6c51a0b2dbcfc34145b01fd7667610cd59273"
+    },
+    {
+      "path": "src/main/webapp/home.jsp",
+      "bytes": 9118,
+      "lines": 301,
+      "sha256": "a0cc383fcc83000a21a962301a6df97d16be09a1fd8b321b3de397dfb5f97cf7"
+    },
+    {
+      "path": "src/main/webapp/index.jsp",
+      "bytes": 15736,
+      "lines": 418,
+      "sha256": "6dd3b61c1cd0d3bf19be5cb167d5d69f1f5e5fe3bf29d110ec165c69fd64b27a"
+    },
+    {
+      "path": "src/main/webapp/login-process.jsp",
+      "bytes": 249,
+      "lines": 7,
+      "sha256": "2550a4abed2b8bd2d5d18e5b952d52483f139bf0f9569c365436e92d269c7dd6"
+    },
+    {
+      "path": "src/main/webapp/login.jsp",
+      "bytes": 5634,
+      "lines": 199,
+      "sha256": "2c80de67186acc54010e0c8d284ae5c6d7155457fa0c43cf7361c4ad995517ec"
+    },
+    {
+      "path": "src/main/webapp/owner/customers.jsp",
+      "bytes": 12535,
+      "lines": 193,
+      "sha256": "f76584afd890caa61000ee3225a3cb59f8e275a509d3f8bba5cdb9f1dd5add75"
+    },
+    {
+      "path": "src/main/webapp/owner/dashboard.jsp",
+      "bytes": 32818,
+      "lines": 630,
+      "sha256": "c577606a883a02867384915667263b53a80a5b24f5d9056f5839a3d4429b524e"
+    },
+    {
+      "path": "src/main/webapp/owner/reviews.jsp",
+      "bytes": 15280,
+      "lines": 270,
+      "sha256": "1e71079f7f4e5922008f3ee0262ab2730dd6de234db7d1eaa54fdd572d343993"
+    },
+    {
+      "path": "src/main/webapp/profile.jsp",
+      "bytes": 11662,
+      "lines": 357,
+      "sha256": "87f7ff3282c553260c02cd62f67215aa567ce092204bdadc21a97474de9e5aea"
+    },
+    {
+      "path": "src/main/webapp/register-process.jsp",
+      "bytes": 277,
+      "lines": 7,
+      "sha256": "c27d8f3ac6204851b215d9f9590fb37f4af34600257e46832f3a17e985c485e4"
+    },
+    {
+      "path": "src/main/webapp/register.jsp",
+      "bytes": 5374,
+      "lines": 178,
+      "sha256": "07861d93a6ba6c52cfcaeb64d33a17e9737c70f43ce84f0b95a79caf73b533cd"
+    },
+    {
+      "path": "src/test/java/com/sportify/controller/ReviewServletTest.java",
+      "bytes": 4306,
+      "lines": 98,
+      "sha256": "79857f80c987e147243943a5dbb64cb80dad6752f642251b8b5f3fe618044796"
+    },
+    {
+      "path": "src/test/java/com/sportify/data/CustomerDBIntegrationTest.java",
+      "bytes": 7774,
+      "lines": 157,
+      "sha256": "23c2a44c09ed06cf94e9e690819f50fe28376e8dcad2a6f709f184eee7bd3dae"
+    },
+    {
+      "path": "src/test/java/com/sportify/data/CustomerDBValidationTest.java",
+      "bytes": 691,
+      "lines": 23,
+      "sha256": "ea8bba711c142d1c2f9351b7fda8313d2433d2bff2d4245450672f0c7d3e9632"
+    },
+    {
+      "path": "src/test/java/com/sportify/data/ReviewDBIntegrationTest.java",
+      "bytes": 5431,
+      "lines": 125,
+      "sha256": "5bcda5278b5976535b80ea2412bf1b60c331ba753c662a3847a4b6e89b187dcc"
+    }
+  ],
+  "excluded_files": [
+    {
+      "path": "src/main/webapp/assets/images/logo.jpeg",
+      "bytes": 474648,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/basketball.jpg",
+      "bytes": 91189,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/basketballcourt1.jpg",
+      "bytes": 261050,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/gear.jpg",
+      "bytes": 145625,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/greenpickleballcourt.jfif",
+      "bytes": 39214,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/gym.jpg",
+      "bytes": 13156,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/gymfitzone.jfif",
+      "bytes": 12196,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/pickleball.jpg",
+      "bytes": 48781,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/pickleballloan.jfif",
+      "bytes": 23726,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/pt.jpg",
+      "bytes": 8785,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/pt1.png",
+      "bytes": 276689,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/swimming.jpg",
+      "bytes": 44048,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/swimmingpoolaqua.jfif",
+      "bytes": 30591,
+      "reason": "NUL byte or not UTF-8 text"
+    },
+    {
+      "path": "src/main/webapp/assets/images/services/swimset.jfif",
+      "bytes": 227967,
+      "reason": "NUL byte or not UTF-8 text"
+    }
+  ]
+}
