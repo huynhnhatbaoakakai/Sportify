@@ -27,7 +27,7 @@ public class OwnerAccessLogoutServlet extends HttpServlet {
         }
 
         response.sendRedirect(
-                request.getContextPath() + "/home.jsp"
+                request.getContextPath() + "/home"
         );
     }
 }

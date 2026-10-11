@@ -44,7 +44,7 @@
             <% if (currentUser != null) { %>
             <a href="<%= contextPath %>/newsfeed">Newsfeed</a>
             <a href="<%= contextPath %>/appointments">Lịch hẹn</a>
-            <a href="<%= contextPath %>/chat">Tin nhắn</a>
+            <a href="<%= contextPath %>/chat-friends">Tin nhắn</a>
             <% } %>
         </nav>
 

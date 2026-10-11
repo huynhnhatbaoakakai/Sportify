@@ -36,6 +36,10 @@ public class Booking implements Serializable {
     @Column(name = "customer_name", nullable = false, length = 100)
     private String customerName;
 
+    /** ID tài khoản khách đặt từ trang chủ (null với đơn cũ/đơn nhập tay). */
+    @Column(name = "customer_id")
+    private Integer customerId;
+
     @Column(name = "customer_phone", length = 20)
     private String customerPhone;
 
@@ -74,6 +78,8 @@ public class Booking implements Serializable {
     public void setField(SportField field) { this.field = field; }
     public String getCustomerName() { return customerName; }
     public void setCustomerName(String customerName) { this.customerName = customerName; }
+    public Integer getCustomerId() { return customerId; }
+    public void setCustomerId(Integer customerId) { this.customerId = customerId; }
     public String getCustomerPhone() { return customerPhone; }
     public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
     public LocalDateTime getStartsAt() { return startsAt; }

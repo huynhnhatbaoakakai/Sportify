@@ -62,6 +62,14 @@
     if (todayBookingRevenue == null) todayBookingRevenue = BigDecimal.ZERO;
     DateTimeFormatter bookingDateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     DateTimeFormatter bookingTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
+
+    com.sportify.model.User sessionUser = (com.sportify.model.User) session.getAttribute("user");
+    String ownerDisplayName = (sessionUser != null && sessionUser.getFullname() != null)
+            ? sessionUser.getFullname() : "Minh Nguyễn";
+    String ownerShortName = (sessionUser != null && sessionUser.getFullname() != null && !sessionUser.getFullname().trim().isEmpty())
+            ? sessionUser.getFullname().trim().substring(sessionUser.getFullname().trim().lastIndexOf(' ') + 1) : "Minh";
+    String ownerInitials = (ownerDisplayName.length() > 0)
+            ? ownerDisplayName.substring(0, 1).toUpperCase() : "MN";
     String bookingNotice = null;
     boolean bookingNoticeError = false;
     String bookingSuccess = request.getParameter("success");
@@ -113,7 +121,7 @@
 
     <aside class="sidebar" id="owner-sidebar" aria-label="Điều hướng dành cho chủ sân">
         <div class="sidebar-header">
-            <a class="sidebar-logo" href="<%= contextPath %>/home.jsp" aria-label="Sportify - Trang chủ">
+            <a class="sidebar-logo" href="<%= contextPath %>/home" aria-label="Sportify - Trang chủ">
                 <img src="<%= contextPath %>/assets/images/logo.jpeg" alt="Sportify">
             </a>
 
@@ -123,9 +131,9 @@
         </div>
 
         <div class="owner-summary">
-            <div class="owner-avatar" aria-hidden="true">MN</div>
+            <div class="owner-avatar" aria-hidden="true"><%= ownerInitials %></div>
             <div class="owner-summary-text">
-                <strong>Minh Nguyễn</strong>
+                <strong><%= ownerDisplayName %></strong>
                 <span>Chủ sân Sportify</span>
             </div>
         </div>
@@ -157,9 +165,13 @@
 
             <p class="nav-label nav-label-spaced">Tài khoản</p>
 
-            <a class="nav-item" href="<%= contextPath %>/home.jsp">
+            <a class="nav-item" href="<%= contextPath %>/home">
                 <span class="material-symbols-rounded" aria-hidden="true">home</span>
                 <span>Về trang chủ</span>
+            </a>
+            <a class="nav-item" href="<%= contextPath %>/home">
+                <span class="material-symbols-rounded" aria-hidden="true">person</span>
+                <span>Về trang khách hàng</span>
             </a>
             <a class="nav-item" href="#">
                 <span class="material-symbols-rounded" aria-hidden="true">help</span>
@@ -188,6 +200,11 @@
             </div>
 
             <div class="topbar-actions">
+                <a class="btn-customer-portal" href="<%= contextPath %>/home" title="Trở về trang khách hàng" style="display:inline-flex; align-items:center; gap:6px; padding:7px 12px; background:var(--surface,#fff); border:1px solid var(--border,#e2e8f0); border-radius:8px; text-decoration:none; color:var(--text,#1e293b); font-size:13px; font-weight:600;">
+                    <span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">arrow_back</span>
+                    <span>Trang khách hàng</span>
+                </a>
+
                 <div class="today" aria-label="Ngày hiện tại">
                     <span class="material-symbols-rounded" aria-hidden="true">calendar_today</span>
                     <span data-current-date>Hôm nay</span>
@@ -199,9 +216,9 @@
                 </button>
 
                 <div class="topbar-owner">
-                    <div class="owner-avatar owner-avatar-small" aria-hidden="true">MN</div>
+                    <div class="owner-avatar owner-avatar-small" aria-hidden="true"><%= ownerInitials %></div>
                     <div>
-                        <strong>Minh Nguyễn</strong>
+                        <strong><%= ownerDisplayName %></strong>
                         <span>Chủ sân</span>
                     </div>
                 </div>
@@ -212,7 +229,7 @@
             <section class="welcome-panel" aria-labelledby="welcome-title">
                 <div>
                     <span class="eyebrow">TỔNG QUAN HOẠT ĐỘNG</span>
-                    <h2 id="welcome-title">Chào Minh!</h2>
+                    <h2 id="welcome-title">Chào <%= ownerShortName %>!</h2>
                     <p>Bạn có <strong data-pending-message-count><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %> lịch đặt</strong> đang chờ xác nhận.</p>
                 </div>
                 <div class="demo-label">

@@ -35,10 +35,10 @@ public class Review implements Serializable {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "comment", nullable = false, columnDefinition = "text")
+    @Column(name = "comment", nullable = false, columnDefinition = "nvarchar(max)")
     private String comment;
 
-    @Column(name = "owner_reply", columnDefinition = "text")
+    @Column(name = "owner_reply", columnDefinition = "nvarchar(max)")
     private String ownerReply;
 
     @Column(name = "created_at", nullable = false, updatable = false)

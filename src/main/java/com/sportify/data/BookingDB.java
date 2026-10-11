@@ -154,6 +154,130 @@ public final class BookingDB {
         if (ownerId == null || ownerId <= 0) throw new IllegalArgumentException("Mã chủ sân không hợp lệ.");
     }
 
+    // ===================== Phía khách hàng =====================
+
+    /** Danh sách đơn đặt sân của một khách hàng (mới nhất trước). */
+    public static List<Booking> findByCustomerId(int customerId) {
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT booking FROM Booking booking JOIN FETCH booking.field field " +
+                    "WHERE booking.customerId = :customerId " +
+                    "ORDER BY booking.startsAt DESC, booking.bookingId DESC", Booking.class)
+                    .setParameter("customerId", customerId)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Khách tạo đơn đặt sân mới (trạng thái PENDING) — chủ sân sẽ xác nhận / từ chối
+     * trong kênh chủ sân.
+     */
+    public static CreateResult createCustomerBooking(
+            Long fieldId, int customerId, String customerName, String customerPhone,
+            LocalDateTime startsAt, LocalDateTime endsAt) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            SportField field = fieldId == null ? null : em.find(SportField.class, fieldId);
+            if (field == null) return rollback(transaction, CreateResult.FIELD_NOT_FOUND);
+            if (!"ACTIVE".equals(field.getStatus())) return rollback(transaction, CreateResult.FIELD_INACTIVE);
+
+            if (startsAt == null || endsAt == null
+                    || !endsAt.isAfter(startsAt)
+                    || !startsAt.toLocalDate().equals(endsAt.toLocalDate())
+                    || startsAt.toLocalTime().isBefore(field.getOpenTime())
+                    || endsAt.toLocalTime().isAfter(field.getCloseTime())) {
+                return rollback(transaction, CreateResult.INVALID_TIME);
+            }
+            if (!startsAt.isAfter(now)) return rollback(transaction, CreateResult.PAST_TIME);
+
+            long conflicts = em.createQuery(
+                    "SELECT COUNT(other) FROM Booking other " +
+                    "WHERE other.field.fieldId = :fieldId " +
+                    "AND other.status IN ('CONFIRMED', 'COMPLETED') " +
+                    "AND other.startsAt < :endsAt AND other.endsAt > :startsAt", Long.class)
+                    .setParameter("fieldId", field.getFieldId())
+                    .setParameter("startsAt", startsAt)
+                    .setParameter("endsAt", endsAt)
+                    .getSingleResult();
+            if (conflicts > 0) return rollback(transaction, CreateResult.CONFLICT);
+
+            long duplicates = em.createQuery(
+                    "SELECT COUNT(other) FROM Booking other " +
+                    "WHERE other.field.fieldId = :fieldId AND other.customerId = :customerId " +
+                    "AND other.status = 'PENDING' " +
+                    "AND other.startsAt < :endsAt AND other.endsAt > :startsAt", Long.class)
+                    .setParameter("fieldId", field.getFieldId())
+                    .setParameter("customerId", customerId)
+                    .setParameter("startsAt", startsAt)
+                    .setParameter("endsAt", endsAt)
+                    .getSingleResult();
+            if (duplicates > 0) return rollback(transaction, CreateResult.DUPLICATE);
+
+            long minutes = java.time.Duration.between(startsAt, endsAt).toMinutes();
+            BigDecimal total = field.getPricePerHour()
+                    .multiply(BigDecimal.valueOf(minutes))
+                    .divide(BigDecimal.valueOf(60), 2, java.math.RoundingMode.HALF_UP);
+
+            Booking booking = new Booking();
+            booking.setField(field);
+            booking.setCustomerId(customerId);
+            booking.setCustomerName(customerName);
+            booking.setCustomerPhone(customerPhone);
+            booking.setStartsAt(startsAt);
+            booking.setEndsAt(endsAt);
+            booking.setTotalPrice(total);
+            booking.setStatus("PENDING");
+            em.persist(booking);
+            transaction.commit();
+            return CreateResult.CREATED;
+        } catch (RuntimeException exception) {
+            if (transaction.isActive()) transaction.rollback();
+            throw exception;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** Khách hủy đơn của chính mình khi đơn còn ở trạng thái chờ xác nhận. */
+    public static boolean cancelByCustomer(Long bookingId, int customerId) {
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            Booking booking = em.find(Booking.class, bookingId, LockModeType.PESSIMISTIC_WRITE);
+            if (booking == null || booking.getCustomerId() == null
+                    || booking.getCustomerId() != customerId
+                    || !"PENDING".equals(booking.getStatus())) {
+                transaction.rollback();
+                return false;
+            }
+            booking.setStatus("CANCELLED");
+            booking.setUpdatedAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            transaction.commit();
+            return true;
+        } catch (RuntimeException exception) {
+            if (transaction.isActive()) transaction.rollback();
+            throw exception;
+        } finally {
+            em.close();
+        }
+    }
+
+    private static CreateResult rollback(EntityTransaction transaction, CreateResult result) {
+        transaction.rollback();
+        return result;
+    }
+
+    public enum CreateResult {
+        CREATED, FIELD_NOT_FOUND, FIELD_INACTIVE, INVALID_TIME, PAST_TIME, CONFLICT, DUPLICATE
+    }
+
     public enum StatusChangeResult {
         UPDATED, NOT_FOUND, NOT_PENDING, FIELD_INACTIVE, INVALID_TIME, CONFLICT
     }

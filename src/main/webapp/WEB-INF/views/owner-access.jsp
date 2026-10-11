@@ -39,7 +39,7 @@
 <main class="owner-access-page">
     <section class="owner-access-card" aria-labelledby="owner-access-title">
         <a class="owner-access-logo"
-           href="<%= contextPath %>/home.jsp"
+           href="<%= contextPath %>/home"
            aria-label="Sportify - Trang chủ">
             <img src="<%= contextPath %>/assets/images/logo.jpeg"
                  alt="Sportify">
@@ -71,7 +71,7 @@
             <button type="submit">Vào Dashboard</button>
         </form>
 
-        <a class="owner-access-back" href="<%= contextPath %>/home.jsp">
+        <a class="owner-access-back" href="<%= contextPath %>/home">
             Quay về trang chủ
         </a>
     </section>

@@ -23,31 +23,30 @@
         <class>com.sportify.model.Booking</class>
         <properties>
 
-            <!-- Kết nối SQL -->
+            <!-- Kết nối SQL Server -->
             <property
                 name="jakarta.persistence.jdbc.driver"
-                value="org.postgresql.Driver"/>
+                value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
 
             <property
                 name="jakarta.persistence.jdbc.url"
-                value="jdbc:postgresql://localhost:5432/sporttrent"/>
+                value="jdbc:sqlserver://localhost:1433;instanceName=SQLEXPRESS;databaseName=SportifyDB;encrypt=true;trustServerCertificate=true;"/>
 
             <property
                 name="jakarta.persistence.jdbc.user"
-                value="postgres"/>
+                value="sa"/>
 
             <property
                 name="jakarta.persistence.jdbc.password"
                 value="123"/>
 
-           
             <property
                 name="hibernate.dialect"
-                value="org.hibernate.dialect.PostgreSQLDialect"/>
+                value="org.hibernate.dialect.SQLServerDialect"/>
 
             <property
                 name="hibernate.hbm2ddl.auto"
-                value="validate"/>
+                value="update"/>
 
             <property
                 name="hibernate.show_sql"

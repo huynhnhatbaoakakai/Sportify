@@ -33,6 +33,32 @@ public final class SportFieldDB {
         }
     }
 
+    /** Tất cả sân/dịch vụ đang hoạt động — hiển thị cho khách đặt lịch ở trang chủ. */
+    public static List<SportField> findActive() {
+        EntityManager em =
+                DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT field FROM SportField field " +
+                    "WHERE field.status = 'ACTIVE' " +
+                    "ORDER BY field.fieldId", SportField.class)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    /** Lấy thông tin sân theo mã fieldId. */
+    public static SportField findById(Long fieldId) {
+        if (fieldId == null) return null;
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.find(SportField.class, fieldId);
+        } finally {
+            em.close();
+        }
+    }
+
     public static SportField findByIdAndOwnerId(
             Long fieldId,
             Long ownerId) {

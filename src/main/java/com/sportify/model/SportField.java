@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "sports_fields")
+@Table(name = "SportsFields")
 public class SportField implements Serializable {
 
     @Id
@@ -23,7 +23,7 @@ public class SportField implements Serializable {
     @Column(name = "field_id")
     private Long fieldId;
 
-    @Column(name = "owner_id", nullable = false)
+    @Column(name = "owner_id", nullable = false, columnDefinition = "int")
     private Long ownerId;
 
     @Column(name = "field_name", nullable = false, length = 150)

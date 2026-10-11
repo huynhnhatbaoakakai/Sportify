@@ -42,8 +42,7 @@ private static final String DEFAULT_RECEIVER = "Sân bóng Sunrise";
         request.setAttribute("receiver", receiver);
         request.setAttribute("messages", messages);
 
-        request.getRequestDispatcher("/chat.jsp")
-                .forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/chat-friends");
     }
 
     @Override

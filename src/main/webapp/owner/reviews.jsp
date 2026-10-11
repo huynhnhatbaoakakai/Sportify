@@ -53,6 +53,12 @@
                 break;
         }
     }
+
+    com.sportify.model.User sessionUser = (com.sportify.model.User) session.getAttribute("user");
+    String ownerDisplayName = (sessionUser != null && sessionUser.getFullname() != null)
+            ? sessionUser.getFullname() : "Minh Nguyễn";
+    String ownerInitials = (ownerDisplayName.length() > 0)
+            ? ownerDisplayName.substring(0, 1).toUpperCase() : "MN";
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -74,7 +80,7 @@
     <div class="sidebar-overlay" data-sidebar-overlay aria-hidden="true"></div>
     <aside class="sidebar" id="owner-sidebar" aria-label="Điều hướng dành cho chủ sân">
         <div class="sidebar-header">
-            <a class="sidebar-logo" href="<%= contextPath %>/home.jsp" aria-label="Sportify - Trang chủ">
+            <a class="sidebar-logo" href="<%= contextPath %>/home" aria-label="Sportify - Trang chủ">
                 <img src="<%= contextPath %>/assets/images/logo.jpeg" alt="Sportify">
             </a>
             <button class="sidebar-close" type="button" data-sidebar-close aria-label="Đóng menu">
@@ -82,9 +88,9 @@
             </button>
         </div>
         <div class="owner-summary">
-            <div class="owner-avatar" aria-hidden="true">MN</div>
+            <div class="owner-avatar" aria-hidden="true"><%= ownerInitials %></div>
             <div class="owner-summary-text">
-                <strong>Minh Nguyễn</strong>
+                <strong><%= ownerDisplayName %></strong>
                 <span>Chủ sân Sportify</span>
             </div>
         </div>
@@ -111,9 +117,13 @@
                 <span>Đánh giá</span>
             </a>
             <p class="nav-label nav-label-spaced">Tài khoản</p>
-            <a class="nav-item" href="<%= contextPath %>/home.jsp">
+            <a class="nav-item" href="<%= contextPath %>/home">
                 <span class="material-symbols-rounded" aria-hidden="true">home</span>
                 <span>Về trang chủ</span>
+            </a>
+            <a class="nav-item" href="<%= contextPath %>/home">
+                <span class="material-symbols-rounded" aria-hidden="true">person</span>
+                <span>Về trang khách hàng</span>
             </a>
             <a class="nav-item" href="#">
                 <span class="material-symbols-rounded" aria-hidden="true">help</span>
@@ -138,9 +148,15 @@
                     <h1>Quản lý đánh giá</h1>
                 </div>
             </div>
-            <div class="today" aria-label="Ngày hiện tại">
-                <span class="material-symbols-rounded" aria-hidden="true">calendar_today</span>
-                <span data-current-date>Hôm nay</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a class="btn-customer-portal" href="<%= contextPath %>/home" title="Trở về trang khách hàng" style="display:inline-flex; align-items:center; gap:6px; padding:7px 12px; background:var(--surface,#fff); border:1px solid var(--border,#e2e8f0); border-radius:8px; text-decoration:none; color:var(--text,#1e293b); font-size:13px; font-weight:600;">
+                    <span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">arrow_back</span>
+                    <span>Trang khách hàng</span>
+                </a>
+                <div class="today" aria-label="Ngày hiện tại">
+                    <span class="material-symbols-rounded" aria-hidden="true">calendar_today</span>
+                    <span data-current-date>Hôm nay</span>
+                </div>
             </div>
         </header>
 

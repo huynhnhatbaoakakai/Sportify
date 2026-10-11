@@ -6,7 +6,7 @@
         <% String activeMenu = "home"; %>
         <%@ include file="/WEB-INF/views/common/sidebar.jspf" %>
 
-    Giá trị activeMenu: home | newsfeed | chat | chat-friends | appointments | profile
+    Giá trị activeMenu: home | newsfeed | chat-friends | appointments | profile
 --%>
 <%!
     private static String menuClass(String activeMenu, String key) {
@@ -28,9 +28,6 @@
         </a>
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Giao tiếp</div>
-        <a href="<%= contextPath %>/chat" class="<%= menuClass(activeMenu, "chat") %>">
-            <span class="menu-icon">💬</span><span>Chat Dịch vụ</span>
-        </a>
         <a href="<%= contextPath %>/chat-friends" class="<%= menuClass(activeMenu, "chat-friends") %>">
             <span class="menu-icon">👥</span><span>Chat Bạn bè</span>
         </a>

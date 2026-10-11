@@ -25,6 +25,7 @@ import java.io.IOException;
         "/newsfeed", "/newsfeed-api",
         "/chat", "/chat-friends", "/chat-api",
         "/appointments", "/appointments/*",
+        "/field-booking", "/field-booking/*",
         "/profile",
         "/owner/*"
 })

@@ -11,7 +11,7 @@ public class TestChat {
         try {
             // Assume logged in user is ID=1 for test
             ChatService chatService = new ChatService();
-            System.out.println(new Gson().toJson(chatService.getFriendConversations(1)));
+            System.out.println(com.sportify.util.JsonResponse.getGson().toJson(chatService.getFriendConversations(1)));
         } catch (Exception e) {
             e.printStackTrace();
         }
