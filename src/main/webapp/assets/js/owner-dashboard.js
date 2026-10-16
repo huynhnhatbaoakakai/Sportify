@@ -133,6 +133,7 @@
         const closeTimeInput =
             fieldForm.querySelector('[name="closeTime"]');
         const statusInput = fieldForm.querySelector('[name="status"]');
+        const quantityInput = fieldForm.querySelector('[name="quantity"]');
         let returnFocus = null;
 
         function updateActiveFieldCount() {
@@ -155,9 +156,15 @@
                 openTimeInput.value = card.dataset.openTime;
                 closeTimeInput.value = card.dataset.closeTime;
                 statusInput.value = card.dataset.status === 'active' ? 'ACTIVE' : 'INACTIVE';
+                if (quantityInput) {
+                    quantityInput.value = card.dataset.quantity || '4';
+                }
             } else {
                 fieldForm.action = fieldForm.dataset.createAction;
                 fieldIdInput.value = '';
+                if (quantityInput) {
+                    quantityInput.value = '4';
+                }
             }
             fieldModal.hidden = false;
             body.classList.add('modal-open');

@@ -22,7 +22,8 @@ public class CreateFieldServlet extends HttpServlet {
             "GYM",
             "BASKETBALL",
             "SWIMMING",
-            "PICKLEBALL"
+            "PICKLEBALL",
+            "TABLE_TENNIS"
     );
 
     @Override
@@ -76,6 +77,15 @@ public class CreateFieldServlet extends HttpServlet {
                 status = "ACTIVE";
             }
 
+            int quantity = 4;
+            String quantityParam = request.getParameter("quantity");
+            if (quantityParam != null && !quantityParam.trim().isEmpty()) {
+                quantity = Integer.parseInt(quantityParam.trim());
+                if (quantity <= 0) {
+                    throw new IllegalArgumentException("Số lượng sân phải lớn hơn 0.");
+                }
+            }
+
             if (!VALID_SPORT_TYPES.contains(sportType)) {
                 throw new IllegalArgumentException(
                         "Môn thể thao không hợp lệ."
@@ -104,6 +114,7 @@ public class CreateFieldServlet extends HttpServlet {
             field.setOpenTime(openTime);
             field.setCloseTime(closeTime);
             field.setStatus(status);
+            field.setQuantity(quantity);
 
             SportFieldDB.insert(field);
 

@@ -58,6 +58,9 @@ public class SportField implements Serializable {
     @Column(name = "status", nullable = false, length = 20)
     private String status;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity = 4;
+
     @Column(
         name = "created_at",
         nullable = false,
@@ -93,6 +96,7 @@ public class SportField implements Serializable {
         this.closeTime = closeTime;
         this.imageUrl = imageUrl;
         this.status = status;
+        this.quantity = 4;
     }
 
     @PrePersist
@@ -109,11 +113,18 @@ public class SportField implements Serializable {
         if (status == null || status.trim().isEmpty()) {
             status = "ACTIVE";
         }
+
+        if (quantity == null || quantity <= 0) {
+            quantity = 4;
+        }
     }
 
     @PreUpdate
     public void beforeUpdate() {
         updatedAt = LocalDateTime.now();
+        if (quantity == null || quantity <= 0) {
+            quantity = 4;
+        }
     }
 
     public Long getFieldId() {
@@ -250,5 +261,13 @@ public class SportField implements Serializable {
         if (time != null && !time.isEmpty()) {
             this.closeTime = LocalTime.parse(time.length() > 5 ? time.substring(0, 5) : time);
         }
+    }
+
+    public int getQuantity() {
+        return quantity != null && quantity > 0 ? quantity : 4;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = (quantity != null && quantity > 0) ? quantity : 4;
     }
 }

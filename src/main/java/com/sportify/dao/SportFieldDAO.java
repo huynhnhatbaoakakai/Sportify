@@ -32,9 +32,9 @@ public class SportFieldDAO {
     }
 
     public void insert(SportField field) {
-        String sql = "INSERT INTO SportsFields (owner_id, field_name, sport_type, address, description, price_per_hour, open_time, close_time, status) "
+        String sql = "INSERT INTO SportsFields (owner_id, field_name, sport_type, address, description, price_per_hour, open_time, close_time, status, quantity) "
                 +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBContext.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -48,6 +48,7 @@ public class SportFieldDAO {
             ps.setString(7, field.getOpenTime() != null ? field.getOpenTime().toString() : null);
             ps.setString(8, field.getCloseTime() != null ? field.getCloseTime().toString() : null);
             ps.setString(9, field.getStatus() != null ? field.getStatus() : "ACTIVE");
+            ps.setInt(10, field.getQuantity());
 
             ps.executeUpdate();
         } catch (Exception e) {
@@ -56,7 +57,7 @@ public class SportFieldDAO {
     }
 
     public boolean update(SportField field, long ownerId) {
-        String sql = "UPDATE SportsFields SET field_name=?, sport_type=?, address=?, description=?, price_per_hour=?, open_time=?, close_time=?, updated_at=GETDATE() "
+        String sql = "UPDATE SportsFields SET field_name=?, sport_type=?, address=?, description=?, price_per_hour=?, open_time=?, close_time=?, quantity=?, updated_at=GETDATE() "
                 +
                 "WHERE field_id=? AND owner_id=?";
 
@@ -70,8 +71,9 @@ public class SportFieldDAO {
             ps.setBigDecimal(5, field.getPricePerHour());
             ps.setString(6, field.getOpenTime() != null ? field.getOpenTime().toString() : null);
             ps.setString(7, field.getCloseTime() != null ? field.getCloseTime().toString() : null);
-            ps.setLong(8, field.getFieldId());
-            ps.setLong(9, ownerId);
+            ps.setInt(8, field.getQuantity());
+            ps.setLong(9, field.getFieldId());
+            ps.setLong(10, ownerId);
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -119,6 +121,12 @@ public class SportFieldDAO {
 
         field.setImageUrl(rs.getString("image_url"));
         field.setStatus(rs.getString("status"));
+        try {
+            int qty = rs.getInt("quantity");
+            field.setQuantity(qty > 0 ? qty : 4);
+        } catch (SQLException ignored) {
+            field.setQuantity(4);
+        }
 
         java.sql.Timestamp created = rs.getTimestamp("created_at");
         if (created != null)

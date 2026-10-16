@@ -57,6 +57,11 @@ public class UpdateBookingStatusServlet extends HttpServlet {
 
     private static void redirect(HttpServletRequest request, HttpServletResponse response, String result)
             throws IOException {
-        response.sendRedirect(request.getContextPath() + "/owner/bookings?" + result + "#booking-section");
+        String from = request.getParameter("from");
+        if ("customers".equals(from)) {
+            response.sendRedirect(request.getContextPath() + "/owner/customers?" + result);
+        } else {
+            response.sendRedirect(request.getContextPath() + "/owner/bookings?" + result + "#booking-section");
+        }
     }
 }

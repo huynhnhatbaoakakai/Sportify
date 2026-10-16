@@ -50,13 +50,16 @@ public class ManageFieldsServlet extends HttpServlet {
                 List<Booking> bookings = BookingDB.findByOwnerId(DEMO_OWNER_ID);
                 BookingDB.Summary summary = BookingDB.getDashboardSummary(
                         DEMO_OWNER_ID, LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+                List<BookingDB.BookedSlotSummary> bookedSlots = BookingDB.groupBookedSlots(bookings);
                 request.setAttribute("bookings", bookings);
+                request.setAttribute("bookedSlots", bookedSlots);
                 request.setAttribute("todayBookingCount", summary.getTodayCount());
                 request.setAttribute("pendingBookingCount", summary.getPendingCount());
                 request.setAttribute("todayBookingRevenue", summary.getTodayRevenue());
             } catch (RuntimeException exception) {
                 getServletContext().log("Không thể tải các đơn đặt sân.", exception);
                 request.setAttribute("bookings", Collections.<Booking>emptyList());
+                request.setAttribute("bookedSlots", Collections.<BookingDB.BookedSlotSummary>emptyList());
                 request.setAttribute("bookingLoadFailed", Boolean.TRUE);
             }
 

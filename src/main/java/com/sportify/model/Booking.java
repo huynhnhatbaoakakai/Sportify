@@ -55,6 +55,9 @@ public class Booking implements Serializable {
     @Column(name = "status", nullable = false, length = 20)
     private String status = "PENDING";
 
+    @Column(name = "court_number", nullable = false)
+    private Integer courtNumber = 1;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -69,6 +72,7 @@ public class Booking implements Serializable {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         if (createdAt == null) createdAt = now;
         if (updatedAt == null) updatedAt = now;
+        if (courtNumber == null || courtNumber <= 0) courtNumber = 1;
     }
 
     public Long getBookingId() { return bookingId; }
@@ -90,6 +94,8 @@ public class Booking implements Serializable {
     public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public int getCourtNumber() { return courtNumber != null && courtNumber > 0 ? courtNumber : 1; }
+    public void setCourtNumber(Integer courtNumber) { this.courtNumber = (courtNumber != null && courtNumber > 0) ? courtNumber : 1; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

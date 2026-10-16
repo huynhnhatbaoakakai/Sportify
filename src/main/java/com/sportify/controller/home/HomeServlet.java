@@ -50,6 +50,17 @@ public class HomeServlet extends BaseServlet {
             req.setAttribute("customerBookings", Collections.emptyList());
         }
 
+        try {
+            List<Booking> allActiveBookings = BookingDB.findAllActiveBookings();
+            List<BookingDB.BookedSlotSummary> bookedSlots = BookingDB.groupBookedSlots(allActiveBookings);
+            req.setAttribute("allActiveBookings", allActiveBookings);
+            req.setAttribute("bookedSlots", bookedSlots);
+        } catch (Exception e) {
+            getServletContext().log("Không thể tải danh sách các khung giờ đã đặt.", e);
+            req.setAttribute("allActiveBookings", Collections.emptyList());
+            req.setAttribute("bookedSlots", Collections.emptyList());
+        }
+
         req.setAttribute("bookingMsg", req.getParameter("bookingMsg"));
         req.setAttribute("bookingOk", "1".equals(req.getParameter("bookingOk")));
 

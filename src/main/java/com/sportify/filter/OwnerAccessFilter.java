@@ -48,12 +48,17 @@ public class OwnerAccessFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        if (session != null
-                && Boolean.TRUE.equals(
-                session.getAttribute(SESSION_ATTRIBUTE))) {
+        if (session != null) {
+            com.sportify.model.User user = (com.sportify.model.User) session.getAttribute("user");
+            if (user != null && ("OWNER".equalsIgnoreCase(user.getRole()) || "ADMIN".equalsIgnoreCase(user.getRole()))) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            filterChain.doFilter(request, response);
-            return;
+            if (Boolean.TRUE.equals(session.getAttribute(SESSION_ATTRIBUTE))) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         response.sendRedirect(

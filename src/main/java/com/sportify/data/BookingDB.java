@@ -113,6 +113,7 @@ public final class BookingDB {
                         || booking.getEndsAt().toLocalTime().isAfter(field.getCloseTime())) {
                     return cancel(transaction, StatusChangeResult.INVALID_TIME);
                 }
+                int maxQuantity = field.getQuantity();
                 long conflicts = em.createQuery(
                         "SELECT COUNT(other) FROM Booking other " +
                         "WHERE other.field.fieldId = :fieldId AND other.bookingId <> :bookingId " +
@@ -123,7 +124,7 @@ public final class BookingDB {
                         .setParameter("startsAt", booking.getStartsAt())
                         .setParameter("endsAt", booking.getEndsAt())
                         .getSingleResult();
-                if (conflicts > 0) return cancel(transaction, StatusChangeResult.CONFLICT);
+                if (conflicts >= maxQuantity) return cancel(transaction, StatusChangeResult.CONFLICT);
             }
 
             booking.setStatus(status);
@@ -154,7 +155,7 @@ public final class BookingDB {
         if (ownerId == null || ownerId <= 0) throw new IllegalArgumentException("Mã chủ sân không hợp lệ.");
     }
 
-    // ===================== Phía khách hàng =====================
+    // ===================== Phía khách hàng & Truy xuất khung giờ đã đặt =====================
 
     /** Danh sách đơn đặt sân của một khách hàng (mới nhất trước). */
     public static List<Booking> findByCustomerId(int customerId) {
@@ -171,19 +172,111 @@ public final class BookingDB {
         }
     }
 
+    /** Lấy toàn bộ các đơn đặt đang giữ chỗ (PENDING, CONFIRMED, COMPLETED) của một sân. */
+    public static List<Booking> findActiveByFieldId(Long fieldId) {
+        if (fieldId == null || fieldId <= 0) return java.util.Collections.emptyList();
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT booking FROM Booking booking JOIN FETCH booking.field field " +
+                    "WHERE field.fieldId = :fieldId " +
+                    "AND booking.status IN ('PENDING', 'CONFIRMED', 'COMPLETED') " +
+                    "ORDER BY booking.startsAt ASC, booking.courtNumber ASC, booking.bookingId ASC", Booking.class)
+                    .setParameter("fieldId", fieldId)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    /** Lấy toàn bộ các đơn đặt đang giữ chỗ (PENDING, CONFIRMED, COMPLETED) của tất cả các sân đang hoạt động. */
+    public static List<Booking> findAllActiveBookings() {
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT booking FROM Booking booking JOIN FETCH booking.field field " +
+                    "WHERE field.status = 'ACTIVE' " +
+                    "AND booking.status IN ('PENDING', 'CONFIRMED', 'COMPLETED') " +
+                    "ORDER BY booking.startsAt DESC, field.fieldId ASC, booking.courtNumber ASC, booking.bookingId ASC", Booking.class)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     /**
-     * Khách tạo đơn đặt sân mới (trạng thái PENDING) — chủ sân sẽ xác nhận / từ chối
-     * trong kênh chủ sân.
+     * Gom nhóm các đơn đặt đang giữ chỗ thành danh sách các khung giờ đã có người đặt,
+     * tính toán số lượng đơn trùng trong từng khung giờ trên tổng số sản phẩm (sân) của danh mục đó.
+     */
+    public static List<BookedSlotSummary> groupBookedSlots(List<Booking> bookings) {
+        if (bookings == null || bookings.isEmpty()) return java.util.Collections.emptyList();
+
+        List<Booking> activeList = new java.util.ArrayList<>();
+        for (Booking b : bookings) {
+            if (b != null && b.getField() != null && b.getStartsAt() != null && b.getEndsAt() != null) {
+                String st = b.getStatus();
+                if ("PENDING".equals(st) || "CONFIRMED".equals(st) || "COMPLETED".equals(st)) {
+                    activeList.add(b);
+                }
+            }
+        }
+
+        // Sắp xếp theo thời gian mới nhất trước (theo ngày giảm dần, giờ tăng dần trong ngày)
+        activeList.sort((a, b) -> {
+            int dateCmp = b.getStartsAt().toLocalDate().compareTo(a.getStartsAt().toLocalDate());
+            if (dateCmp != 0) return dateCmp;
+            int timeCmp = a.getStartsAt().toLocalTime().compareTo(b.getStartsAt().toLocalTime());
+            if (timeCmp != 0) return timeCmp;
+            int fieldCmp = a.getField().getFieldId().compareTo(b.getField().getFieldId());
+            if (fieldCmp != 0) return fieldCmp;
+            return Integer.compare(a.getCourtNumber(), b.getCourtNumber());
+        });
+
+        java.util.Map<String, BookedSlotSummary> slotMap = new java.util.LinkedHashMap<>();
+        for (Booking b : activeList) {
+            String key = b.getField().getFieldId() + "_" + b.getStartsAt().toString() + "_" + b.getEndsAt().toString();
+            BookedSlotSummary summary = slotMap.get(key);
+            if (summary == null) {
+                // Tìm tất cả các đơn active của cùng fieldId có giao thoa (trùng khung giờ) với [b.startsAt, b.endsAt)
+                List<Booking> overlapping = new java.util.ArrayList<>();
+                for (Booking other : activeList) {
+                    if (other.getField().getFieldId().equals(b.getField().getFieldId())
+                            && other.getStartsAt().isBefore(b.getEndsAt())
+                            && other.getEndsAt().isAfter(b.getStartsAt())) {
+                        overlapping.add(other);
+                    }
+                }
+                overlapping.sort((x, y) -> {
+                    int c = Integer.compare(x.getCourtNumber(), y.getCourtNumber());
+                    return c != 0 ? c : Long.compare(
+                            x.getBookingId() != null ? x.getBookingId() : 0L,
+                            y.getBookingId() != null ? y.getBookingId() : 0L);
+                });
+                summary = new BookedSlotSummary(b.getField(), b.getStartsAt(), b.getEndsAt(), overlapping);
+                slotMap.put(key, summary);
+            }
+        }
+        return new java.util.ArrayList<>(slotMap.values());
+    }
+
+    /**
+     * Khách tạo đơn đặt sân mới (trạng thái PENDING) — hỗ trợ giới hạn số lượng sản phẩm/sân (quantity) ở mỗi khung giờ.
      */
     public static CreateResult createCustomerBooking(
             Long fieldId, int customerId, String customerName, String customerPhone,
             LocalDateTime startsAt, LocalDateTime endsAt) {
+        return createCustomerBooking(fieldId, customerId, customerName, customerPhone, startsAt, endsAt, null);
+    }
+
+    public static CreateResult createCustomerBooking(
+            Long fieldId, int customerId, String customerName, String customerPhone,
+            LocalDateTime startsAt, LocalDateTime endsAt, Integer requestedCourtNumber) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            SportField field = fieldId == null ? null : em.find(SportField.class, fieldId);
+            SportField field = fieldId == null ? null : em.find(SportField.class, fieldId, LockModeType.PESSIMISTIC_WRITE);
             if (field == null) return rollback(transaction, CreateResult.FIELD_NOT_FOUND);
             if (!"ACTIVE".equals(field.getStatus())) return rollback(transaction, CreateResult.FIELD_INACTIVE);
 
@@ -196,28 +289,74 @@ public final class BookingDB {
             }
             if (!startsAt.isAfter(now)) return rollback(transaction, CreateResult.PAST_TIME);
 
-            long conflicts = em.createQuery(
-                    "SELECT COUNT(other) FROM Booking other " +
+            int maxQuantity = field.getQuantity();
+            List<Booking> overlapping = em.createQuery(
+                    "SELECT other FROM Booking other " +
                     "WHERE other.field.fieldId = :fieldId " +
-                    "AND other.status IN ('CONFIRMED', 'COMPLETED') " +
-                    "AND other.startsAt < :endsAt AND other.endsAt > :startsAt", Long.class)
+                    "AND other.status IN ('PENDING', 'CONFIRMED', 'COMPLETED') " +
+                    "AND other.startsAt < :endsAt AND other.endsAt > :startsAt " +
+                    "ORDER BY other.courtNumber ASC, other.bookingId ASC", Booking.class)
                     .setParameter("fieldId", field.getFieldId())
                     .setParameter("startsAt", startsAt)
                     .setParameter("endsAt", endsAt)
-                    .getSingleResult();
-            if (conflicts > 0) return rollback(transaction, CreateResult.CONFLICT);
+                    .getResultList();
 
-            long duplicates = em.createQuery(
-                    "SELECT COUNT(other) FROM Booking other " +
-                    "WHERE other.field.fieldId = :fieldId AND other.customerId = :customerId " +
-                    "AND other.status = 'PENDING' " +
-                    "AND other.startsAt < :endsAt AND other.endsAt > :startsAt", Long.class)
-                    .setParameter("fieldId", field.getFieldId())
-                    .setParameter("customerId", customerId)
-                    .setParameter("startsAt", startsAt)
-                    .setParameter("endsAt", endsAt)
-                    .getSingleResult();
-            if (duplicates > 0) return rollback(transaction, CreateResult.DUPLICATE);
+            // Kiểm tra số đơn trùng trong khung giờ đã đạt giới hạn sản phẩm (ví dụ 4 sân) hay chưa
+            if (overlapping.size() >= maxQuantity) {
+                return rollback(transaction, CreateResult.CONFLICT);
+            }
+
+            // Kiểm tra chi tiết theo từng nấc 30 phút trong khoảng [startsAt, endsAt)
+            LocalDateTime cursor = startsAt;
+            while (cursor.isBefore(endsAt)) {
+                LocalDateTime nextStep = cursor.plusMinutes(30);
+                if (nextStep.isAfter(endsAt)) nextStep = endsAt;
+                int stepCount = 0;
+                for (Booking b : overlapping) {
+                    if (b.getStartsAt().isBefore(nextStep) && b.getEndsAt().isAfter(cursor)) {
+                        stepCount++;
+                    }
+                }
+                if (stepCount >= maxQuantity) {
+                    return rollback(transaction, CreateResult.CONFLICT);
+                }
+                cursor = nextStep;
+            }
+
+            // Xác định các sân số (1..maxQuantity) đã có người đặt trong khung giờ này
+            java.util.Set<Integer> usedCourts = new java.util.HashSet<>();
+            for (Booking b : overlapping) {
+                int c = b.getCourtNumber();
+                if (c >= 1 && c <= maxQuantity && !usedCourts.contains(c)) {
+                    usedCourts.add(c);
+                } else {
+                    for (int fallback = 1; fallback <= maxQuantity; fallback++) {
+                        if (!usedCourts.contains(fallback)) {
+                            usedCourts.add(fallback);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (usedCourts.size() >= maxQuantity) {
+                return rollback(transaction, CreateResult.CONFLICT);
+            }
+
+            int assignedCourt = 1;
+            if (requestedCourtNumber != null && requestedCourtNumber >= 1 && requestedCourtNumber <= maxQuantity) {
+                if (usedCourts.contains(requestedCourtNumber)) {
+                    return rollback(transaction, CreateResult.CONFLICT);
+                }
+                assignedCourt = requestedCourtNumber;
+            } else {
+                for (int c = 1; c <= maxQuantity; c++) {
+                    if (!usedCourts.contains(c)) {
+                        assignedCourt = c;
+                        break;
+                    }
+                }
+            }
 
             long minutes = java.time.Duration.between(startsAt, endsAt).toMinutes();
             BigDecimal total = field.getPricePerHour()
@@ -233,12 +372,27 @@ public final class BookingDB {
             booking.setEndsAt(endsAt);
             booking.setTotalPrice(total);
             booking.setStatus("PENDING");
+            booking.setCourtNumber(assignedCourt);
             em.persist(booking);
             transaction.commit();
             return CreateResult.CREATED;
         } catch (RuntimeException exception) {
             if (transaction.isActive()) transaction.rollback();
             throw exception;
+        } finally {
+            em.close();
+        }
+    }
+
+    public static Booking findById(Long bookingId) {
+        if (bookingId == null || bookingId <= 0) return null;
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            List<Booking> list = em.createQuery(
+                    "SELECT b FROM Booking b JOIN FETCH b.field f WHERE b.bookingId = :bookingId", Booking.class)
+                    .setParameter("bookingId", bookingId)
+                    .getResultList();
+            return list.isEmpty() ? null : list.get(0);
         } finally {
             em.close();
         }
@@ -296,5 +450,87 @@ public final class BookingDB {
         public long getTodayCount() { return todayCount; }
         public long getPendingCount() { return pendingCount; }
         public BigDecimal getTodayRevenue() { return todayRevenue; }
+    }
+
+    public static final class BookedSlotSummary {
+        private final SportField field;
+        private final LocalDateTime startsAt;
+        private final LocalDateTime endsAt;
+        private final int totalQuantity;
+        private final int bookedCount;
+        private final int confirmedCount;
+        private final int pendingCount;
+        private final List<Booking> bookings;
+        private final List<Integer> bookedCourtNumbers;
+        private final List<Integer> availableCourtNumbers;
+
+        public BookedSlotSummary(SportField field, LocalDateTime startsAt, LocalDateTime endsAt, List<Booking> bookings) {
+            this.field = field;
+            this.startsAt = startsAt;
+            this.endsAt = endsAt;
+            this.totalQuantity = field != null ? field.getQuantity() : 4;
+            this.bookings = bookings != null ? bookings : java.util.Collections.emptyList();
+            this.bookedCount = this.bookings.size();
+
+            int conf = 0;
+            int pend = 0;
+            java.util.Set<Integer> used = new java.util.LinkedHashSet<>();
+            for (Booking b : this.bookings) {
+                if ("CONFIRMED".equals(b.getStatus()) || "COMPLETED".equals(b.getStatus())) {
+                    conf++;
+                } else if ("PENDING".equals(b.getStatus())) {
+                    pend++;
+                }
+                int c = b.getCourtNumber();
+                if (c >= 1 && c <= this.totalQuantity && !used.contains(c)) {
+                    used.add(c);
+                } else {
+                    for (int fallback = 1; fallback <= this.totalQuantity; fallback++) {
+                        if (!used.contains(fallback)) {
+                            used.add(fallback);
+                            break;
+                        }
+                    }
+                }
+            }
+            this.confirmedCount = conf;
+            this.pendingCount = pend;
+            this.bookedCourtNumbers = new java.util.ArrayList<>(used);
+            this.availableCourtNumbers = new java.util.ArrayList<>();
+            for (int c = 1; c <= this.totalQuantity; c++) {
+                if (!used.contains(c)) {
+                    this.availableCourtNumbers.add(c);
+                }
+            }
+        }
+
+        public SportField getField() { return field; }
+        public Long getFieldId() { return field != null ? field.getFieldId() : null; }
+        public String getFieldName() { return field != null && field.getFieldName() != null ? field.getFieldName() : ""; }
+        public String getSportType() { return field != null && field.getSportType() != null ? field.getSportType() : ""; }
+        public LocalDateTime getStartsAt() { return startsAt; }
+        public LocalDateTime getEndsAt() { return endsAt; }
+        public String getDateStr() {
+            return startsAt != null ? startsAt.toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
+        }
+        public String getIsoDate() {
+            return startsAt != null ? startsAt.toLocalDate().toString() : "";
+        }
+        public String getStartTimeStr() {
+            return startsAt != null ? startsAt.toLocalTime().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")) : "";
+        }
+        public String getEndTimeStr() {
+            return endsAt != null ? endsAt.toLocalTime().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")) : "";
+        }
+        public int getTotalQuantity() { return totalQuantity; }
+        public int getFieldQuantity() { return totalQuantity; }
+        public int getBookedCount() { return bookedCount; }
+        public int getConfirmedCount() { return confirmedCount; }
+        public int getPendingCount() { return pendingCount; }
+        public int getRemainingCount() { return Math.max(0, totalQuantity - bookedCount); }
+        public boolean isFull() { return bookedCount >= totalQuantity; }
+        public List<Booking> getBookings() { return bookings; }
+        public List<Integer> getBookedCourtNumbers() { return bookedCourtNumbers; }
+        public List<Integer> getAvailableCourtNumbers() { return availableCourtNumbers; }
     }
 }

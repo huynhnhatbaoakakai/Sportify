@@ -127,7 +127,7 @@ BEGIN
         owner_id   INT NOT NULL DEFAULT 1 FOREIGN KEY REFERENCES Users(id), 
         field_name NVARCHAR(150) NOT NULL,
         sport_type NVARCHAR(30)  NOT NULL
-            CONSTRAINT chk_sport_type CHECK (sport_type IN ('GYM','BASKETBALL','SWIMMING','PICKLEBALL')),
+            CONSTRAINT chk_sport_type CHECK (sport_type IN ('GYM','BASKETBALL','SWIMMING','PICKLEBALL','TABLE_TENNIS')),
         address    NVARCHAR(255) NOT NULL,
         description NVARCHAR(MAX),
         price_per_hour DECIMAL(12,2) NOT NULL
@@ -137,18 +137,31 @@ BEGIN
         image_url  NVARCHAR(500),
         status     NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
             CONSTRAINT chk_status CHECK (status IN ('ACTIVE','INACTIVE')),
+        quantity   INT NOT NULL DEFAULT 4
+            CONSTRAINT chk_field_quantity CHECK (quantity > 0),
         created_at DATETIME DEFAULT GETDATE(),
         updated_at DATETIME DEFAULT GETDATE(),
         CONSTRAINT chk_time CHECK (close_time > open_time),
         CONSTRAINT uq_owner_name_address UNIQUE (owner_id, field_name, address)
     );
 
-    INSERT INTO SportsFields (owner_id, field_name, sport_type, address, description, price_per_hour, open_time, close_time, image_url)
+    INSERT INTO SportsFields (owner_id, field_name, sport_type, address, description, price_per_hour, open_time, close_time, image_url, quantity)
     VALUES
-      (1, N'Phòng Gym FitZone',     'GYM',        N'Quận 7, TP.HCM',      N'Phòng gym đầy đủ thiết bị hiện đại, không gian rộng rãi.', 80000,  '06:00', '22:00', 'assets/images/gymfitzone.jfif'),
-      (1, N'Sân bóng rổ Sunrise',   'BASKETBALL', N'Quận 3, TP.HCM',      N'Sân bóng rổ trong nhà đạt chuẩn thi đấu, sàn gỗ cao cấp.', 180000, '07:00', '22:00', 'assets/images/basketballcourt1.jpg'),
-      (1, N'Hồ bơi Aqua Center',    'SWIMMING',   N'Quận 1, TP.HCM',      N'Hồ bơi 4 mùa nước ấm, view trên cao, làn bơi chuẩn Olympic.', 120000, '06:00', '21:00', 'assets/images/swimmingpoolaqua.jfif'),
-      (1, N'Green Pickleball Court','PICKLEBALL', N'TP. Thủ Đức, TP.HCM', N'Cụm sân pickleball ngoài trời thoáng đãng, đèn chiếu sáng ban đêm.', 150000, '06:00', '22:00', 'assets/images/greenpickleballcourt.jfif');
+      (1, N'Phòng Gym FitZone',     'GYM',          N'Quận 7, TP.HCM',      N'Phòng gym đầy đủ thiết bị hiện đại, không gian rộng rãi.', 80000,  '06:00', '22:00', 'assets/images/gymfitzone.jfif', 4),
+      (1, N'Sân bóng rổ Sunrise',   'BASKETBALL',   N'Quận 3, TP.HCM',      N'Sân bóng rổ trong nhà đạt chuẩn thi đấu, sàn gỗ cao cấp.', 180000, '07:00', '22:00', 'assets/images/basketballcourt1.jpg', 4),
+      (1, N'Hồ bơi Aqua Center',    'SWIMMING',     N'Quận 1, TP.HCM',      N'Hồ bơi 4 mùa nước ấm, view trên cao, làn bơi chuẩn Olympic.', 120000, '06:00', '21:00', 'assets/images/swimmingpoolaqua.jfif', 4),
+      (1, N'Green Pickleball Court','PICKLEBALL',   N'TP. Thủ Đức, TP.HCM', N'Cụm sân pickleball ngoài trời thoáng đãng, đèn chiếu sáng ban đêm.', 150000, '06:00', '22:00', 'assets/images/greenpickleballcourt.jfif', 4),
+      (1, N'Cụm Sân Bóng Bàn Pro',  'TABLE_TENNIS', N'Quận 10, TP.HCM',     N'Hệ thống 4 sân bóng bàn tiêu chuẩn thi đấu, bàn chuẩn ITTF, sàn chống trượt và điều hòa mát mẻ.', 100000, '06:00', '22:00', 'assets/images/pickleball.jpg', 4);
+END
+ELSE
+BEGIN
+    IF COL_LENGTH('SportsFields', 'quantity') IS NULL
+        ALTER TABLE SportsFields ADD quantity INT NOT NULL CONSTRAINT df_sportsfields_quantity DEFAULT 4 CONSTRAINT chk_field_quantity CHECK (quantity > 0);
+    IF EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'chk_sport_type' AND parent_object_id = OBJECT_ID('SportsFields'))
+    BEGIN
+        ALTER TABLE SportsFields DROP CONSTRAINT chk_sport_type;
+        ALTER TABLE SportsFields ADD CONSTRAINT chk_sport_type CHECK (sport_type IN ('GYM','BASKETBALL','SWIMMING','PICKLEBALL','TABLE_TENNIS'));
+    END
 END
 GO
 
@@ -206,6 +219,7 @@ BEGIN
         ends_at DATETIME2 NOT NULL,
         total_price DECIMAL(12, 2) NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+        court_number INT NOT NULL DEFAULT 1,
         created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
         updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
         CONSTRAINT ck_bookings_customer_name CHECK (LEN(LTRIM(RTRIM(customer_name))) > 0),
@@ -224,10 +238,15 @@ BEGIN
 END
 GO
 
--- Liên kết đơn đặt sân với tài khoản khách hàng (khách đặt từ trang chủ)
+-- Liên kết đơn đặt sân với tài khoản khách hàng (khách đặt từ trang chủ) và số thứ tự sân (court_number)
 IF COL_LENGTH('bookings', 'customer_id') IS NULL
 BEGIN
     ALTER TABLE bookings ADD customer_id INT NULL;
+END
+GO
+IF COL_LENGTH('bookings', 'court_number') IS NULL
+BEGIN
+    ALTER TABLE bookings ADD court_number INT NOT NULL CONSTRAINT df_bookings_court_number DEFAULT 1;
 END
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_bookings_customer' AND object_id = OBJECT_ID('bookings'))

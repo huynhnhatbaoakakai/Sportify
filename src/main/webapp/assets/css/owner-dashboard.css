@@ -568,6 +568,29 @@ a {
     font-size: 12px;
 }
 
+.customer-history-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    margin-top: 4px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.15s ease;
+    align-self: flex-start;
+}
+
+.customer-history-chip:hover {
+    background: #15803d;
+    color: white;
+    border-color: #15803d;
+}
+
 .customer-avatar {
     width: 36px;
     height: 36px;
@@ -1118,3 +1141,97 @@ a:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
+
+/* FIELD PRODUCT QUANTITY & BOOKED SLOTS SUMMARY */
+.field-quantity-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+    margin: 12px 0 6px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: #166534;
+}
+
+.field-quantity-row strong {
+    font-weight: 800;
+    color: #15803d;
+}
+
+.field-booked-mini {
+    margin: 8px 0 14px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.field-booked-mini-title {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.field-slot-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.field-slot-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.field-slot-chip.chip-partial {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.field-slot-chip.chip-full {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.owner-slots-panel {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.owner-slot-order-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.owner-slot-order-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    border-radius: 7px;
+    background: #f4f7f5;
+    border: 1px solid var(--border);
+    font-size: 11.5px;
+    font-weight: 600;
+}
+

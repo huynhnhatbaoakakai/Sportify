@@ -22,7 +22,8 @@ public class UpdateFieldServlet extends HttpServlet {
             "GYM",
             "BASKETBALL",
             "SWIMMING",
-            "PICKLEBALL"
+            "PICKLEBALL",
+            "TABLE_TENNIS"
     );
 
     @Override
@@ -75,6 +76,15 @@ public class UpdateFieldServlet extends HttpServlet {
 
             String status = request.getParameter("status");
 
+            int quantity = field.getQuantity();
+            String quantityParam = request.getParameter("quantity");
+            if (quantityParam != null && !quantityParam.trim().isEmpty()) {
+                quantity = Integer.parseInt(quantityParam.trim());
+                if (quantity <= 0) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
             if (!VALID_TYPES.contains(sportType)) {
                 throw new IllegalArgumentException();
             }
@@ -98,6 +108,7 @@ public class UpdateFieldServlet extends HttpServlet {
             field.setOpenTime(openTime);
             field.setCloseTime(closeTime);
             field.setStatus(status);
+            field.setQuantity(quantity);
 
             SportFieldDB.update(field, DEMO_OWNER_ID);
 

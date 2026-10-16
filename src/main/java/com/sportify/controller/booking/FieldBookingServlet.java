@@ -53,7 +53,11 @@ public class FieldBookingServlet extends BaseServlet {
                         + URLEncoder.encode("Sân không tồn tại hoặc đang tạm ngưng.", StandardCharsets.UTF_8));
                 return;
             }
+            java.util.List<com.sportify.model.Booking> fieldActiveBookings = BookingDB.findActiveByFieldId(fieldId);
+            java.util.List<BookingDB.BookedSlotSummary> fieldBookedSlots = BookingDB.groupBookedSlots(fieldActiveBookings);
             req.setAttribute("field", field);
+            req.setAttribute("fieldActiveBookings", fieldActiveBookings);
+            req.setAttribute("fieldBookedSlots", fieldBookedSlots);
             render(req, resp, "user/booking");
         } catch (NumberFormatException e) {
             redirect(req, resp, "/home#fields");
@@ -89,6 +93,16 @@ public class FieldBookingServlet extends BaseServlet {
             return;
         }
 
+        Integer requestedCourt = null;
+        String courtParam = req.getParameter("courtNumber");
+        if (courtParam != null && !courtParam.trim().isEmpty()) {
+            try {
+                int parsed = Integer.parseInt(courtParam.trim());
+                if (parsed > 0) requestedCourt = parsed;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
         String phone = req.getParameter("phone");
         phone = phone == null ? null : phone.trim();
         if (phone != null && phone.isEmpty()) phone = null;
@@ -97,12 +111,25 @@ public class FieldBookingServlet extends BaseServlet {
             return;
         }
 
-        String name = user.getFullname() != null && !user.getFullname().trim().isEmpty()
-                ? user.getFullname().trim() : user.getEmail();
+        String inputName = req.getParameter("customerName");
+        String name;
+        if (inputName != null && !inputName.trim().isEmpty()) {
+            name = inputName.trim();
+        } else if (user.getFullname() != null && !user.getFullname().trim().isEmpty()) {
+            name = user.getFullname().trim();
+        } else {
+            name = user.getEmail();
+        }
 
         BookingDB.CreateResult result;
         try {
-            result = BookingDB.createCustomerBooking(fieldId, user.getId(), name, phone, startsAt, endsAt);
+            result = BookingDB.createCustomerBooking(fieldId, user.getId(), name, phone, startsAt, endsAt, requestedCourt);
+            if (result == BookingDB.CreateResult.CREATED && phone != null) {
+                new com.sportify.dao.UserDAO().updatePhoneIfEmpty(user.getId(), phone);
+                if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+                    user.setPhone(phone);
+                }
+            }
         } catch (RuntimeException e) {
             getServletContext().log("Không thể tạo đơn đặt sân", e);
             back(req, resp, false, "Có lỗi khi lưu đơn đặt sân. Vui lòng thử lại.");
@@ -111,7 +138,7 @@ public class FieldBookingServlet extends BaseServlet {
 
         switch (result) {
             case CREATED:
-                back(req, resp, true, "Đã gửi yêu cầu đặt lịch! Vui lòng chờ chủ sân xác nhận.");
+                back(req, resp, true, "Đã gửi yêu cầu đặt lịch thành công! Vui lòng chờ chủ sân xác nhận.");
                 break;
             case FIELD_NOT_FOUND:
                 back(req, resp, false, "Không tìm thấy sân/dịch vụ.");
@@ -123,7 +150,7 @@ public class FieldBookingServlet extends BaseServlet {
                 back(req, resp, false, "Không thể đặt lịch trong quá khứ.");
                 break;
             case CONFLICT:
-                back(req, resp, false, "Khung giờ này đã có người đặt. Vui lòng chọn giờ khác.");
+                back(req, resp, false, "Khung giờ này đã nhận đủ số đơn đặt thuê tối đa (hết sân) hoặc sản phẩm đã có người đặt. Vui lòng chọn giờ khác.");
                 break;
             case DUPLICATE:
                 back(req, resp, false, "Bạn đã gửi yêu cầu cho khung giờ này rồi, đang chờ xác nhận.");

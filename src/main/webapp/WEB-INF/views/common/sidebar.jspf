@@ -29,7 +29,7 @@
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Giao tiếp</div>
         <a href="<%= contextPath %>/chat-friends" class="<%= menuClass(activeMenu, "chat-friends") %>">
-            <span class="menu-icon">👥</span><span>Chat Bạn bè</span>
+            <span class="menu-icon">💬</span><span>Tin nhắn & Chủ sân</span>
         </a>
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Cá nhân</div>

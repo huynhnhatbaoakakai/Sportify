@@ -162,6 +162,9 @@ public final class SportFieldDB {
             currentField.setStatus(
                     updatedField.getStatus());
 
+            currentField.setQuantity(
+                    updatedField.getQuantity());
+
             transaction.commit();
             return true;
         } catch (RuntimeException exception) {

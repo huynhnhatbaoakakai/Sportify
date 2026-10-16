@@ -1,0 +1,714 @@
+/* ==========================================================================
+   SPORTIFY - ORDER SERVICE CHAT STYLING (HỘP THOẠI CHAT PHỤC VỤ ĐƠN HÀNG)
+   Thiết kế cao cấp, ghim thông tin đơn hàng trên đầu, tin nhắn thời gian thực
+   ========================================================================== */
+
+.order-chat-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.order-chat-backdrop.is-open {
+    display: flex;
+    opacity: 1;
+}
+
+.order-chat-dialog {
+    background: #ffffff;
+    width: 100%;
+    max-width: 620px;
+    height: 680px;
+    max-height: 92vh;
+    border-radius: 24px;
+    box-shadow: 0 25px 60px -10px rgba(15, 23, 42, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: orderChatSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes orderChatSlideIn {
+    from {
+        transform: translateY(24px) scale(0.97);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   1. HEADER
+   -------------------------------------------------------------------------- */
+.order-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.chat-header-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-avatar-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+    flex-shrink: 0;
+}
+
+.chat-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.chat-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-name-row h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+}
+
+.chat-role-tag {
+    padding: 2px 7px;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.chat-online-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    color: #64748b;
+}
+
+.chat-dot-online {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 2px #dcfce7;
+}
+
+.chat-modal-close-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: none;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.chat-modal-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    transform: rotate(90deg);
+}
+
+.chat-modal-close-btn .material-symbols-rounded {
+    font-size: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   2. PINNED ORDER CONTEXT CARD (GHIM THÔNG TIN ĐƠN HÀNG)
+   -------------------------------------------------------------------------- */
+.order-context-pinned-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border-bottom: 1px solid #bbf7d0;
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.context-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.context-headline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.context-order-code {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 2px 7px;
+    background: #ffffff;
+    border: 1px solid #a7f3d0;
+    border-radius: 6px;
+    color: #065f46;
+}
+
+.context-venue-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.context-sport-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 1px 6px;
+    background: #dcfce7;
+    color: #166534;
+    border-radius: 4px;
+}
+
+.context-status-pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: #ffffff;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.context-card-bottom {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: #475569;
+    flex-wrap: wrap;
+}
+
+.context-meta-col {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.context-meta-col .material-symbols-rounded {
+    font-size: 15px;
+    color: #10b981;
+}
+
+.context-meta-col strong {
+    color: #065f46;
+    font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   3. MESSAGE STREAM AREA
+   -------------------------------------------------------------------------- */
+.order-chat-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #f8fafc;
+}
+
+.chat-loading-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.order-chat-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: chatSpin 0.7s linear infinite;
+}
+
+@keyframes chatSpin {
+    to { transform: rotate(360deg); }
+}
+
+.chat-empty-hint {
+    margin: auto;
+    text-align: center;
+    padding: 24px;
+    color: #64748b;
+    font-size: 13px;
+    background: white;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    max-width: 380px;
+}
+
+.chat-empty-hint .material-symbols-rounded {
+    font-size: 32px;
+    color: #10b981;
+    display: block;
+    margin: 0 auto 8px auto;
+}
+
+/* Tin nhắn */
+.chat-msg-row {
+    display: flex;
+    flex-direction: column;
+    max-width: 78%;
+}
+
+.chat-msg-row.sent-by-me {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.chat-msg-row.sent-by-them {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.chat-msg-bubble {
+    padding: 11px 16px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.chat-msg-row.sent-by-me .chat-msg-bubble {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.2);
+}
+
+.chat-msg-row.sent-by-them .chat-msg-bubble {
+    background: #ffffff;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px 18px 18px 4px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.chat-msg-time {
+    font-size: 10.5px;
+    color: #94a3b8;
+    margin-top: 3px;
+    padding: 0 4px;
+}
+
+/* --------------------------------------------------------------------------
+   4. QUICK TEMPLATE CHIPS
+   -------------------------------------------------------------------------- */
+.order-chat-quick-chips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: #ffffff;
+    border-top: 1px solid #f1f5f9;
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.quick-chip-item {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 5px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.quick-chip-item:hover {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+
+/* --------------------------------------------------------------------------
+   5. INPUT BAR
+   -------------------------------------------------------------------------- */
+.order-chat-input-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.order-chat-text-input {
+    flex: 1;
+    height: 44px;
+    padding: 8px 16px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: #0f172a;
+    transition: all 0.2s ease;
+}
+
+.order-chat-text-input:focus {
+    background: #ffffff;
+    border-color: #10b981;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.order-chat-send-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 18px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    flex-shrink: 0;
+}
+
+.order-chat-send-action:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+}
+
+.order-chat-send-action .material-symbols-rounded {
+    font-size: 18px;
+}
+
+.order-chat-send-action:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .order-chat-dialog {
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+    
+    .order-chat-backdrop {
+        padding: 0;
+    }
+    
+    .context-card-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   7. TRIGGER BUTTONS (NÚT BẤM MỞ CHAT TRÊN CÁC TRANG)
+   -------------------------------------------------------------------------- */
+.btn-chat-order-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-chat-order-sm:hover {
+    background: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
+    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-chat-order-sm .material-symbols-rounded {
+    font-size: 14px;
+}
+
+/* Biến thể cho Owner Dashboard */
+.action-button.chat-order-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-button.chat-order-btn:hover {
+    background: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
+}
+
+/* --------------------------------------------------------------------------
+   8. THÔNG BÁO TIN NHẮN TỪ CHỦ SÂN Ở ĐẦU TRANG HOME (LIVE ALERT BANNER)
+   -------------------------------------------------------------------------- */
+.order-chat-live-alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+    border: 1.5px solid #6ee7b7;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+    animation: alertSlideDown 0.35s ease-out;
+}
+
+@keyframes alertSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.live-alert-icon {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+
+.live-alert-icon .material-symbols-rounded {
+    font-size: 22px;
+}
+
+.pulse-indicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #ef4444;
+    border: 2px solid white;
+    border-radius: 50%;
+    animation: pulseRing 1.6s infinite;
+}
+
+@keyframes pulseRing {
+    0% { transform: scale(0.9); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.8; }
+    100% { transform: scale(0.9); opacity: 1; }
+}
+
+.live-alert-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.live-alert-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.live-alert-title strong {
+    font-size: 14px;
+    color: #065f46;
+    font-weight: 800;
+}
+
+.live-alert-partner {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    background: #d1fae5;
+    color: #047857;
+    border-radius: 6px;
+}
+
+.live-alert-snippet {
+    margin: 0;
+    font-size: 13.5px;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.btn-live-alert-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-live-alert-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+    background: #059669;
+}
+
+.btn-live-alert-action .material-symbols-rounded {
+    font-size: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   9. NÚT CHAT NỔI Ở GÓC DƯỚI MÀN HÌNH (FLOATING ORDER CHAT TRIGGER)
+   -------------------------------------------------------------------------- */
+.order-chat-floating-btn {
+    position: fixed !important;
+    bottom: 28px !important;
+    right: 28px !important;
+    top: auto !important;
+    left: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 9998;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.order-chat-floating-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45);
+    background: #059669;
+}
+
+.order-chat-floating-btn .material-symbols-rounded {
+    font-size: 20px;
+}
+
+.floating-unread-dot {
+    width: 10px;
+    height: 10px;
+    background: #ef4444;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    animation: pulseRing 1.6s infinite;
+}
+
+/* --------------------------------------------------------------------------
+   10. HUY HIỆU VAI TRÒ CHỦ SÂN (DÙNG TRONG /chat-friends)
+   -------------------------------------------------------------------------- */
+.badge-role-owner {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+

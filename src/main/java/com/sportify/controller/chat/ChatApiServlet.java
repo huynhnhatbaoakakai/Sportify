@@ -34,6 +34,11 @@ public class ChatApiServlet extends BaseServlet {
                 JsonResponse.ok(resp, chatService.getServiceConversations(user.getId()));
             } else if ("getFriends".equals(action)) {
                 JsonResponse.ok(resp, chatService.getFriendConversations(user.getId()));
+            } else if ("getOrderChat".equals(action)) {
+                long bookingId = Long.parseLong(req.getParameter("bookingId"));
+                Integer partnerId = req.getParameter("partnerId") != null && !req.getParameter("partnerId").isEmpty()
+                        ? Integer.parseInt(req.getParameter("partnerId")) : null;
+                JsonResponse.ok(resp, chatService.getOrderChatData(user.getId(), bookingId, partnerId));
             } else {
                 JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Unknown action");
             }
@@ -57,6 +62,10 @@ public class ChatApiServlet extends BaseServlet {
             } else if ("sendFriendMessage".equals(action)) {
                 int receiverId = Integer.parseInt(req.getParameter("receiverId"));
                 chatService.sendFriendMessage(user.getId(), receiverId, text, time);
+                JsonResponse.success(resp);
+            } else if ("sendOrderMessage".equals(action)) {
+                int receiverId = Integer.parseInt(req.getParameter("receiverId"));
+                chatService.sendOrderMessage(user.getId(), receiverId, text, time);
                 JsonResponse.success(resp);
             } else {
                 JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Unknown action");

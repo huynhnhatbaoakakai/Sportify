@@ -164,6 +164,30 @@ public class ChatDAO {
         return messages;
     }
 
+    public Integer findLatestOwnerChatPartner(int customerId) {
+        String sql = "SELECT TOP 1 CASE WHEN fm.sender_id = ? THEN fm.receiver_id ELSE fm.sender_id END AS partner_id " +
+                     "FROM FriendMessages fm " +
+                     "JOIN Users u ON u.id = (CASE WHEN fm.sender_id = ? THEN fm.receiver_id ELSE fm.sender_id END) " +
+                     "WHERE (fm.sender_id = ? OR fm.receiver_id = ?) " +
+                     "  AND (u.role = 'OWNER' OR u.role = 'ADMIN' OR u.id = 1) " +
+                     "ORDER BY fm.id DESC";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ps.setInt(2, customerId);
+            ps.setInt(3, customerId);
+            ps.setInt(4, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("partner_id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void saveFriendMessage(int senderId, int receiverId, String text, String time) {
         try (Connection conn = DBContext.getConnection()) {
             // Check count
@@ -181,9 +205,9 @@ public class ChatDAO {
                 }
             }
 
-            // Max 10 messages: delete oldest if count >= 10
-            if (count >= 10) {
-                int limit = count - 9;
+            // Giữ tối đa 500 tin nhắn gần nhất
+            if (count >= 500) {
+                int limit = count - 499;
                 String deleteSql = "DELETE FROM FriendMessages WHERE id IN (SELECT TOP (?) id FROM FriendMessages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY id ASC)";
                 try (PreparedStatement psDel = conn.prepareStatement(deleteSql)) {
                     psDel.setInt(1, limit);

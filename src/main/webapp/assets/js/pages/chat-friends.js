@@ -53,6 +53,8 @@ function renderList() {
         const preview = last ? (last.sender == ME_ID ? 'Bạn: ' : '') + last.text : 'Chưa có tin nhắn';
         const time = last ? last.time : '';
         const initial = f.partnerIcon || (f.partnerName ? f.partnerName[0].toUpperCase() : '?');
+        const roleBadge = f.roleName === 'Chủ sân'
+            ? '<span class="badge-role-owner" style="font-size:10px;padding:1px 5px;background:#dcfce7;color:#15803d;border-radius:4px;margin-left:4px;font-weight:700;">🏟️ Chủ sân</span>' : '';
 
         const div = document.createElement('div');
         div.className = 'chat-item' + (f.id == currentFriendId ? ' active' : '');
@@ -61,7 +63,7 @@ function renderList() {
             <div class="avatar avatar-online">${initial}</div>
             <div class="chat-item-content">
                 <div class="chat-item-header">
-                    <span class="chat-item-name">${escHtml(f.partnerName)}</span>
+                    <span class="chat-item-name">${escHtml(f.partnerName)}${roleBadge}</span>
                     <span class="chat-item-time">${escHtml(time)}</span>
                 </div>
                 <div class="chat-item-preview">${escHtml(preview)}</div>
@@ -109,8 +111,10 @@ function updateHeader() {
         document.getElementById('sendBtn').disabled = true;
     } else {
         const initial = f.partnerIcon || f.partnerName[0].toUpperCase();
+        const headerRole = f.roleName === 'Chủ sân'
+            ? '<span class="badge-role-owner" style="font-size:11.5px;padding:2px 8px;background:#dcfce7;color:#15803d;border-radius:6px;margin-left:8px;font-weight:700;">🏟️ Chủ sân • Phục vụ đơn hàng</span>' : '';
         document.getElementById('currentAvatar').textContent = initial;
-        document.getElementById('currentName').textContent = f.partnerName;
+        document.getElementById('currentName').innerHTML = escHtml(f.partnerName) + headerRole;
         document.getElementById('currentStatus').textContent = '🟢 Đang hoạt động';
         document.getElementById('messageInput').disabled = false;
         document.getElementById('sendBtn').disabled = false;

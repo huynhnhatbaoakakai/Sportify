@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!-- ========================================================================== -->
+<!-- MODAL HỘP THOẠI CHAT PHỤC VỤ ĐƠN HÀNG (ORDER SERVICE CHAT MODAL)           -->
+<!-- Dùng chung cho cả Khách hàng và Chủ sân, lưu vào database FriendMessages     -->
+<!-- ========================================================================== -->
+<div id="orderChatModal" class="order-chat-backdrop" aria-hidden="true" role="dialog" aria-labelledby="orderChatPartnerName">
+    <div class="order-chat-dialog" id="orderChatDialog">
+        
+        <!-- HEADER HỘP THOẠI -->
+        <header class="order-chat-header">
+            <div class="chat-header-user-info">
+                <div class="chat-avatar-badge" id="orderChatPartnerAvatar">CS</div>
+                <div class="chat-title-group">
+                    <div class="chat-name-row">
+                        <h4 id="orderChatPartnerName">Người nhận tin nhắn</h4>
+                        <span class="chat-role-tag" id="orderChatPartnerRole">Chủ sân</span>
+                    </div>
+                    <span class="chat-online-hint">
+                        <span class="chat-dot-online"></span>
+                        <span id="orderChatStatusText">Hỗ trợ & phục vụ trực tiếp cho đơn hàng</span>
+                    </span>
+                </div>
+            </div>
+            <button type="button" class="chat-modal-close-btn" onclick="closeOrderChatModal()" aria-label="Đóng hộp chat">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+        </header>
+
+        <!-- THẺ THÔNG TIN ĐƠN HÀNG ĐƯỢC GHIM TRÊN ĐẦU (PINNED ORDER CARD) -->
+        <div class="order-context-pinned-card" id="orderContextBox">
+            <div class="context-card-top">
+                <div class="context-headline">
+                    <span class="context-order-code" id="orderContextCode">#SP000000</span>
+                    <strong class="context-venue-name" id="orderContextVenue">Sân thể thao</strong>
+                    <span class="context-sport-tag" id="orderContextSport">SPORT</span>
+                </div>
+                <span class="context-status-pill" id="orderContextStatus">Trạng thái</span>
+            </div>
+            <div class="context-card-bottom">
+                <div class="context-meta-col">
+                    <span class="material-symbols-rounded">schedule</span>
+                    <span id="orderContextTime">00:00 - 00:00, 01/01/2026</span>
+                </div>
+                <div class="context-meta-col">
+                    <span class="material-symbols-rounded">payments</span>
+                    <strong id="orderContextPrice">0 đ</strong>
+                </div>
+                <div class="context-meta-col" id="orderContextContactCol">
+                    <span class="material-symbols-rounded">person</span>
+                    <span id="orderContextContact">Khách hàng</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KHU VỰC HIỂN THỊ DÒNG TIN NHẮN (MESSAGE STREAM) -->
+        <div class="order-chat-stream" id="orderChatMessagesArea">
+            <div class="chat-loading-placeholder">
+                <div class="order-chat-spinner"></div>
+                <span>Đang tải đoạn hội thoại...</span>
+            </div>
+        </div>
+
+        <!-- GỢI Ý TIN NHẮN NHANH (QUICK SUGGESTION CHIPS) -->
+        <div class="order-chat-quick-chips" id="orderChatQuickChips">
+            <!-- Nạp động qua JS tuỳ theo Owner hay Customer -->
+        </div>
+
+        <!-- THANH NHẬP VÀ GỬI TIN NHẮN -->
+        <footer class="order-chat-input-bar">
+            <input type="text" id="orderChatMessageInput" class="order-chat-text-input"
+                   placeholder="Nhập tin nhắn trao đổi về đơn hàng... (Enter để gửi)"
+                   autocomplete="off" maxlength="1000">
+            <button type="button" id="orderChatSendBtn" class="order-chat-send-action" onclick="sendOrderChatMessage()" title="Gửi tin nhắn">
+                <span class="material-symbols-rounded">send</span>
+                <span>Gửi</span>
+            </button>
+        </footer>
+    </div>
+</div>
+
