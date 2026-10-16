@@ -1,4 +1,4 @@
-﻿-- ====================================================================
+-- ====================================================================
 -- SPORTIFY DATABASE BACKUP SCRIPT
 -- Database: SportifyDB (Microsoft SQL Server)
 -- Backup Date: 2026-10-12 02:34:29
@@ -47,7 +47,7 @@ BEGIN
         owner_id   INT NOT NULL DEFAULT 1 FOREIGN KEY REFERENCES Users(id), 
         field_name NVARCHAR(150) NOT NULL,
         sport_type NVARCHAR(30)  NOT NULL
-            CONSTRAINT chk_sport_type CHECK (sport_type IN ('GYM','BASKETBALL','SWIMMING','PICKLEBALL')),
+            CONSTRAINT chk_sport_type CHECK (sport_type IN ('GYM','BASKETBALL','SWIMMING','PICKLEBALL','TABLE_TENNIS')),
         address    NVARCHAR(255) NOT NULL,
         description NVARCHAR(500),
         price_per_hour DECIMAL(12,2) NOT NULL
@@ -57,6 +57,8 @@ BEGIN
         image_url  NVARCHAR(500),
         status     NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
             CONSTRAINT chk_status CHECK (status IN ('ACTIVE','INACTIVE')),
+        quantity   INT NOT NULL DEFAULT 4
+            CONSTRAINT chk_field_quantity CHECK (quantity > 0),
         created_at DATETIME DEFAULT GETDATE(),
         updated_at DATETIME DEFAULT GETDATE(),
         CONSTRAINT chk_time CHECK (close_time > open_time),
@@ -188,6 +190,7 @@ BEGIN
         ends_at DATETIME2 NOT NULL,
         total_price DECIMAL(12, 2) NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+        court_number INT NOT NULL DEFAULT 1,
         created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
         updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
         CONSTRAINT ck_bookings_customer_name CHECK (LEN(LTRIM(RTRIM(customer_name))) > 0),
@@ -254,13 +257,14 @@ INSERT INTO [Users] ([id], [fullname], [email], [password], [avatar], [phone], [
 SET IDENTITY_INSERT [Users] OFF;
 GO
 
--- Dữ liệu bảng: SportsFields (4 dòng)
+-- Dữ liệu bảng: SportsFields (5 dòng, mỗi danh mục có 4 sản phẩm sân)
 DELETE FROM [SportsFields];
 SET IDENTITY_INSERT [SportsFields] ON;
-INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at]) VALUES (1, 1, N'Phòng Gym FitZone', N'GYM', N'Quận 7, TP.HCM', N'Phòng gym đầy đủ thiết bị hiện đại, không gian rộng rãi.', 80000.00, '06:00:00', '22:00:00', N'assets/images/gymfitzone.jfif', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177');
-INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at]) VALUES (2, 1, N'Sân bóng rổ Sunrise', N'BASKETBALL', N'Quận 3, TP.HCM', N'Sân bóng rổ trong nhà đạt chuẩn thi đấu, sàn gỗ cao cấp.', 180000.00, '07:00:00', '22:00:00', N'assets/images/basketballcourt1.jpg', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177');
-INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at]) VALUES (3, 1, N'Hồ bơi Aqua Center', N'SWIMMING', N'Quận 1, TP.HCM', N'Hồ bơi 4 mùa nước ấm, view trên cao, làn bơi chuẩn Olympic.', 120000.00, '06:00:00', '21:00:00', N'assets/images/swimmingpoolaqua.jfif', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177');
-INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at]) VALUES (4, 1, N'Green Pickleball Court', N'PICKLEBALL', N'TP. Thủ Đức, TP.HCM', N'Cụm sân pickleball ngoài trời thoáng đãng, đèn chiếu sáng ban đêm.', 150000.00, '06:00:00', '22:00:00', N'assets/images/greenpickleballcourt.jfif', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177');
+INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at], [quantity]) VALUES (1, 1, N'Phòng Gym FitZone', N'GYM', N'Quận 7, TP.HCM', N'Phòng gym đầy đủ thiết bị hiện đại, không gian rộng rãi.', 80000.00, '06:00:00', '22:00:00', N'assets/images/gymfitzone.jfif', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177', 4);
+INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at], [quantity]) VALUES (2, 1, N'Sân bóng rổ Sunrise', N'BASKETBALL', N'Quận 3, TP.HCM', N'Sân bóng rổ trong nhà đạt chuẩn thi đấu, sàn gỗ cao cấp.', 180000.00, '07:00:00', '22:00:00', N'assets/images/basketballcourt1.jpg', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177', 4);
+INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at], [quantity]) VALUES (3, 1, N'Hồ bơi Aqua Center', N'SWIMMING', N'Quận 1, TP.HCM', N'Hồ bơi 4 mùa nước ấm, view trên cao, làn bơi chuẩn Olympic.', 120000.00, '06:00:00', '21:00:00', N'assets/images/swimmingpoolaqua.jfif', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177', 4);
+INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at], [quantity]) VALUES (4, 1, N'Green Pickleball Court', N'PICKLEBALL', N'TP. Thủ Đức, TP.HCM', N'Cụm sân pickleball ngoài trời thoáng đãng, đèn chiếu sáng ban đêm.', 150000.00, '06:00:00', '22:00:00', N'assets/images/greenpickleballcourt.jfif', N'ACTIVE', '2026-09-21 08:47:46.177', '2026-09-21 08:47:46.177', 4);
+INSERT INTO [SportsFields] ([field_id], [owner_id], [field_name], [sport_type], [address], [description], [price_per_hour], [open_time], [close_time], [image_url], [status], [created_at], [updated_at], [quantity]) VALUES (5, 1, N'Cụm Sân Bóng Bàn Pro', N'TABLE_TENNIS', N'Quận 10, TP.HCM', N'Hệ thống 4 sân bóng bàn tiêu chuẩn thi đấu, bàn chuẩn ITTF, sàn chống trượt.', 100000.00, '06:00:00', '22:00:00', N'assets/images/pickleball.jpg', N'ACTIVE', '2026-10-17 00:00:00.000', '2026-10-17 00:00:00.000', 4);
 SET IDENTITY_INSERT [SportsFields] OFF;
 GO
 
@@ -324,16 +328,21 @@ GO
 -- Dữ liệu bảng: bookings (10 dòng)
 DELETE FROM [bookings];
 SET IDENTITY_INSERT [bookings] ON;
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (1, 1, N'Trần Gia Huy', N'0901000001', '2026-10-12 08:00:00.000', '2026-10-12 09:30:00.000', 120000.00, N'PENDING', '2026-10-11 23:31:12.636', '2026-10-11 23:41:12.636', NULL);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (2, 1, N'Lê Thu Trang', N'0901000002', '2026-10-12 08:30:00.000', '2026-10-12 10:00:00.000', 120000.00, N'PENDING', '2026-10-11 23:33:12.636', '2026-10-11 23:41:12.636', NULL);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (3, 1, N'Phạm Hoàng Nam', N'0901000003', '2026-10-12 10:00:00.000', '2026-10-12 11:30:00.000', 120000.00, N'CONFIRMED', '2026-10-11 23:35:12.636', '2026-10-12 00:10:15.808', NULL);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (4, 1, N'Nguyễn Quốc Bảo', N'0901000004', '2026-10-12 13:00:00.000', '2026-10-12 14:30:00.000', 120000.00, N'CONFIRMED', '2026-10-11 23:37:12.640', '2026-10-11 23:41:12.640', NULL);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (5, 1, N'Đỗ Minh Anh', N'0901000005', '2026-10-11 06:00:00.000', '2026-10-11 07:30:00.000', 120000.00, N'COMPLETED', '2026-10-11 23:39:12.640', '2026-10-11 23:41:12.640', NULL);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (6, 1, N'Vũ Khánh Linh', N'0901000006', '2026-10-11 10:00:00.000', '2026-10-11 11:30:00.000', 120000.00, N'REJECTED', '2026-10-11 23:40:12.640', '2026-10-11 23:41:12.640', NULL);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (7, 2, N'Nguyễn Văn A', N'0987654321', '2026-10-13 15:00:00.000', '2026-10-13 16:30:00.000', 270000.00, N'CONFIRMED', '2026-10-12 01:15:05.848', '2026-10-12 01:17:41.337', 6);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (8, 1, N'Nguyễn Văn A', N'0911223344', '2026-10-14 08:00:00.000', '2026-10-14 09:30:00.000', 120000.00, N'CANCELLED', '2026-10-12 01:18:17.994', '2026-10-12 01:18:18.127', 6);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (9, 1, N'Ngô Gia Bảo', N'0767615217', '2026-10-12 06:00:00.000', '2026-10-12 07:30:00.000', 120000.00, N'REJECTED', '2026-10-12 01:36:31.910', '2026-10-12 01:36:55.009', 4);
-INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id]) VALUES (10, 3, N'Nguyễn Văn A', N'0933445566', '2026-10-15 09:00:00.000', '2026-10-15 10:30:00.000', 180000.00, N'PENDING', '2026-10-12 01:45:40.530', '2026-10-12 01:45:40.530', 6);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (1, 1, N'Trần Gia Huy', N'0901000001', '2026-10-12 08:00:00.000', '2026-10-12 09:30:00.000', 120000.00, N'PENDING', '2026-10-11 23:31:12.636', '2026-10-11 23:41:12.636', NULL, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (2, 1, N'Lê Thu Trang', N'0901000002', '2026-10-12 08:30:00.000', '2026-10-12 10:00:00.000', 120000.00, N'PENDING', '2026-10-11 23:33:12.636', '2026-10-11 23:41:12.636', NULL, 2);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (3, 1, N'Phạm Hoàng Nam', N'0901000003', '2026-10-12 10:00:00.000', '2026-10-12 11:30:00.000', 120000.00, N'CONFIRMED', '2026-10-11 23:35:12.636', '2026-10-12 00:10:15.808', NULL, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (4, 1, N'Nguyễn Quốc Bảo', N'0901000004', '2026-10-12 13:00:00.000', '2026-10-12 14:30:00.000', 120000.00, N'CONFIRMED', '2026-10-11 23:37:12.640', '2026-10-11 23:41:12.640', NULL, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (5, 1, N'Đỗ Minh Anh', N'0901000005', '2026-10-11 06:00:00.000', '2026-10-11 07:30:00.000', 120000.00, N'COMPLETED', '2026-10-11 23:39:12.640', '2026-10-11 23:41:12.640', NULL, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (6, 1, N'Vũ Khánh Linh', N'0901000006', '2026-10-11 10:00:00.000', '2026-10-11 11:30:00.000', 120000.00, N'REJECTED', '2026-10-11 23:40:12.640', '2026-10-11 23:41:12.640', NULL, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (7, 2, N'Nguyễn Văn A', N'0987654321', '2026-10-13 15:00:00.000', '2026-10-13 16:30:00.000', 270000.00, N'CONFIRMED', '2026-10-12 01:15:05.848', '2026-10-12 01:17:41.337', 6, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (8, 1, N'Nguyễn Văn A', N'0911223344', '2026-10-14 08:00:00.000', '2026-10-14 09:30:00.000', 120000.00, N'CANCELLED', '2026-10-12 01:18:17.994', '2026-10-12 01:18:18.127', 6, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (9, 1, N'Ngô Gia Bảo', N'0767615217', '2026-10-12 06:00:00.000', '2026-10-12 07:30:00.000', 120000.00, N'REJECTED', '2026-10-12 01:36:31.910', '2026-10-12 01:36:55.009', 4, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (10, 3, N'Nguyễn Văn A', N'0933445566', '2026-10-15 09:00:00.000', '2026-10-15 10:30:00.000', 180000.00, N'PENDING', '2026-10-12 01:45:40.530', '2026-10-12 01:45:40.530', 6, 1);
+-- Đơn mẫu kín 4/4 sân cho Cụm Sân Bóng Bàn Pro (field_id 5)
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (11, 5, N'Hoàng Văn D', N'0981111111', '2026-10-17 18:00:00.000', '2026-10-17 19:00:00.000', 100000.00, N'CONFIRMED', '2026-10-17 00:00:00.000', '2026-10-17 00:00:00.000', NULL, 1);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (12, 5, N'Ngô Thị E', N'0982222222', '2026-10-17 18:00:00.000', '2026-10-17 19:00:00.000', 100000.00, N'CONFIRMED', '2026-10-17 00:00:00.000', '2026-10-17 00:00:00.000', NULL, 2);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (13, 5, N'Đặng Văn F', N'0983333333', '2026-10-17 18:00:00.000', '2026-10-17 19:00:00.000', 100000.00, N'CONFIRMED', '2026-10-17 00:00:00.000', '2026-10-17 00:00:00.000', NULL, 3);
+INSERT INTO [bookings] ([booking_id], [field_id], [customer_name], [customer_phone], [starts_at], [ends_at], [total_price], [status], [created_at], [updated_at], [customer_id], [court_number]) VALUES (14, 5, N'Vũ Thị G', N'0984444444', '2026-10-17 18:00:00.000', '2026-10-17 19:00:00.000', 100000.00, N'PENDING', '2026-10-17 00:00:00.000', '2026-10-17 00:00:00.000', NULL, 4);
 SET IDENTITY_INSERT [bookings] OFF;
 GO
 
