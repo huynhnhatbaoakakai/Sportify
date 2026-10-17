@@ -227,3 +227,25 @@ body {
     background: #f1f5f9;
     color: var(--dark);
 }
+.profile-message { padding: 15px 18px; border: 1px solid; border-radius: 12px; margin-bottom: 18px; line-height: 1.6; }
+.profile-message.success { color: #17613d; background: #ecf9f0; border-color: #b8dfc8; }
+.profile-message.error { color: #9f302b; background: #fff1ee; border-color: #efc3ba; }
+.form-group small { color: var(--muted); line-height: 1.5; }
+.form-group .readonly-input { background: #f1f5f9; cursor: default; }
+.btn-cancel { display: inline-flex; align-items: center; text-decoration: none; }
+.form-group textarea { resize: vertical; }
+@media (max-width: 760px) {
+    body { height: auto; min-height: 100vh; overflow: auto; }
+    .sidebar { display: none; }
+    .main-wrapper { min-width: 0; overflow: visible; }
+    .content-area { padding: 18px 14px; }
+    .profile-header { padding: 24px 20px; gap: 18px; }
+    .profile-avatar-large { width: 72px; height: 72px; font-size: 32px; flex-shrink: 0; }
+    .profile-title h2 { font-size: 21px; overflow-wrap: anywhere; }
+    .profile-body { padding: 24px 20px; }
+    .form-grid { grid-template-columns: 1fr; gap: 20px; }
+    .form-group.full-width { grid-column: auto; }
+    .form-group input, .form-group select, .form-group textarea { min-width: 0; width: 100%; }
+    .form-actions { flex-wrap: wrap; }
+    .form-actions > * { flex: 1; justify-content: center; text-align: center; }
+}
