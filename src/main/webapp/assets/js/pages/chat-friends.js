@@ -14,7 +14,7 @@ async function loadFriends(keepCurrent) {
         const data = await res.json();
         if (data.error) {
             document.getElementById('chatList').innerHTML =
-                '<div style="padding:15px;color:red;font-size:12px;">❌ Lỗi: ' + data.error + '</div>';
+                '<div style="padding:15px;color:red;font-size:12px;">Lỗi: ' + data.error + '</div>';
             return;
         }
 
@@ -38,7 +38,7 @@ async function loadFriends(keepCurrent) {
 
     } catch (e) {
         document.getElementById('chatList').innerHTML =
-            '<div style="padding:15px;color:red;font-size:12px;">❌ Không kết nối được API: ' + e.message + '</div>';
+            '<div style="padding:15px;color:red;font-size:12px;">Không kết nối được API: ' + e.message + '</div>';
     }
 }
 
@@ -58,7 +58,7 @@ function renderList() {
         div.className = 'chat-item' + (f.id == currentFriendId ? ' active' : '');
         div.onclick = () => selectFriend(f.id);
         div.innerHTML = `
-            <div class="avatar avatar-online">${initial}</div>
+            <div class="avatar">${escHtml(initial)}</div>
             <div class="chat-item-content">
                 <div class="chat-item-header">
                     <span class="chat-item-name">${escHtml(f.partnerName)}</span>
@@ -83,7 +83,7 @@ function renderMessages() {
 
     const msgs = f.messages || [];
     if (msgs.length === 0) {
-        msgEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào. Hãy gửi tin đầu tiên! 👋</div>';
+        msgEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào. Hãy gửi tin đầu tiên!</div>';
         return;
     }
 
@@ -111,7 +111,7 @@ function updateHeader() {
         const initial = f.partnerIcon || f.partnerName[0].toUpperCase();
         document.getElementById('currentAvatar').textContent = initial;
         document.getElementById('currentName').textContent = f.partnerName;
-        document.getElementById('currentStatus').textContent = '🟢 Đang hoạt động';
+        document.getElementById('currentStatus').textContent = 'Tin nhắn trực tiếp';
         document.getElementById('messageInput').disabled = false;
         document.getElementById('sendBtn').disabled = false;
         document.getElementById('messageInput').focus();
@@ -154,12 +154,12 @@ async function sendMessage() {
         const res = await fetch(API, { method: 'POST', body: body });
         const data = await res.json();
         if (data.error) {
-            document.getElementById('statusBar').textContent = '❌ Lỗi gửi: ' + data.error;
+            document.getElementById('statusBar').textContent = 'Lỗi gửi: ' + data.error;
         } else {
             document.getElementById('statusBar').textContent = '';
         }
     } catch (e) {
-        document.getElementById('statusBar').textContent = '❌ Không thể gửi: ' + e.message;
+        document.getElementById('statusBar').textContent = 'Không thể gửi: ' + e.message;
     }
 }
 

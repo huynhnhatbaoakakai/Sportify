@@ -44,7 +44,7 @@ public class AppointmentServlet extends BaseServlet {
         String note = req.getParameter("note");
 
         if (title == null || title.trim().isEmpty() || date == null || time == null) {
-            req.setAttribute("errorMsg", "❌ Vui lòng điền đầy đủ thông tin bắt buộc.");
+            req.setAttribute("errorMsg", "Vui lòng điền đầy đủ thông tin bắt buộc.");
         } else {
             Appointment a = new Appointment();
             a.setUserId(user.getId());
@@ -55,9 +55,9 @@ public class AppointmentServlet extends BaseServlet {
             a.setNote(note != null ? note.trim() : "");
 
             if (appointmentDAO.createAppointment(a)) {
-                req.setAttribute("successMsg", "✅ Đã thêm lịch hẹn thành công!");
+                req.setAttribute("successMsg", "Đã thêm lịch hẹn thành công!");
             } else {
-                req.setAttribute("errorMsg", "❌ Không thể lưu lịch hẹn. Vui lòng thử lại.");
+                req.setAttribute("errorMsg", "Không thể lưu lịch hẹn. Vui lòng thử lại.");
             }
         }
         showPage(req, resp);

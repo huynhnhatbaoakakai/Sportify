@@ -18,6 +18,7 @@
           href="<%= contextPath %>/assets/css/style.css">
           
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/login.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 
 <body>

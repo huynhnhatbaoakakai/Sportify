@@ -41,6 +41,7 @@
     <title>Trang chủ - Sportify</title>
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/home.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -61,24 +62,24 @@
         <!-- THÔNG BÁO NẾU CÓ -->
         <% if (bookingMsg != null && !bookingMsg.trim().isEmpty()) { %>
         <div class="alert-banner <%= bookingOk ? "alert-success" : "alert-error" %>">
-            <span><%= bookingOk ? "✅" : "⚠️" %> <%= bookingMsg %></span>
-            <button type="button" class="close-alert" onclick="this.parentElement.remove()">✕</button>
+            <span><span class="app-icon icon-<%= bookingOk ? "check" : "alert" %>" aria-hidden="true"></span> <%= bookingMsg %></span>
+            <button type="button" class="close-alert" onclick="this.parentElement.remove()"><span class="app-icon icon-close" aria-hidden="true"></span></button>
         </div>
         <% } %>
 
         <!-- WELCOME CARD -->
         <div class="welcome-card">
             <div>
-                <h2>Chào bạn, <%= user != null ? user.getFullname() : "" %>! 👋</h2>
+                <h2>Chào bạn, <%= user != null ? user.getFullname() : "" %>!</h2>
                 <p>Khám phá cụm sân tập, phòng gym cao cấp và đặt lịch trực tuyến cùng đối tác Sportify.</p>
             </div>
-            <div style="font-size: 75px;">🏃‍♂️</div>
+            <div class="welcome-illustration"><span class="app-icon icon-court" aria-hidden="true"></span></div>
         </div>
 
         <!-- STATS CARDS -->
         <div class="stats-grid">
             <a href="#my-bookings" class="stat-card">
-                <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);">🏟️</div>
+                <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);"><span class="app-icon icon-court" aria-hidden="true"></span></div>
                 <div class="stat-info">
                     <h4>Đơn đặt sân của bạn</h4>
                     <span><%= customerBookings.size() %></span>
@@ -87,7 +88,7 @@
             </a>
 
             <a href="<%= contextPath %>/appointments" class="stat-card">
-                <div class="stat-icon" style="background: #fef3c7; color: #d97706;">🔥</div>
+                <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><span class="app-icon icon-calendar" aria-hidden="true"></span></div>
                 <div class="stat-info">
                     <h4>Giờ tập tháng này</h4>
                     <span><%= trainingHours %>h</span>
@@ -98,7 +99,7 @@
 
         <!-- DANH SÁCH SÂN & DỊCH VỤ (GỌN GÀNG, ĐÓNG KHUNG CHUẨN ĐẸP) -->
         <div class="section-header" id="fields">
-            <h3>🏟️ Sân & Dịch vụ tập luyện</h3>
+            <h3><span class="app-icon icon-court" aria-hidden="true"></span> Sân & Dịch vụ tập luyện</h3>
             <span style="font-size: 13px; color: var(--muted);"><%= activeFields.size() %> cơ sở hoạt động</span>
         </div>
 
@@ -112,28 +113,28 @@
                 String st = f.getSportType() != null ? f.getSportType().toUpperCase() : "GENERAL";
                 String badgeClass = "badge-default";
                 String badgeText = f.getSportType() != null ? f.getSportType() : "THỂ THAO";
-                String badgeIcon = "🏟️";
+                String badgeIcon = "court";
                 String defaultImg = contextPath + "/assets/images/basketball.jpg";
 
                 if ("GYM".equals(st)) {
                     badgeClass = "badge-gym";
                     badgeText = "Gym";
-                    badgeIcon = "🏋️";
+                    badgeIcon = "gym";
                     defaultImg = contextPath + "/assets/images/gymfitzone.jfif";
                 } else if ("BASKETBALL".equals(st)) {
                     badgeClass = "badge-basketball";
                     badgeText = "Bóng rổ";
-                    badgeIcon = "🏀";
+                    badgeIcon = "basketball";
                     defaultImg = contextPath + "/assets/images/basketballcourt1.jpg";
                 } else if ("SWIMMING".equals(st)) {
                     badgeClass = "badge-swimming";
                     badgeText = "Hồ bơi";
-                    badgeIcon = "🏊";
+                    badgeIcon = "swimming";
                     defaultImg = contextPath + "/assets/images/swimmingpoolaqua.jfif";
                 } else if ("PICKLEBALL".equals(st)) {
                     badgeClass = "badge-pickleball";
                     badgeText = "Pickleball";
-                    badgeIcon = "🏓";
+                    badgeIcon = "racket";
                     defaultImg = contextPath + "/assets/images/greenpickleballcourt.jfif";
                 }
 
@@ -150,7 +151,7 @@
                 <div class="field-card-thumb">
                     <img src="<%= imgSrc %>" alt="<%= f.getFieldName() %>" onerror="this.src='<%= defaultImg %>'">
                     <span class="field-card-badge <%= badgeClass %>">
-                        <span><%= badgeIcon %></span> <%= badgeText %>
+                        <span><span class="app-icon icon-<%= badgeIcon %>" aria-hidden="true"></span></span> <%= badgeText %>
                     </span>
                 </div>
 
@@ -159,12 +160,12 @@
                     <div>
                         <div class="field-card-header">
                             <h4 class="field-card-title" title="<%= f.getFieldName() %>"><%= f.getFieldName() %></h4>
-                            <span class="field-card-rating">★ 4.9</span>
+
                         </div>
 
                         <div class="field-card-meta">
-                            <span title="<%= f.getAddress() %>">📍 <%= f.getAddress() != null ? f.getAddress() : "TP. Hồ Chí Minh" %></span>
-                            <span>🕒 <%= openTimeStr %> - <%= closeTimeStr %> hàng ngày</span>
+                            <span title="<%= f.getAddress() %>"><span class="app-icon icon-map" aria-hidden="true"></span> <%= f.getAddress() != null ? f.getAddress() : "TP. Hồ Chí Minh" %></span>
+                            <span><span class="app-icon icon-clock" aria-hidden="true"></span> <%= openTimeStr %> - <%= closeTimeStr %> hàng ngày</span>
                         </div>
 
                         <p class="field-card-desc">
@@ -179,7 +180,7 @@
                         </div>
 
                         <a href="<%= contextPath %>/field-booking?fieldId=<%= f.getFieldId() %>" class="btn-book-action">
-                            <span>📅</span> Đặt lịch
+                            <span><span class="app-icon icon-calendar" aria-hidden="true"></span></span> Đặt lịch
                         </a>
                     </div>
                 </div>
@@ -190,7 +191,7 @@
 
         <!-- ĐƠN ĐẶT SÂN CỦA BẠN (ĐÓNG KHUNG BẢNG LỊCH) -->
         <div class="section-header" id="my-bookings">
-            <h3>📑 Đơn đặt sân của bạn</h3>
+            <h3><span class="app-icon icon-file" aria-hidden="true"></span> Đơn đặt sân của bạn</h3>
             <% if (!customerBookings.isEmpty()) { %>
             <span style="font-size: 13px; color: var(--muted);"><%= customerBookings.size() %> đơn đã gửi</span>
             <% } %>
@@ -198,7 +199,7 @@
 
         <% if (customerBookings.isEmpty()) { %>
         <div class="empty-appt" style="margin-bottom: 28px;">
-            📭 Bạn chưa có đơn đặt sân nào.<br>
+            <span class="app-icon icon-inbox" aria-hidden="true"></span> Bạn chưa có đơn đặt sân nào.<br>
             <a href="#fields" style="color: var(--primary); font-weight: 600;">+ Chọn sân và gửi yêu cầu đặt lịch ở trên</a>
         </div>
         <% } else { %>
@@ -251,11 +252,11 @@
                         <td><strong style="color: var(--primary); font-size: 14.5px;"><%= vndFormat.format(b.getTotalPrice()) %> đ</strong></td>
                         <td>
                             <span class="status-pill <%= stClass %>">
-                                <% if ("PENDING".equals(b.getStatus())) { %>⏳<% }
-                                   else if ("CONFIRMED".equals(b.getStatus())) { %>✅<% }
-                                   else if ("REJECTED".equals(b.getStatus())) { %>❌<% }
-                                   else if ("COMPLETED".equals(b.getStatus())) { %>🏆<% }
-                                   else { %>🚫<% } %>
+                                <% if ("PENDING".equals(b.getStatus())) { %><span class="app-icon icon-clock" aria-hidden="true"></span><% }
+                                   else if ("CONFIRMED".equals(b.getStatus())) { %><span class="app-icon icon-check" aria-hidden="true"></span><% }
+                                   else if ("REJECTED".equals(b.getStatus())) { %><span class="app-icon icon-close" aria-hidden="true"></span><% }
+                                   else if ("COMPLETED".equals(b.getStatus())) { %><span class="app-icon icon-trophy" aria-hidden="true"></span><% }
+                                   else { %><span class="app-icon icon-ban" aria-hidden="true"></span><% } %>
                                 <%= stText %>
                             </span>
                         </td>
@@ -279,13 +280,13 @@
 
         <!-- LỊCH HẸN CÁ NHÂN SẮP TỚI -->
         <div class="section-header">
-            <h3>📋 Lịch hẹn cá nhân sắp tới</h3>
-            <a href="<%= contextPath %>/appointments">Xem tất cả →</a>
+            <h3><span class="app-icon icon-file" aria-hidden="true"></span> Lịch hẹn cá nhân sắp tới</h3>
+            <a href="<%= contextPath %>/appointments">Xem tất cả <span class="app-icon icon-arrow" aria-hidden="true"></span></a>
         </div>
 
         <% if (upcomingAppts.isEmpty()) { %>
         <div class="empty-appt">
-            📭 Chưa có lịch hẹn cá nhân nào sắp tới.<br>
+            <span class="app-icon icon-inbox" aria-hidden="true"></span> Chưa có lịch hẹn cá nhân nào sắp tới.<br>
             <a href="<%= contextPath %>/appointments" style="color: var(--primary); font-weight: 600;">+ Thêm lịch hẹn ngay</a>
         </div>
         <% } else {
@@ -294,26 +295,26 @@
                 if (shown >= 3) break;
                 String itemType = a.getType() != null ? a.getType() : "court";
                 String bg = "#e0f2fe";
-                String icon = "⚽";
+                String icon = "soccer";
                 String meta = "Đặt sân";
                 if ("pt".equals(itemType)) {
                     bg = "#fef3c7";
-                    icon = "💪";
+                    icon = "gym";
                     meta = "Tập với PT";
                 } else if ("gear".equals(itemType)) {
                     bg = "#f3e8ff";
-                    icon = "🎒";
+                    icon = "racket";
                     meta = "Thuê Gear";
                 } else if ("clothing".equals(itemType)) {
                     bg = "#fce7f3";
-                    icon = "👕";
+                    icon = "user";
                     meta = "Thuê Trang phục";
                 }
                 shown++;
         %>
         <div class="appt-mini">
             <div class="appt-mini-icon" style="background: <%= bg %>">
-                <%= icon %>
+                <span class="app-icon icon-<%= icon %>" aria-hidden="true"></span>
             </div>
             <div class="appt-mini-info">
                 <div class="appt-mini-title"><%= a.getTitle() %></div>

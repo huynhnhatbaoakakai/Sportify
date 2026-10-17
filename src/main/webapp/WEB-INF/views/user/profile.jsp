@@ -14,6 +14,7 @@
     <title>Hồ sơ cá nhân - Sportify</title>
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/profile.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -32,7 +33,7 @@
                 <div class="profile-header">
                     <div class="profile-avatar-large">
                         <%= user.getFullname().substring(0,1).toUpperCase() %>
-                        <div class="edit-avatar-btn" title="Thay đổi ảnh đại diện">📷</div>
+                        <div class="edit-avatar-btn" title="Thay đổi ảnh đại diện"><span class="app-icon icon-edit" aria-hidden="true"></span></div>
                     </div>
                     <div class="profile-title">
                         <h2><%= user.getFullname() %></h2>

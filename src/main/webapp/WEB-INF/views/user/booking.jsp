@@ -20,34 +20,34 @@
     String st = field.getSportType() != null ? field.getSportType().toUpperCase() : "GENERAL";
     String badgeClass = "badge-default";
     String badgeText = field.getSportType() != null ? field.getSportType() : "THỂ THAO";
-    String badgeIcon = "🏟️";
+    String badgeIcon = "court";
     String defaultImg = contextPath + "/assets/images/basketball.jpg";
     String amenitiesHtml = "";
 
     if ("GYM".equals(st)) {
         badgeClass = "badge-gym";
         badgeText = "Phòng Gym & Fitness";
-        badgeIcon = "🏋️";
+        badgeIcon = "gym";
         defaultImg = contextPath + "/assets/images/gymfitzone.jfif";
-        amenitiesHtml = "<span class='amenity-pill'>🏋️ Full thiết bị tập</span><span class='amenity-pill'>❄️ Máy lạnh 24/7</span><span class='amenity-pill'>🚿 Phòng tắm nóng lạnh</span><span class='amenity-pill'>📶 Wifi miễn phí</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Full thiết bị tập</span><span class='amenity-pill'>Máy lạnh 24/7</span><span class='amenity-pill'>Phòng tắm nóng lạnh</span><span class='amenity-pill'>Wifi miễn phí</span>";
     } else if ("BASKETBALL".equals(st)) {
         badgeClass = "badge-basketball";
         badgeText = "Sân Bóng Rổ";
-        badgeIcon = "🏀";
+        badgeIcon = "basketball";
         defaultImg = contextPath + "/assets/images/basketballcourt1.jpg";
-        amenitiesHtml = "<span class='amenity-pill'>🏀 Sàn gỗ chuẩn FIBA</span><span class='amenity-pill'>💡 Đèn LED chiếu sáng</span><span class='amenity-pill'>🅿️ Bãi giữ xe rộng</span><span class='amenity-pill'>🥤 Nước uống miễn phí</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Sàn gỗ chuẩn FIBA</span><span class='amenity-pill'>Đèn LED chiếu sáng</span><span class='amenity-pill'>Bãi giữ xe rộng</span><span class='amenity-pill'>Nước uống miễn phí</span>";
     } else if ("SWIMMING".equals(st)) {
         badgeClass = "badge-swimming";
         badgeText = "Hồ Bơi Thể Thao";
-        badgeIcon = "🏊";
+        badgeIcon = "swimming";
         defaultImg = contextPath + "/assets/images/swimmingpoolaqua.jfif";
-        amenitiesHtml = "<span class='amenity-pill'>🏊 Làn bơi Olympic</span><span class='amenity-pill'>🌡️ Nước ấm 4 mùa</span><span class='amenity-pill'>🛟 Cứu hộ chuyên nghiệp</span><span class='amenity-pill'>🚿 Phòng thay đồ VIP</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Làn bơi Olympic</span><span class='amenity-pill'>Nước ấm 4 mùa</span><span class='amenity-pill'>Cứu hộ chuyên nghiệp</span><span class='amenity-pill'>Phòng thay đồ VIP</span>";
     } else if ("PICKLEBALL".equals(st)) {
         badgeClass = "badge-pickleball";
         badgeText = "Sân Pickleball";
-        badgeIcon = "🏓";
+        badgeIcon = "racket";
         defaultImg = contextPath + "/assets/images/greenpickleballcourt.jfif";
-        amenitiesHtml = "<span class='amenity-pill'>🏓 Mặt sân chuẩn thi đấu</span><span class='amenity-pill'>💡 Đèn chơi ban đêm</span><span class='amenity-pill'>🅿️ Đỗ xe ô tô</span><span class='amenity-pill'>🥤 Quầy căng tin</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Mặt sân chuẩn thi đấu</span><span class='amenity-pill'>Đèn chơi ban đêm</span><span class='amenity-pill'>Đỗ xe ô tô</span><span class='amenity-pill'>Quầy căng tin</span>";
     }
 
     String imgSrc = field.getImageUrl() != null && !field.getImageUrl().trim().isEmpty() 
@@ -205,6 +205,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -215,7 +216,7 @@
     <header class="top-navbar">
         <div style="display: flex; align-items: center; gap: 14px;">
             <a href="<%= contextPath %>/home" class="back-link-btn">
-                <span>←</span> Quay lại trang chủ
+                <span><span class="app-icon icon-arrow-left" aria-hidden="true"></span></span> Quay lại trang chủ
             </a>
             <h1 class="page-title" style="margin: 0;">Đặt lịch sân</h1>
         </div>
@@ -234,14 +235,14 @@
                 <div class="venue-img-wrap">
                     <img src="<%= imgSrc %>" alt="<%= field.getFieldName() %>" onerror="this.src='<%= defaultImg %>'">
                     <span class="venue-badge <%= badgeClass %>">
-                        <span><%= badgeIcon %></span> <%= badgeText %>
+                        <span><span class="app-icon icon-<%= badgeIcon %>" aria-hidden="true"></span></span> <%= badgeText %>
                     </span>
                 </div>
 
                 <h2 class="venue-title"><%= field.getFieldName() %></h2>
 
                 <div class="venue-rating-row">
-                    <span style="color: #f59e0b; font-weight: 700;">★★★★★</span>
+
                     <strong>4.9 / 5</strong>
                     <span>(120+ lượt đặt)</span>
                     <span style="background: #eaf8ef; color: var(--primary-dark); padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">Đối tác Sportify</span>
@@ -249,15 +250,15 @@
 
                 <div class="venue-spec-list">
                     <div class="venue-spec-item">
-                        <span>📍</span>
+                        <span><span class="app-icon icon-map" aria-hidden="true"></span></span>
                         <span>Địa chỉ: <strong><%= field.getAddress() != null ? field.getAddress() : "TP. Hồ Chí Minh" %></strong></span>
                     </div>
                     <div class="venue-spec-item">
-                        <span>🕒</span>
+                        <span><span class="app-icon icon-clock" aria-hidden="true"></span></span>
                         <span>Khung giờ mở cửa: <strong><%= openTimeStr %> - <%= closeTimeStr %></strong> hàng ngày</span>
                     </div>
                     <div class="venue-spec-item">
-                        <span>💰</span>
+                        <span><span class="app-icon icon-wallet" aria-hidden="true"></span></span>
                         <span>Giá thuê niêm yết: <strong style="color: var(--primary); font-size: 16px;"><%= vndFormat.format(price) %> đ</strong> / giờ</span>
                     </div>
                 </div>
@@ -278,7 +279,7 @@
             <!-- CỘT PHẢI: GIAO DIỆN FORM ĐẶT LỊCH -->
             <div class="booking-form-box">
                 <div class="booking-form-header">
-                    <h3><span>📅</span> Đặt Lịch Sân Trực Tuyến</h3>
+                    <h3><span><span class="app-icon icon-calendar" aria-hidden="true"></span></span> Đặt Lịch Sân Trực Tuyến</h3>
                     <p>Chọn ngày và khung giờ bạn muốn đặt. Đơn sẽ gửi trực tiếp đến chủ sân để xác nhận giữ chỗ.</p>
                 </div>
 
@@ -338,7 +339,7 @@
                             Hủy bỏ
                         </a>
                         <button type="submit" class="btn-submit" style="flex: 2; font-size: 14px;">
-                            Xác nhận gửi yêu cầu đặt lịch ➔
+                            Xác nhận gửi yêu cầu đặt lịch <span class="app-icon icon-arrow" aria-hidden="true"></span>
                         </button>
                     </div>
                 </form>

@@ -46,19 +46,6 @@ a {
     text-decoration: none;
 }
 
-.material-symbols-rounded {
-    font-family: "Material Symbols Rounded";
-    font-weight: normal;
-    font-style: normal;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    font-feature-settings: "liga";
-}
-
 /* LAYOUT */
 
 .dashboard-layout {
@@ -194,8 +181,8 @@ a {
     background: var(--primary);
 }
 
-.nav-item .material-symbols-rounded,
-.logout-link .material-symbols-rounded {
+.nav-item .app-icon,
+.logout-link .app-icon {
     font-size: 21px;
 }
 
@@ -427,7 +414,7 @@ a {
     align-items: center;
 }
 
-.stat-trend .material-symbols-rounded {
+.stat-trend .app-icon {
     font-size: 17px;
 }
 
@@ -705,7 +692,7 @@ a {
     text-align: center;
 }
 
-.empty-state .material-symbols-rounded {
+.empty-state .app-icon {
     display: block;
     margin-bottom: 10px;
     color: var(--text-light);
@@ -826,7 +813,7 @@ a {
     line-height: 1.5;
 }
 
-.field-address .material-symbols-rounded {
+.field-address .app-icon {
     flex: 0 0 auto;
     font-size: 18px;
 }

@@ -21,31 +21,31 @@
     </div>
     <nav class="sidebar-menu">
         <a href="<%= contextPath %>/home" class="<%= menuClass(activeMenu, "home") %>">
-            <span class="menu-icon">🏠</span><span>Trang chủ</span>
+            <span class="menu-icon"><span class="app-icon icon-home" aria-hidden="true"></span></span><span>Trang chủ</span>
         </a>
         <a href="<%= contextPath %>/newsfeed" class="<%= menuClass(activeMenu, "newsfeed") %>">
-            <span class="menu-icon">📰</span><span>Newsfeed</span>
+            <span class="menu-icon"><span class="app-icon icon-news" aria-hidden="true"></span></span><span>Newsfeed</span>
         </a>
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Giao tiếp</div>
         <a href="<%= contextPath %>/chat-friends" class="<%= menuClass(activeMenu, "chat-friends") %>">
-            <span class="menu-icon">👥</span><span>Chat Bạn bè</span>
+            <span class="menu-icon"><span class="app-icon icon-users" aria-hidden="true"></span></span><span>Chat Bạn bè</span>
         </a>
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Cá nhân</div>
         <a href="<%= contextPath %>/appointments" class="<%= menuClass(activeMenu, "appointments") %>">
-            <span class="menu-icon">📅</span><span>Lịch hẹn & Đặt chỗ</span>
+            <span class="menu-icon"><span class="app-icon icon-calendar" aria-hidden="true"></span></span><span>Lịch hẹn & Đặt chỗ</span>
         </a>
         <a href="<%= contextPath %>/profile" class="<%= menuClass(activeMenu, "profile") %>">
-            <span class="menu-icon">👤</span><span>Hồ sơ cá nhân</span>
+            <span class="menu-icon"><span class="app-icon icon-user" aria-hidden="true"></span></span><span>Hồ sơ cá nhân</span>
         </a>
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Dịch vụ</div>
         <a href="<%= contextPath %>/owner/fields" class="menu-item">
-            <span class="menu-icon">🏟️</span><span>Quản lý dịch vụ</span>
+            <span class="menu-icon"><span class="app-icon icon-court" aria-hidden="true"></span></span><span>Quản lý dịch vụ</span>
         </a>
         <a href="<%= contextPath %>/logout" class="menu-item" style="color: #ef4444;">
-            <span class="menu-icon">🚪</span><span>Đăng xuất</span>
+            <span class="menu-icon"><span class="app-icon icon-logout" aria-hidden="true"></span></span><span>Đăng xuất</span>
         </a>
     </nav>
 </aside>

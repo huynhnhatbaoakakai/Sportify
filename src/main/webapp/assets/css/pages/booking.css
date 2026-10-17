@@ -66,7 +66,7 @@
 .booking-availability .slot-free { background: #f2faf4; border-color: #c5e0ce; }
 .booking-availability .slot-free:hover { background: #eaf6ee; }
 .booking-availability .slot-free.is-selected { background: #e8f6ed; border-color: #429365; box-shadow: 0 0 0 1px #429365; }
-.booking-availability .slot-free.is-selected::after { content: "✓"; position: absolute; top: 9px; right: 10px; font-size: 13px; color: #287449; font-weight: bold; }
+.booking-availability .slot-free.is-selected::after { content: ""; position: absolute; top: 13px; right: 12px; width: 8px; height: 4px; border-left: 1.65px solid #287449; border-bottom: 1.65px solid #287449; transform: rotate(-45deg); }
 .booking-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 10px; color: #8a978e; }
 .booking-legend > span { display: inline-flex; align-items: center; gap: 5px; }
 .booking-legend i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }

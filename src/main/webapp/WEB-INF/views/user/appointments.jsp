@@ -20,6 +20,7 @@
     <title>Lịch hẹn - Sportify</title>
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/appointments.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -30,7 +31,7 @@
 <!-- MAIN -->
 <div class="main-wrapper">
     <header class="top-navbar">
-        <h1 class="page-title">📅 Lịch hẹn</h1>
+        <h1 class="page-title"><span class="app-icon icon-calendar" aria-hidden="true"></span> Lịch hẹn</h1>
         <a href="<%= contextPath %>/profile" class="user-profile">
             <div class="profile-img"><%= user.getFullname().substring(0,1).toUpperCase() %></div>
             <div class="profile-name"><%= user.getFullname() %></div>
@@ -46,7 +47,7 @@
         <div class="alert alert-error"><%= errorMsg %></div>
         <% } %>
         <% if ("1".equals(request.getParameter("deleted"))) { %>
-        <div class="alert alert-success">✅ Đã xóa lịch hẹn thành công!</div>
+        <div class="alert alert-success"><span class="app-icon icon-check" aria-hidden="true"></span> Đã xóa lịch hẹn thành công!</div>
         <% } %>
 
         <%
@@ -56,60 +57,60 @@
 
         <!-- TẠO LỊCH HẸN MỚI -->
         <div class="form-card">
-            <h2>➕ Thêm lịch hẹn & Đặt dịch vụ mới</h2>
+            <h2><span class="app-icon icon-plus" aria-hidden="true"></span> Thêm lịch hẹn & Đặt dịch vụ mới</h2>
             <form method="POST" action="<%= contextPath %>/appointments">
                 <div class="form-grid">
                     <div class="form-group full">
-                        <label>📝 Tiêu đề dịch vụ / lịch hẹn *</label>
+                        <label><span class="app-icon icon-edit" aria-hidden="true"></span> Tiêu đề dịch vụ / lịch hẹn *</label>
                         <input type="text" name="title" value="<%= prefillTitle %>" placeholder="VD: Đặt sân bóng Sunrise, Tập PT với thầy Anh, Thuê vợt Pickleball..." required>
                     </div>
                     <div class="form-group">
-                        <label>📅 Ngày *</label>
+                        <label><span class="app-icon icon-calendar" aria-hidden="true"></span> Ngày *</label>
                         <input type="date" name="date" required min="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) %>">
                     </div>
                     <div class="form-group">
-                        <label>⏰ Giờ *</label>
+                        <label><span class="app-icon icon-clock" aria-hidden="true"></span> Giờ *</label>
                         <input type="time" name="time" required>
                     </div>
                     <div class="form-group full">
-                        <label>🏷️ Loại dịch vụ *</label>
+                        <label><span class="app-icon icon-file" aria-hidden="true"></span> Loại dịch vụ *</label>
                         <div class="type-options">
                             <label class="type-option">
                                 <input type="radio" name="type" value="court" <%= "court".equals(prefillType) ? "checked" : "" %>>
-                                ⚽ Đặt sân
+                                <span class="app-icon icon-soccer" aria-hidden="true"></span> Đặt sân
                             </label>
                             <label class="type-option">
                                 <input type="radio" name="type" value="pt" <%= "pt".equals(prefillType) ? "checked" : "" %>>
-                                💪 Thuê PT
+                                <span class="app-icon icon-gym" aria-hidden="true"></span> Thuê PT
                             </label>
                             <label class="type-option">
                                 <input type="radio" name="type" value="gear" <%= "gear".equals(prefillType) ? "checked" : "" %>>
-                                🎒 Thuê Gear
+                                <span class="app-icon icon-racket" aria-hidden="true"></span> Thuê Gear
                             </label>
                             <label class="type-option">
                                 <input type="radio" name="type" value="clothing" <%= "clothing".equals(prefillType) ? "checked" : "" %>>
-                                👕 Thuê Trang phục
+                                <span class="app-icon icon-user" aria-hidden="true"></span> Thuê Trang phục
                             </label>
                         </div>
                     </div>
                     <div class="form-group full">
-                        <label>📌 Ghi chú (tùy chọn)</label>
+                        <label><span class="app-icon icon-pin" aria-hidden="true"></span> Ghi chú (tùy chọn)</label>
                         <textarea name="note" placeholder="Sân 5 người, cỡ áo L, mang theo bóng tập..."></textarea>
                     </div>
                 </div>
                 <div style="margin-top: 18px;">
-                    <button type="submit" class="btn-add">📅 Lưu lịch hẹn / Đặt chỗ</button>
+                    <button type="submit" class="btn-add"><span class="app-icon icon-calendar" aria-hidden="true"></span> Lưu lịch hẹn / Đặt chỗ</button>
                 </div>
             </form>
         </div>
 
         <!-- DANH SÁCH LỊCH HẸN -->
         <div class="list-card">
-            <h2>📋 Danh sách lịch hẹn & Đặt chỗ</h2>
+            <h2><span class="app-icon icon-file" aria-hidden="true"></span> Danh sách lịch hẹn & Đặt chỗ</h2>
 
             <div class="tab-bar">
-                <button class="tab-btn active" onclick="switchTab('upcoming', this)">🔜 Sắp tới</button>
-                <button class="tab-btn" onclick="switchTab('past', this)">📂 Đã qua</button>
+                <button class="tab-btn active" onclick="switchTab('upcoming', this)"><span class="app-icon icon-arrow" aria-hidden="true"></span> Sắp tới</button>
+                <button class="tab-btn" onclick="switchTab('past', this)"><span class="app-icon icon-folder" aria-hidden="true"></span> Đã qua</button>
             </div>
 
             <%
@@ -126,7 +127,7 @@
             <div class="tab-content active" id="tab-upcoming">
                 <% if (!hasUpcoming) { %>
                 <div class="empty-list">
-                    <div class="big-icon">📭</div>
+                    <div class="big-icon"><span class="app-icon icon-inbox" aria-hidden="true"></span></div>
                     <p>Chưa có lịch hẹn nào sắp tới.<br>Hãy tạo lịch hẹn đầu tiên ở trên!</p>
                 </div>
                 <% } else {
@@ -135,45 +136,45 @@
                         String itemType = a.getType() != null ? a.getType() : "court";
                         String badgeClass = "badge-court";
                         String tagClass = "tag-court";
-                        String icon = "⚽";
+                        String icon = "soccer";
                         String label = "Đặt sân";
                         if ("pt".equals(itemType)) {
                             badgeClass = "badge-pt";
                             tagClass = "tag-pt";
-                            icon = "💪";
+                            icon = "gym";
                             label = "Tập PT";
                         } else if ("gear".equals(itemType)) {
                             badgeClass = "badge-gear";
                             tagClass = "tag-gear";
-                            icon = "🎒";
+                            icon = "racket";
                             label = "Thuê Gear";
                         } else if ("clothing".equals(itemType)) {
                             badgeClass = "badge-clothing";
                             tagClass = "tag-clothing";
-                            icon = "👕";
+                            icon = "user";
                             label = "Thuê Trang phục";
                         }
                 %>
                 <div class="appt-item">
                     <div class="appt-type-badge <%= badgeClass %>">
-                        <%= icon %>
+                        <span class="app-icon icon-<%= icon %>" aria-hidden="true"></span>
                     </div>
                     <div class="appt-info">
                         <div class="appt-title"><%= a.getTitle() %></div>
                         <div class="appt-meta">
-                            <span class="appt-meta-item">📅 <%= a.getAppointmentDate() %></span>
-                            <span class="appt-meta-item">⏰ <%= a.getAppointmentTime() %></span>
+                            <span class="appt-meta-item"><span class="app-icon icon-calendar" aria-hidden="true"></span> <%= a.getAppointmentDate() %></span>
+                            <span class="appt-meta-item"><span class="app-icon icon-clock" aria-hidden="true"></span> <%= a.getAppointmentTime() %></span>
                             <span class="appt-tag <%= tagClass %>">
                                 <%= label %>
                             </span>
                         </div>
                         <% if (a.getNote() != null && !a.getNote().isEmpty()) { %>
-                        <div style="font-size: 12px; color: var(--muted); margin-top: 5px;">📌 <%= a.getNote() %></div>
+                        <div style="font-size: 12px; color: var(--muted); margin-top: 5px;"><span class="app-icon icon-pin" aria-hidden="true"></span> <%= a.getNote() %></div>
                         <% } %>
                     </div>
                     <a href="<%= contextPath %>/appointments/delete?id=<%= a.getId() %>"
                        onclick="return confirm('Xóa lịch hẹn này?')"
-                       class="btn-delete">🗑️ Xóa</a>
+                       class="btn-delete"><span class="app-icon icon-trash" aria-hidden="true"></span> Xóa</a>
                 </div>
                 <% }} %>
             </div>
@@ -182,7 +183,7 @@
             <div class="tab-content" id="tab-past">
                 <% if (!hasPast) { %>
                 <div class="empty-list">
-                    <div class="big-icon">📂</div>
+                    <div class="big-icon"><span class="app-icon icon-folder" aria-hidden="true"></span></div>
                     <p>Chưa có lịch hẹn nào đã qua.</p>
                 </div>
                 <% } else {
@@ -191,45 +192,45 @@
                         String itemType = a.getType() != null ? a.getType() : "court";
                         String badgeClass = "badge-court";
                         String tagClass = "tag-court";
-                        String icon = "⚽";
+                        String icon = "soccer";
                         String label = "Đặt sân";
                         if ("pt".equals(itemType)) {
                             badgeClass = "badge-pt";
                             tagClass = "tag-pt";
-                            icon = "💪";
+                            icon = "gym";
                             label = "Tập PT";
                         } else if ("gear".equals(itemType)) {
                             badgeClass = "badge-gear";
                             tagClass = "tag-gear";
-                            icon = "🎒";
+                            icon = "racket";
                             label = "Thuê Gear";
                         } else if ("clothing".equals(itemType)) {
                             badgeClass = "badge-clothing";
                             tagClass = "tag-clothing";
-                            icon = "👕";
+                            icon = "user";
                             label = "Thuê Trang phục";
                         }
                 %>
                 <div class="appt-item past-appt">
                     <div class="appt-type-badge <%= badgeClass %>">
-                        <%= icon %>
+                        <span class="app-icon icon-<%= icon %>" aria-hidden="true"></span>
                     </div>
                     <div class="appt-info">
                         <div class="appt-title"><%= a.getTitle() %></div>
                         <div class="appt-meta">
-                            <span class="appt-meta-item">📅 <%= a.getAppointmentDate() %></span>
-                            <span class="appt-meta-item">⏰ <%= a.getAppointmentTime() %></span>
+                            <span class="appt-meta-item"><span class="app-icon icon-calendar" aria-hidden="true"></span> <%= a.getAppointmentDate() %></span>
+                            <span class="appt-meta-item"><span class="app-icon icon-clock" aria-hidden="true"></span> <%= a.getAppointmentTime() %></span>
                             <span class="appt-tag <%= tagClass %>">
                                 <%= label %>
                             </span>
                         </div>
                         <% if (a.getNote() != null && !a.getNote().isEmpty()) { %>
-                        <div style="font-size: 12px; color: var(--muted); margin-top: 5px;">📌 <%= a.getNote() %></div>
+                        <div style="font-size: 12px; color: var(--muted); margin-top: 5px;"><span class="app-icon icon-pin" aria-hidden="true"></span> <%= a.getNote() %></div>
                         <% } %>
                     </div>
                     <a href="<%= contextPath %>/appointments/delete?id=<%= a.getId() %>"
                        onclick="return confirm('Xóa lịch hẹn này?')"
-                       class="btn-delete">🗑️ Xóa</a>
+                       class="btn-delete"><span class="app-icon icon-trash" aria-hidden="true"></span> Xóa</a>
                 </div>
                 <% }} %>
             </div>

@@ -12,6 +12,7 @@
     <title>Newsfeed - Sportify</title>
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/newsfeed.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -22,7 +23,7 @@
 <!-- MAIN CONTENT -->
 <div class="main-wrapper">
     <header class="top-navbar">
-        <h1 class="page-title">📰 Newsfeed</h1>
+        <h1 class="page-title"><span class="app-icon icon-news" aria-hidden="true"></span> Newsfeed</h1>
         <a href="<%= contextPath %>/profile" class="user-profile">
             <div class="profile-img"><%= currentUser.getFullname().substring(0,1).toUpperCase() %></div>
             <div class="profile-name"><%= currentUser.getFullname() %></div>
@@ -38,7 +39,7 @@
                 <span style="font-weight:600; color:var(--dark);">Bạn đang nghĩ gì, <%= currentUser.getFullname() %>?</span>
             </div>
             <textarea id="postContent" class="create-post-input"
-                      placeholder="Chia sẻ hoạt động thể thao của bạn hôm nay... 🏃‍♂️⚽🎾"></textarea>
+                      placeholder="Chia sẻ hoạt động thể thao của bạn hôm nay..."></textarea>
             <div class="create-post-footer">
                 <button class="post-submit-btn" id="postBtn" onclick="createPost()">Đăng ngay</button>
             </div>
@@ -46,7 +47,7 @@
 
         <!-- FEED LIST -->
         <div id="feedList">
-            <div class="feed-loading">⏳ Đang tải bài viết...</div>
+            <div class="feed-loading"><span class="app-icon icon-clock" aria-hidden="true"></span> Đang tải bài viết...</div>
         </div>
 
     </div>

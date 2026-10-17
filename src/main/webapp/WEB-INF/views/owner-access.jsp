@@ -33,6 +33,7 @@
 
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/owner-access.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 
 <body>

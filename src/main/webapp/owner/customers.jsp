@@ -41,10 +41,10 @@
     <title>Khách hàng - Sportify</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@0..1&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/owner-dashboard.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/owner-customers.css">
     <script defer src="<%= contextPath %>/assets/js/owner-customers.js"></script>
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body class="owner-customers-page">
 <div class="dashboard-layout">
@@ -55,7 +55,7 @@
                 <img src="<%= contextPath %>/assets/images/logo.jpeg" alt="Sportify">
             </a>
             <button class="sidebar-close" type="button" data-sidebar-close aria-label="Đóng menu">
-                <span class="material-symbols-rounded" aria-hidden="true">close</span>
+                <span class="app-icon icon-close" aria-hidden="true"></span>
             </button>
         </div>
         <div class="owner-summary">
@@ -65,33 +65,33 @@
         <nav class="sidebar-nav">
             <p class="nav-label">Quản lý</p>
             <a class="nav-item" href="<%= contextPath %>/owner/fields#overview">
-                <span class="material-symbols-rounded" aria-hidden="true">dashboard</span><span>Tổng quan</span>
+                <span class="app-icon icon-grid" aria-hidden="true"></span><span>Tổng quan</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/bookings#booking-section">
-                <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span><span>Lịch đặt sân</span>
+                <span class="app-icon icon-calendar" aria-hidden="true"></span><span>Lịch đặt sân</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/fields#fields">
-                <span class="material-symbols-rounded" aria-hidden="true">sports_tennis</span><span>Quản lý sân</span>
+                <span class="app-icon icon-racket" aria-hidden="true"></span><span>Quản lý sân</span>
             </a>
             <a class="nav-item active" href="<%= contextPath %>/owner/customers" aria-current="page">
-                <span class="material-symbols-rounded" aria-hidden="true">groups</span><span>Khách hàng</span>
+                <span class="app-icon icon-users" aria-hidden="true"></span><span>Khách hàng</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/reviews">
-                <span class="material-symbols-rounded" aria-hidden="true">star</span><span>Đánh giá</span>
+                <span class="app-icon icon-star" aria-hidden="true"></span><span>Đánh giá</span>
             </a>
             <p class="nav-label nav-label-spaced">Tài khoản</p>
             <a class="nav-item" href="<%= contextPath %>/home">
-                <span class="material-symbols-rounded" aria-hidden="true">home</span><span>Về trang chủ</span>
+                <span class="app-icon icon-home" aria-hidden="true"></span><span>Về trang chủ</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/home">
-                <span class="material-symbols-rounded" aria-hidden="true">person</span><span>Về trang khách hàng</span>
+                <span class="app-icon icon-user" aria-hidden="true"></span><span>Về trang khách hàng</span>
             </a>
             <a class="nav-item" href="#">
-                <span class="material-symbols-rounded" aria-hidden="true">help</span><span>Trợ giúp</span>
+                <span class="app-icon icon-help" aria-hidden="true"></span><span>Trợ giúp</span>
             </a>
         </nav>
         <a class="logout-link" href="<%= contextPath %>/owner/access/logout">
-            <span class="material-symbols-rounded" aria-hidden="true">logout</span><span>Đăng xuất</span>
+            <span class="app-icon icon-logout" aria-hidden="true"></span><span>Đăng xuất</span>
         </a>
     </aside>
     <div class="dashboard-main">
@@ -99,17 +99,17 @@
             <div class="topbar-start">
                 <button class="menu-toggle" type="button" data-sidebar-toggle aria-label="Mở menu"
                         aria-controls="owner-sidebar" aria-expanded="false">
-                    <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+                    <span class="app-icon icon-menu" aria-hidden="true"></span>
                 </button>
                 <div><p class="topbar-label">Khu vực chủ sân</p><h1>Khách hàng</h1></div>
             </div>
             <div style="display:flex; align-items:center; gap:12px;">
                 <a class="btn-customer-portal" href="<%= contextPath %>/home" title="Trở về trang khách hàng" style="display:inline-flex; align-items:center; gap:6px; padding:7px 12px; background:var(--surface,#fff); border:1px solid var(--border,#e2e8f0); border-radius:8px; text-decoration:none; color:var(--text,#1e293b); font-size:13px; font-weight:600;">
-                    <span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">arrow_back</span>
+                    <span class="app-icon icon-arrow-left" aria-hidden="true" style="font-size:18px;"></span>
                     <span>Trang khách hàng</span>
                 </a>
                 <div class="today" aria-label="Ngày hiện tại">
-                    <span class="material-symbols-rounded" aria-hidden="true">calendar_today</span>
+                    <span class="app-icon icon-calendar" aria-hidden="true"></span>
                     <span data-current-date>Hôm nay</span>
                 </div>
             </div>
@@ -128,19 +128,19 @@
             <% } %>
             <section class="stats-grid customer-stats" aria-label="Thống kê khách hàng đã đánh giá">
                 <article class="stat-card">
-                    <div class="stat-card-top"><span class="stat-icon"><span class="material-symbols-rounded" aria-hidden="true">groups</span></span><span class="stat-caption">Theo tên khách</span></div>
+                    <div class="stat-card-top"><span class="stat-icon"><span class="app-icon icon-users" aria-hidden="true"></span></span><span class="stat-caption">Theo tên khách</span></div>
                     <p>Tên khách đã đánh giá</p>
                     <strong><%= loadFailed ? "—" : String.valueOf(customerNameCount) %></strong>
                     <small>Tổng hợp từ đánh giá của khách</small>
                 </article>
                 <article class="stat-card">
-                    <div class="stat-card-top"><span class="stat-icon"><span class="material-symbols-rounded" aria-hidden="true">reviews</span></span><span class="stat-caption">Tất cả đánh giá</span></div>
+                    <div class="stat-card-top"><span class="stat-icon"><span class="app-icon icon-chat" aria-hidden="true"></span></span><span class="stat-caption">Tất cả đánh giá</span></div>
                     <p>Tổng số đánh giá</p>
                     <strong><%= loadFailed ? "—" : String.valueOf(reviewCount) %></strong>
                     <small>Trên các sân của bạn</small>
                 </article>
                 <article class="stat-card">
-                    <div class="stat-card-top"><span class="stat-icon"><span class="material-symbols-rounded" aria-hidden="true">sports_tennis</span></span><span class="stat-caption">Đã có phản hồi khách</span></div>
+                    <div class="stat-card-top"><span class="stat-icon"><span class="app-icon icon-racket" aria-hidden="true"></span></span><span class="stat-caption">Đã có phản hồi khách</span></div>
                     <p>Sân được đánh giá</p>
                     <strong><%= loadFailed ? "—" : String.valueOf(reviewedFieldCount) %></strong>
                     <small>Có ít nhất một đánh giá</small>
@@ -165,7 +165,7 @@
                 </div>
                 <% if (customers.isEmpty()) { %>
                 <div class="empty-state customer-empty">
-                    <span class="material-symbols-rounded" aria-hidden="true"><%= loadFailed ? "cloud_off" : "person_search" %></span>
+                    <span class="app-icon icon-<%= loadFailed ? "cloud-off" : "users-search" %>" aria-hidden="true"></span>
                     <strong><%= loadFailed ? "Chưa thể tải danh sách" : search != null && !search.isEmpty() ? "Không tìm thấy khách hàng" : "Chưa có khách hàng đánh giá" %></strong>
                     <p><%= loadFailed ? "Vui lòng thử tải lại sau ít phút." : search != null && !search.isEmpty() ? "Hãy thử tìm theo tên khác hoặc xóa từ khóa." : "Khách hàng sẽ xuất hiện khi họ gửi đánh giá cho sân của bạn." %></p>
                     <% if (loadFailed) { %><a class="secondary-button" href="<%= contextPath %>/owner/customers">Thử lại</a><% } %>
@@ -186,13 +186,13 @@
                         <tr data-customer-row>
                             <td class="customer-name" data-label="Khách hàng">
                                 <div class="customer-cell">
-                                    <span class="customer-avatar"><span class="material-symbols-rounded" aria-hidden="true">person</span></span>
+                                    <span class="customer-avatar"><span class="app-icon icon-user" aria-hidden="true"></span></span>
                                     <strong><%= escapeHtml(customer.getCustomerName()) %></strong>
                                 </div>
                             </td>
                             <td data-label="Số đánh giá"><strong><%= customer.getReviewCount() %></strong></td>
                             <td data-label="Số sân đã đánh giá"><%= customer.getFieldCount() %> sân</td>
-                            <td data-label="Điểm trung bình"><span class="customer-average"><span aria-hidden="true">★</span> <%= String.format(vietnameseLocale, "%.1f / 5", customer.getAverageRating()) %></span></td>
+                            <td data-label="Điểm trung bình"><span class="customer-average"><span aria-hidden="true"><span class="app-icon icon-star" aria-hidden="true"></span></span> <%= String.format(vietnameseLocale, "%.1f / 5", customer.getAverageRating()) %></span></td>
                             <td data-label="Đánh giá gần nhất"><time datetime="<%= customer.getLastReviewAt() %>"><%= customer.getLastReviewAt().format(dateFormat) %></time></td>
                         </tr>
                         <% } %>
