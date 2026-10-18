@@ -42,16 +42,32 @@
                 </div>
                 
                 <div class="profile-body">
-                    <form action="#" method="POST">
+                    <% if (request.getAttribute("successMessage") != null) { %>
+                        <div style="background:#dcfce7;color:#166534;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;">
+                            <%= request.getAttribute("successMessage") %>
+                        </div>
+                    <% } %>
+                    <% if (request.getAttribute("errorMessage") != null) { %>
+                        <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;">
+                            <%= request.getAttribute("errorMessage") %>
+                        </div>
+                    <% } %>
+                    <%
+                        String userPhone = user.getPhone() != null ? user.getPhone() : "";
+                        String userGender = user.getGender() != null ? user.getGender() : "male";
+                        String userDob = user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : "2000-01-01";
+                        String userAddress = user.getAddress() != null ? user.getAddress() : "Quận 7, TP. Hồ Chí Minh";
+                    %>
+                    <form action="<%= contextPath %>/profile" method="POST">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="fullname">Họ và tên</label>
-                                <input type="text" id="fullname" value="<%= user.getFullname() %>">
+                                <input type="text" id="fullname" name="fullname" value="<%= user.getFullname() %>">
                             </div>
                             
                             <div class="form-group">
                                 <label for="phone">Số điện thoại</label>
-                                <input type="tel" id="phone" value="">
+                                <input type="tel" id="phone" name="phone" value="<%= userPhone %>">
                             </div>
                             
                             <div class="form-group full-width">
@@ -61,26 +77,26 @@
                             
                             <div class="form-group">
                                 <label for="gender">Giới tính</label>
-                                <select id="gender">
-                                    <option value="male" selected>Nam</option>
-                                    <option value="female">Nữ</option>
-                                    <option value="other">Khác</option>
+                                <select id="gender" name="gender">
+                                    <option value="male" <%= "male".equalsIgnoreCase(userGender) ? "selected" : "" %>>Nam</option>
+                                    <option value="female" <%= "female".equalsIgnoreCase(userGender) ? "selected" : "" %>>Nữ</option>
+                                    <option value="other" <%= "other".equalsIgnoreCase(userGender) ? "selected" : "" %>>Khác</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
                                 <label for="dob">Ngày sinh</label>
-                                <input type="date" id="dob" value="2000-01-01">
+                                <input type="date" id="dob" name="dob" value="<%= userDob %>">
                             </div>
                             
                             <div class="form-group full-width">
                                 <label for="address">Địa chỉ</label>
-                                <textarea id="address" rows="3">Quận 7, TP. Hồ Chí Minh</textarea>
+                                <textarea id="address" name="address" rows="3"><%= userAddress %></textarea>
                             </div>
                         </div>
                         
                         <div class="form-actions">
-                            <button type="button" class="btn-cancel">Hủy</button>
+                            <button type="button" class="btn-cancel" onclick="window.location.href='<%= contextPath %>/profile'">Hủy</button>
                             <button type="submit" class="btn-save">Lưu thay đổi</button>
                         </div>
                     </form>

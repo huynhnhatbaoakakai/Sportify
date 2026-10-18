@@ -33,7 +33,7 @@ public class Booking implements Serializable {
     private SportField field;
 
     // TODO: link to customer/user ID when real accounts are available.
-    @Column(name = "customer_name", nullable = false, length = 100)
+    @Column(name = "customer_name", nullable = false, length = 100, columnDefinition = "nvarchar(100)")
     private String customerName;
 
     /** ID tài khoản khách đặt từ trang chủ (null với đơn cũ/đơn nhập tay). */

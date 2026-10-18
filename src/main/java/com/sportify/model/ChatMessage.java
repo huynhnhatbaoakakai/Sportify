@@ -22,13 +22,13 @@ public class ChatMessage implements Serializable {
     @Column(name = "message_id")
     private Long messageId;
 
-    @Column(name = "sender_name", nullable = false, length = 100)
+    @Column(name = "sender_name", nullable = false, length = 100, columnDefinition = "nvarchar(100)")
     private String senderName;
 
-    @Column(name = "receiver_name", nullable = false, length = 100)
+    @Column(name = "receiver_name", nullable = false, length = 100, columnDefinition = "nvarchar(100)")
     private String receiverName;
 
-    @Column(name = "message_text", nullable = false, length = 1000)
+    @Column(name = "message_text", nullable = false, length = 1000, columnDefinition = "nvarchar(1000)")
     private String messageText;
 
     @Column(name = "sent_at", nullable = false)

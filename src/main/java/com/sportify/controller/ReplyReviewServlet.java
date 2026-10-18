@@ -45,7 +45,8 @@ public class ReplyReviewServlet extends HttpServlet {
                 return;
             }
 
-            boolean updated = ReviewDB.saveOwnerReply(reviewId, DEMO_OWNER_ID, replyValue);
+            Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
+            boolean updated = ReviewDB.saveOwnerReply(reviewId, ownerId, replyValue);
             result = updated ? "success=replied" : "error=notfound";
         } catch (IllegalArgumentException exception) {
             result = "error=invalid";

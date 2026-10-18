@@ -630,16 +630,102 @@
         </section>
 
         <!-- ========================================================================= -->
-        <!-- PHẦN 3: ĐƠN ĐẶT SÂN CỦA BẠN                                               -->
+        <!-- PHẦN 3A: KHO TÀI SẢN LỊCH ĐẶT SÂN SỞ HỮU (ĐÃ XÁC NHẬN - CHUYỂN NHƯỢNG)    -->
+        <!-- ========================================================================= -->
+        <%
+            List<Booking> confirmedAssets = new java.util.ArrayList<>();
+            for (Booking cb : customerBookings) {
+                if ("CONFIRMED".equals(cb.getStatus())) {
+                    confirmedAssets.add(cb);
+                }
+            }
+        %>
+        <section class="home-section-block" id="my-booking-assets">
+            <div class="section-header-bar">
+                <div>
+                    <h3 class="section-title">💎 Tài sản lịch đặt sân sở hữu của bạn (Đã xác nhận)</h3>
+                    <p class="section-desc">
+                        Mỗi lịch đặt sân đã được chủ sân xác nhận là <strong>tài sản riêng của tài khoản <%= user != null ? user.getFullname() : "" %></strong>.
+                        Bạn có thể <strong>chuyển quyền sở hữu</strong> cho bạn bè qua Tin nhắn hoặc <strong>đính kèm lên Newsfeed</strong> để rủ hội nhóm / rao bán lịch sân.
+                    </p>
+                </div>
+                <span class="court-slots-badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-size:12.5px; padding:6px 14px; font-weight:800;">
+                    🎖️ Đang sở hữu <%= confirmedAssets.size() %> lịch sân đã xác nhận
+                </span>
+            </div>
+
+            <% if (confirmedAssets.isEmpty()) { %>
+            <div class="empty-appt" style="background:#f8fafc; border:1.5px dashed #cbd5e1;">
+                💎 Hiện tài khoản của bạn chưa có lịch đặt sân nào ở trạng thái <strong>Đã xác nhận (CONFIRMED)</strong>.<br>
+                <small style="color:#64748b;">Khi bạn đặt sân và được chủ sân xác nhận (hoặc nhận chuyển nhượng từ tài khoản khác qua Tin nhắn), vé sân sẽ xuất hiện tại đây như tài sản riêng của bạn.</small>
+            </div>
+            <% } else { %>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:18px; margin-bottom:10px;">
+                <% for (Booking asset : confirmedAssets) {
+                    String aDate = asset.getStartsAt() != null ? asset.getStartsAt().toLocalDate().format(dateFmt) : "";
+                    String aStart = asset.getStartsAt() != null ? asset.getStartsAt().toLocalTime().format(timeFmt) : "";
+                    String aEnd = asset.getEndsAt() != null ? asset.getEndsAt().toLocalTime().format(timeFmt) : "";
+                    String aField = asset.getField() != null ? asset.getField().getFieldName() : ("Sân #" + asset.getBookingId());
+                    String aSport = (asset.getField() != null && asset.getField().getSportType() != null) ? asset.getField().getSportType() : "";
+                    String aAddr = (asset.getField() != null && asset.getField().getAddress() != null) ? asset.getField().getAddress() : "";
+                    int aCourt = asset.getCourtNumber() > 0 ? asset.getCourtNumber() : 1;
+                    int aMax = (asset.getField() != null && asset.getField().getQuantity() > 0) ? asset.getField().getQuantity() : 4;
+                %>
+                <div style="background:linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%); border:2px solid #86efac; border-radius:16px; padding:18px; box-shadow:0 8px 20px rgba(21,148,71,0.08); display:flex; flex-direction:column; justify-content:space-between; gap:14px;">
+                    <div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
+                            <span style="background:#15803d; color:#fff; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; letter-spacing:0.4px;">
+                                💎 TÀI SẢN VÉ SÂN #<%= asset.getBookingCode() %>
+                            </span>
+                            <span style="background:#dcfce7; color:#166534; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:8px; border:1px solid #bbf7d0;">
+                                ✅ Chủ sở hữu: <%= user != null ? user.getFullname() : asset.getCustomerName() %>
+                            </span>
+                        </div>
+                        <h4 style="margin:0 0 6px 0; font-size:17px; font-weight:800; color:#0f172a;"><%= aField %></h4>
+                        <% if (!aAddr.isEmpty()) { %>
+                        <div style="font-size:12.5px; color:#475569; margin-bottom:10px;">📍 <%= aAddr %></div>
+                        <% } %>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                            <span class="court-assigned-pill">🏟️ Sân #<%= aCourt %> / <%= aMax %> (<%= aSport %>)</span>
+                            <span class="date-badge">📅 <%= aDate %></span>
+                            <span class="time-range-badge">🕒 <%= aStart %> - <%= aEnd %></span>
+                        </div>
+                        <div style="font-size:13.5px; color:#1e293b; font-weight:700;">
+                            💰 Giá trị lịch đặt: <span style="color:#15803d; font-size:15px; font-weight:800;"><%= vndFormat.format(asset.getTotalPrice()) %> đ</span>
+                        </div>
+                    </div>
+
+                    <div style="border-top:1px dashed #bbf7d0; padding-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
+                        <a href="<%= contextPath %>/chat-friends?transferBookingId=<%= asset.getBookingId() %>"
+                           style="flex:1; min-width:140px; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:8px 12px; border-radius:10px; font-size:12.5px; font-weight:700; box-shadow:0 3px 8px rgba(2,132,199,0.2);">
+                            🔁 Chuyển qua Tin nhắn
+                        </a>
+                        <a href="<%= contextPath %>/newsfeed?shareBookingId=<%= asset.getBookingId() %>&purpose=TIM_DOI"
+                           style="flex:1; min-width:120px; text-align:center; background:#159447; color:#fff; text-decoration:none; padding:8px 10px; border-radius:10px; font-size:12.5px; font-weight:700;">
+                            🤝 Rủ hội nhóm
+                        </a>
+                        <a href="<%= contextPath %>/newsfeed?shareBookingId=<%= asset.getBookingId() %>&purpose=PASS_SAN"
+                           style="flex:1; min-width:120px; text-align:center; background:#ea580c; color:#fff; text-decoration:none; padding:8px 10px; border-radius:10px; font-size:12.5px; font-weight:700;">
+                            🏷️ Rao bán sân
+                        </a>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            <% } %>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 3B: ĐƠN ĐẶT SÂN CỦA BẠN                                              -->
         <!-- ========================================================================= -->
         <section class="home-section-block" id="my-bookings">
             <div class="section-header-bar">
                 <div>
-                    <h3 class="section-title">📑 Đơn đặt sân của bạn</h3>
-                    <p class="section-desc">Quản lý các yêu cầu đặt sân bạn đã gửi và nhắn tin trao đổi trực tiếp với chủ sân.</p>
+                    <h3 class="section-title">📑 Toàn bộ lịch sử đơn đặt sân của bạn</h3>
+                    <p class="section-desc">Quản lý các yêu cầu đặt sân, chuyển nhượng lịch đã duyệt hoặc nhắn tin trực tiếp với chủ sân.</p>
                 </div>
                 <% if (!customerBookings.isEmpty()) { %>
-                <span class="court-slots-badge" style="font-size: 12.5px; padding: 5px 12px;"><%= customerBookings.size() %> đơn đã gửi</span>
+                <span class="court-slots-badge" style="font-size: 12.5px; padding: 5px 12px;"><%= customerBookings.size() %> đơn thuộc tài khoản</span>
                 <% } %>
             </div>
 
@@ -658,7 +744,7 @@
                             <th>Ngày đặt</th>
                             <th>Khung giờ</th>
                             <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
+                            <th>Trạng thái & Quyền sở hữu</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -668,7 +754,7 @@
                             String stText = "Chờ xác nhận";
                             if ("CONFIRMED".equals(b.getStatus())) {
                                 stClass = "status-confirmed";
-                                stText = "Đã xác nhận";
+                                stText = "Đã xác nhận (Tài sản sở hữu)";
                             } else if ("REJECTED".equals(b.getStatus())) {
                                 stClass = "status-rejected";
                                 stText = "Bị từ chối";
@@ -718,6 +804,18 @@
                                             title="Nhắn tin trao đổi với chủ sân về đơn đặt này">
                                         <span class="material-symbols-rounded">chat</span> Nhắn tin chủ sân
                                     </button>
+                                    <% if ("CONFIRMED".equals(b.getStatus())) { %>
+                                    <a href="<%= contextPath %>/chat-friends?transferBookingId=<%= b.getBookingId() %>"
+                                       style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #bae6fd;"
+                                       title="Chuyển quyền sở hữu lịch sân này cho tài khoản khác qua Tin nhắn">
+                                        🔁 Chuyển lịch sân
+                                    </a>
+                                    <a href="<%= contextPath %>/newsfeed?shareBookingId=<%= b.getBookingId() %>&purpose=TIM_DOI"
+                                       style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:#fef3c7;color:#b45309;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #fde68a;"
+                                       title="Đính kèm lịch sân này lên Newsfeed để rủ hội nhóm hoặc rao bán">
+                                        📢 Đăng Newsfeed
+                                    </a>
+                                    <% } %>
                                     <% if ("PENDING".equals(b.getStatus())) { %>
                                     <form method="post" action="<%= contextPath %>/field-booking/cancel" style="display:inline;"
                                           onsubmit="return confirm('Bạn có chắc chắn muốn hủy yêu cầu đặt sân này?');">

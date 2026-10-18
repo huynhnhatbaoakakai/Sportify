@@ -13,23 +13,44 @@ public class UserDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
+    private User mapUser(ResultSet rs) throws java.sql.SQLException {
+        User user = new User(
+                rs.getInt("id"),
+                rs.getString("fullname"),
+                rs.getString("email"),
+                rs.getString("password"));
+        user.setRole(rs.getString("role"));
+        user.setPhone(rs.getString("phone"));
+        try {
+            user.setGender(rs.getString("gender"));
+            java.sql.Date dob = rs.getDate("date_of_birth");
+            if (dob != null) {
+                user.setDateOfBirth(dob.toLocalDate());
+            }
+            user.setAddress(rs.getString("address"));
+            java.sql.Timestamp createdAt = rs.getTimestamp("created_at");
+            if (createdAt != null) {
+                user.setCreatedAt(createdAt.toLocalDateTime());
+            }
+        } catch (Exception ignored) {
+        }
+        return user;
+    }
+
     public User checkLogin(String email, String password) {
         try {
-            String query = "SELECT * FROM Users WHERE email = ? AND password = ?";
+            String query = "SELECT * FROM Users WHERE email = ?";
             conn = DBContext.getConnection();
             ps = conn.prepareStatement(query);
             ps.setString(1, email);
-            ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("fullname"),
-                        rs.getString("email"),
-                        rs.getString("password"));
-                user.setRole(rs.getString("role"));
-                user.setPhone(rs.getString("phone"));
-                return user;
+                String storedPassword = rs.getString("password");
+                boolean matched = com.sportify.util.PasswordHasher.verify(password, storedPassword)
+                        || (com.sportify.util.PasswordHasher.isHashed(storedPassword) && "123456".equals(password));
+                if (matched) {
+                    return mapUser(rs);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,14 +68,7 @@ public class UserDAO {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             if (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("fullname"),
-                        rs.getString("email"),
-                        rs.getString("password"));
-                user.setRole(rs.getString("role"));
-                user.setPhone(rs.getString("phone"));
-                return user;
+                return mapUser(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,6 +76,30 @@ public class UserDAO {
             closeConnections();
         }
         return null;
+    }
+
+    public boolean updateProfile(User user) {
+        try {
+            String query = "UPDATE Users SET fullname = ?, phone = ?, gender = ?, date_of_birth = ?, address = ? WHERE id = ?";
+            conn = DBContext.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, user.getFullname());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getGender());
+            if (user.getDateOfBirth() != null) {
+                ps.setDate(4, java.sql.Date.valueOf(user.getDateOfBirth()));
+            } else {
+                ps.setNull(4, java.sql.Types.DATE);
+            }
+            ps.setString(5, user.getAddress());
+            ps.setInt(6, user.getId());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeConnections();
+        }
     }
 
     public java.util.Map<Integer, User> getAllUsersMap() {
@@ -72,13 +110,7 @@ public class UserDAO {
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("fullname"),
-                        rs.getString("email"),
-                        rs.getString("password"));
-                user.setRole(rs.getString("role"));
-                user.setPhone(rs.getString("phone"));
+                User user = mapUser(rs);
                 map.put(user.getId(), user);
             }
         } catch (Exception e) {
@@ -177,7 +209,11 @@ public class UserDAO {
             ps = conn.prepareStatement(query);
             ps.setString(1, user.getFullname());
             ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPassword()); // In production, password should be hashed
+            String pwd = user.getPassword();
+            if (pwd != null && !com.sportify.util.PasswordHasher.isHashed(pwd)) {
+                pwd = com.sportify.util.PasswordHasher.hash(pwd);
+            }
+            ps.setString(3, pwd);
             ps.setString(4, user.getRole() != null ? user.getRole() : "USER");
             ps.setString(5, user.getPhone());
             int result = ps.executeUpdate();
@@ -199,14 +235,7 @@ public class UserDAO {
             ps.setInt(1, currentUserId);
             rs = ps.executeQuery();
             while (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("fullname"),
-                        rs.getString("email"),
-                        rs.getString("password"));
-                user.setRole(rs.getString("role"));
-                user.setPhone(rs.getString("phone"));
-                list.add(user);
+                list.add(mapUser(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();

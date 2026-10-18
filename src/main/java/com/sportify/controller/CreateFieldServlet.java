@@ -106,7 +106,7 @@ public class CreateFieldServlet extends HttpServlet {
 
             SportField field = new SportField();
 
-            field.setOwnerId(DEMO_OWNER_ID);
+            field.setOwnerId(com.sportify.util.OwnerAccess.resolveOwnerId(request));
             field.setFieldName(fieldName);
             field.setSportType(sportType);
             field.setAddress(address);

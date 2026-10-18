@@ -125,6 +125,16 @@ public final class BookingDB {
                         .setParameter("endsAt", booking.getEndsAt())
                         .getSingleResult();
                 if (conflicts >= maxQuantity) return cancel(transaction, StatusChangeResult.CONFLICT);
+                if (booking.getCustomerId() == null || booking.getCustomerId() <= 0) {
+                    try {
+                        int resolvedId = new com.sportify.dao.UserDAO().resolveOrCreateUser(
+                                booking.getCustomerName(), booking.getCustomerPhone());
+                        if (resolvedId > 0) {
+                            booking.setCustomerId(resolvedId);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
             }
 
             booking.setStatus(status);
@@ -421,6 +431,106 @@ public final class BookingDB {
         } finally {
             em.close();
         }
+    }
+
+    /** Lấy danh sách các lịch đặt sân đã được chủ sân xác nhận (tài sản riêng của tài khoản). */
+    public static List<Booking> findConfirmedAssetsByUserId(int userId) {
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT booking FROM Booking booking JOIN FETCH booking.field field " +
+                    "WHERE booking.customerId = :userId AND booking.status = 'CONFIRMED' " +
+                    "ORDER BY booking.startsAt DESC, booking.bookingId DESC", Booking.class)
+                    .setParameter("userId", userId)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Chuyển quyền sở hữu lịch đặt sân đã xác nhận (CONFIRMED) từ tài khoản hiện tại sang tài khoản khác.
+     */
+    public static Booking transferBookingOwnership(Long bookingId, int fromUserId, com.sportify.model.User toUser) {
+        if (bookingId == null || bookingId <= 0) {
+            throw new IllegalArgumentException("Mã lịch đặt sân không hợp lệ.");
+        }
+        if (toUser == null || toUser.getId() <= 0) {
+            throw new IllegalArgumentException("Tài khoản người nhận không hợp lệ.");
+        }
+        if (fromUserId == toUser.getId()) {
+            throw new IllegalArgumentException("Không thể tự chuyển lịch đặt sân cho chính mình.");
+        }
+
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            Booking booking = em.find(Booking.class, bookingId, LockModeType.PESSIMISTIC_WRITE);
+            if (booking == null) {
+                transaction.rollback();
+                throw new IllegalArgumentException("Không tìm thấy lịch đặt sân #" + bookingId + ".");
+            }
+            if (booking.getCustomerId() == null || booking.getCustomerId() != fromUserId) {
+                transaction.rollback();
+                throw new IllegalArgumentException("Bạn không phải là chủ sở hữu hiện tại của lịch đặt sân này.");
+            }
+            if (!"CONFIRMED".equals(booking.getStatus())) {
+                transaction.rollback();
+                throw new IllegalArgumentException("Chỉ lịch đặt sân đã được chủ sân xác nhận mới có thể chuyển nhượng.");
+            }
+
+            // Chuyển quyền sở hữu sang tài khoản mới
+            booking.setCustomerId(toUser.getId());
+            if (toUser.getFullname() != null && !toUser.getFullname().trim().isEmpty()) {
+                booking.setCustomerName(toUser.getFullname().trim());
+            }
+            if (toUser.getPhone() != null && !toUser.getPhone().trim().isEmpty()) {
+                booking.setCustomerPhone(toUser.getPhone().trim());
+            }
+            booking.setUpdatedAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+
+            // Trigger eager load of field before closing EntityManager
+            if (booking.getField() != null) {
+                booking.getField().getFieldName();
+            }
+
+            transaction.commit();
+            return booking;
+        } catch (RuntimeException exception) {
+            if (transaction.isActive()) transaction.rollback();
+            throw exception;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** Chuyển đổi đối tượng Booking sang Map gọn gàng phục vụ JSON API (Chat & Newsfeed). */
+    public static java.util.Map<String, Object> toAssetMap(Booking b) {
+        java.util.Map<String, Object> m = new java.util.LinkedHashMap<>();
+        if (b == null) return m;
+        java.time.format.DateTimeFormatter dFmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        java.time.format.DateTimeFormatter tFmt = java.time.format.DateTimeFormatter.ofPattern("HH:mm");
+        java.text.NumberFormat vnd = java.text.NumberFormat.getInstance(new java.util.Locale("vi", "VN"));
+
+        m.put("bookingId", b.getBookingId());
+        m.put("bookingCode", b.getBookingCode());
+        m.put("customerId", b.getCustomerId());
+        m.put("customerName", b.getCustomerName());
+        m.put("status", b.getStatus());
+        m.put("courtNumber", b.getCourtNumber());
+        m.put("dateStr", b.getStartsAt() != null ? b.getStartsAt().toLocalDate().format(dFmt) : "");
+        m.put("timeStr", (b.getStartsAt() != null ? b.getStartsAt().toLocalTime().format(tFmt) : "")
+                + " - " + (b.getEndsAt() != null ? b.getEndsAt().toLocalTime().format(tFmt) : ""));
+        m.put("priceFormatted", b.getTotalPrice() != null ? vnd.format(b.getTotalPrice()) + " đ" : "0 đ");
+        if (b.getField() != null) {
+            m.put("fieldId", b.getField().getFieldId());
+            m.put("fieldName", b.getField().getFieldName());
+            m.put("sportType", b.getField().getSportType());
+            m.put("fieldAddress", b.getField().getAddress());
+            m.put("fieldQuantity", b.getField().getQuantity());
+        }
+        return m;
     }
 
     private static CreateResult rollback(EntityTransaction transaction, CreateResult result) {

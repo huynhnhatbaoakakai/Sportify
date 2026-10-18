@@ -34,8 +34,9 @@ public class ManageReviewsServlet extends HttpServlet {
         request.setAttribute("selectedRating", rating);
 
         try {
-            List<Review> reviews = ReviewDB.findByOwnerId(DEMO_OWNER_ID, rating);
-            ReviewDB.Summary summary = ReviewDB.getSummaryByOwnerId(DEMO_OWNER_ID);
+            Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
+            List<Review> reviews = ReviewDB.findByOwnerId(ownerId, rating);
+            ReviewDB.Summary summary = ReviewDB.getSummaryByOwnerId(ownerId);
             request.setAttribute("reviews", reviews);
             request.setAttribute("totalReviews", summary.getTotalCount());
             request.setAttribute("averageRating", summary.getAverageRating());

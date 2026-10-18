@@ -53,7 +53,7 @@ public class ChatService {
             cs.setPartnerName(friend.getFullname());
             cs.setPartnerIcon(initialOf(friend.getFullname()));
             cs.setOnline(true);
-            boolean isOwner = "OWNER".equalsIgnoreCase(friend.getRole()) || "ADMIN".equalsIgnoreCase(friend.getRole()) || friend.getId() == 1;
+            boolean isOwner = "OWNER".equalsIgnoreCase(friend.getRole()) || "ADMIN".equalsIgnoreCase(friend.getRole());
             cs.setRoleName(isOwner ? "Chủ sân" : "Thành viên");
             cs.setRoleClass(isOwner ? "badge-role-owner" : "badge-role-user");
             cs.setMessages(chatDAO.getFriendMessages(userId, friend.getId()));
@@ -77,7 +77,7 @@ public class ChatService {
         int ownerId = (booking.getField() != null && booking.getField().getOwnerId() != null)
                 ? booking.getField().getOwnerId().intValue() : 0;
         if (ownerId <= 0) {
-            ownerId = 1;
+            ownerId = 2;
         }
 
         int customerId = booking.getCustomerId() != null ? booking.getCustomerId()

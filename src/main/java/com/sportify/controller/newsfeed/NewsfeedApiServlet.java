@@ -31,9 +31,16 @@ public class NewsfeedApiServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = currentUser(req);
+        String action = req.getParameter("action");
         try {
-            if ("getPosts".equals(req.getParameter("action"))) {
+            if ("getPosts".equals(action)) {
                 JsonResponse.ok(resp, postDAO.getAllPosts(user.getId()));
+            } else if ("getMyBookings".equals(action)) {
+                java.util.List<java.util.Map<String, Object>> list = new java.util.ArrayList<>();
+                for (com.sportify.model.Booking b : com.sportify.data.BookingDB.findConfirmedAssetsByUserId(user.getId())) {
+                    list.add(com.sportify.data.BookingDB.toAssetMap(b));
+                }
+                JsonResponse.ok(resp, list);
             } else {
                 JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Unknown action");
             }
@@ -45,6 +52,7 @@ public class NewsfeedApiServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         User user = currentUser(req);
         String action = req.getParameter("action");
         try {
@@ -69,11 +77,33 @@ public class NewsfeedApiServlet extends BaseServlet {
 
     private void createPost(HttpServletRequest req, HttpServletResponse resp, User user) throws IOException {
         String content = req.getParameter("content");
-        if (isBlank(content)) {
+        String bookingIdParam = req.getParameter("bookingId");
+        String postPurpose = req.getParameter("postPurpose");
+
+        Long bookingId = null;
+        if (bookingIdParam != null && !bookingIdParam.trim().isEmpty()) {
+            try {
+                long parsed = Long.parseLong(bookingIdParam.trim());
+                if (parsed > 0) {
+                    com.sportify.model.Booking b = com.sportify.data.BookingDB.findById(parsed);
+                    if (b != null && b.getCustomerId() != null && b.getCustomerId() == user.getId()
+                            && "CONFIRMED".equals(b.getStatus())) {
+                        bookingId = parsed;
+                    }
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (isBlank(content) && bookingId == null) {
             JsonResponse.ok(resp, errorBody("Nội dung không được trống"));
             return;
         }
-        boolean ok = postDAO.createPost(user.getId(), content.trim());
+        String finalContent = isBlank(content)
+                ? ("PASS_SAN".equals(postPurpose) ? "Mình cần nhượng lại lịch đặt sân đã xác nhận bên dưới, bạn nào cần nhắn mình nhé!" : "Mình đã đặt sẵn sân bên dưới, rủ anh em giao lưu cùng nhé!")
+                : content.trim();
+
+        boolean ok = postDAO.createPost(user.getId(), finalContent, bookingId, postPurpose);
         Map<String, Object> result = new HashMap<>();
         result.put("status", ok ? "success" : "error");
         JsonResponse.ok(resp, result);

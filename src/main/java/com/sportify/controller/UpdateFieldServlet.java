@@ -39,10 +39,12 @@ public class UpdateFieldServlet extends HttpServlet {
                     required(request.getParameter("fieldId"))
             );
 
+            Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
+
             SportField field =
                     SportFieldDB.findByIdAndOwnerId(
                             fieldId,
-                            DEMO_OWNER_ID
+                            ownerId
                     );
 
             if (field == null) {
@@ -110,7 +112,7 @@ public class UpdateFieldServlet extends HttpServlet {
             field.setStatus(status);
             field.setQuantity(quantity);
 
-            SportFieldDB.update(field, DEMO_OWNER_ID);
+            SportFieldDB.update(field, ownerId);
 
             response.sendRedirect(
                     request.getContextPath()

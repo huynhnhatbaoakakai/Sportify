@@ -44,6 +44,12 @@ public class ChatApiServlet extends BaseServlet {
                 Integer partnerId = req.getParameter("partnerId") != null && !req.getParameter("partnerId").isEmpty()
                         ? Integer.parseInt(req.getParameter("partnerId")) : null;
                 JsonResponse.ok(resp, chatService.getOrderChatData(user.getId(), bookingId, partnerId));
+            } else if ("getMyConfirmedBookings".equals(action)) {
+                java.util.List<java.util.Map<String, Object>> assets = new java.util.ArrayList<>();
+                for (com.sportify.model.Booking b : com.sportify.data.BookingDB.findConfirmedAssetsByUserId(user.getId())) {
+                    assets.add(com.sportify.data.BookingDB.toAssetMap(b));
+                }
+                JsonResponse.ok(resp, assets);
             } else {
                 JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Unknown action");
             }
@@ -55,6 +61,7 @@ public class ChatApiServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         User user = currentUser(req);
         String action = req.getParameter("action");
         String text = req.getParameter("text");
@@ -70,9 +77,51 @@ public class ChatApiServlet extends BaseServlet {
                 int receiverId = Integer.parseInt(req.getParameter("receiverId"));
                 chatService.sendOrderMessage(user.getId(), receiverId, text, time);
                 JsonResponse.success(resp);
+            } else if ("transferBooking".equals(action)) {
+                long bookingId = Long.parseLong(req.getParameter("bookingId"));
+                int receiverId = Integer.parseInt(req.getParameter("receiverId"));
+                String note = req.getParameter("note");
+                if (note == null) note = "";
+                note = note.replace("|", "/").replace("]", ")").trim();
+
+                User receiver = new com.sportify.dao.UserDAO().getUserById(receiverId);
+                if (receiver == null) {
+                    JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Không tìm thấy người nhận.");
+                    return;
+                }
+
+                com.sportify.model.Booking transferred = com.sportify.data.BookingDB.transferBookingOwnership(
+                        bookingId, user.getId(), receiver);
+                java.util.Map<String, Object> asset = com.sportify.data.BookingDB.toAssetMap(transferred);
+
+                String msgPayload = "[BOOKING_ASSET_TRANSFER|"
+                        + asset.getOrDefault("bookingId", "") + "|"
+                        + asset.getOrDefault("bookingCode", "") + "|"
+                        + String.valueOf(asset.getOrDefault("fieldName", "")).replace("|", "/") + "|"
+                        + asset.getOrDefault("sportType", "") + "|"
+                        + asset.getOrDefault("courtNumber", "1") + "|"
+                        + asset.getOrDefault("dateStr", "") + "|"
+                        + asset.getOrDefault("timeStr", "") + "|"
+                        + asset.getOrDefault("priceFormatted", "") + "|"
+                        + (user.getFullname() != null ? user.getFullname().replace("|", "/") : "Người gửi") + "|"
+                        + (receiver.getFullname() != null ? receiver.getFullname().replace("|", "/") : "Người nhận") + "|"
+                        + note + "]";
+
+                String msgTime = (time != null && !time.trim().isEmpty()) ? time.trim()
+                        : java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+                chatService.sendFriendMessage(user.getId(), receiverId, msgPayload, msgTime);
+
+                java.util.Map<String, Object> resMap = new java.util.LinkedHashMap<>();
+                resMap.put("status", "success");
+                resMap.put("transferredBooking", asset);
+                resMap.put("messageText", msgPayload);
+                resMap.put("time", msgTime);
+                JsonResponse.ok(resp, resMap);
             } else {
                 JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Unknown action");
             }
+        } catch (IllegalArgumentException e) {
+            JsonResponse.error(resp, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             JsonResponse.error(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

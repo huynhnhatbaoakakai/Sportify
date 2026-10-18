@@ -29,7 +29,7 @@ public class Review implements Serializable {
     private SportField field;
 
     // TODO: replace customerName with a user relationship when user accounts exist.
-    @Column(name = "customer_name", nullable = false, length = 100)
+    @Column(name = "customer_name", nullable = false, length = 100, columnDefinition = "nvarchar(100)")
     private String customerName;
 
     @Column(name = "rating", nullable = false)

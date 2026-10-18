@@ -29,20 +29,7 @@ public class ManageCustomersServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        Long ownerId = DEMO_OWNER_ID;
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            User sessionUser = (User) session.getAttribute("user");
-            if (sessionUser != null && sessionUser.getId() > 0) {
-                try {
-                    Long uid = (long) sessionUser.getId();
-                    if (uid.equals(1L) || !SportFieldDB.findByOwnerId(uid).isEmpty()) {
-                        ownerId = uid;
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
+        Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
 
         String search = "";
         try {

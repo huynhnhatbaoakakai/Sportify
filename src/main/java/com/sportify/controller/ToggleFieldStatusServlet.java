@@ -35,7 +35,7 @@ public class ToggleFieldStatusServlet extends HttpServlet {
 
             SportFieldDB.toggleStatus(
                     fieldId,
-                    DEMO_OWNER_ID
+                    com.sportify.util.OwnerAccess.resolveOwnerId(request)
             );
 
             response.sendRedirect(

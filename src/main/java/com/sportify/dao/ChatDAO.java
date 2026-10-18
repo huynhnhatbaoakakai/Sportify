@@ -169,7 +169,7 @@ public class ChatDAO {
                      "FROM FriendMessages fm " +
                      "JOIN Users u ON u.id = (CASE WHEN fm.sender_id = ? THEN fm.receiver_id ELSE fm.sender_id END) " +
                      "WHERE (fm.sender_id = ? OR fm.receiver_id = ?) " +
-                     "  AND (u.role = 'OWNER' OR u.role = 'ADMIN' OR u.id = 1) " +
+                     "  AND (u.role = 'OWNER' OR u.role = 'ADMIN') " +
                      "ORDER BY fm.id DESC";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

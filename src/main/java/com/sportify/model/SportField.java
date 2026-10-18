@@ -26,16 +26,16 @@ public class SportField implements Serializable {
     @Column(name = "owner_id", nullable = false, columnDefinition = "int")
     private Long ownerId;
 
-    @Column(name = "field_name", nullable = false, length = 150)
+    @Column(name = "field_name", nullable = false, length = 150, columnDefinition = "nvarchar(150)")
     private String fieldName;
 
-    @Column(name = "sport_type", nullable = false, length = 30)
+    @Column(name = "sport_type", nullable = false, length = 30, columnDefinition = "nvarchar(30)")
     private String sportType;
 
-    @Column(name = "address", nullable = false, length = 255)
+    @Column(name = "address", nullable = false, length = 255, columnDefinition = "nvarchar(255)")
     private String address;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "nvarchar(max)")
     private String description;
 
     @Column(
@@ -52,10 +52,10 @@ public class SportField implements Serializable {
     @Column(name = "close_time", nullable = false)
     private LocalTime closeTime;
 
-    @Column(name = "image_url", length = 500)
+    @Column(name = "image_url", length = 500, columnDefinition = "nvarchar(500)")
     private String imageUrl;
 
-    @Column(name = "status", nullable = false, length = 20)
+    @Column(name = "status", nullable = false, length = 20, columnDefinition = "nvarchar(20)")
     private String status;
 
     @Column(name = "quantity", nullable = false)

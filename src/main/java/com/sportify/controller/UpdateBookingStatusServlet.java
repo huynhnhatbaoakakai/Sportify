@@ -42,7 +42,8 @@ public class UpdateBookingStatusServlet extends HttpServlet {
             String status = request.getParameter("status");
             if (!"CONFIRMED".equals(status) && !"REJECTED".equals(status)) throw new IllegalArgumentException();
 
-            BookingDB.StatusChangeResult changed = BookingDB.changeStatus(bookingId, DEMO_OWNER_ID, status);
+            Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
+            BookingDB.StatusChangeResult changed = BookingDB.changeStatus(bookingId, ownerId, status);
             result = changed == BookingDB.StatusChangeResult.UPDATED
                     ? "success=booking_" + status.toLowerCase(Locale.ROOT)
                     : "error=booking_" + changed.name().toLowerCase(Locale.ROOT);

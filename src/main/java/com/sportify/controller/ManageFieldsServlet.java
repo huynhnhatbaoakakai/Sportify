@@ -32,12 +32,12 @@ public class ManageFieldsServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         try {
+            Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
             List<SportField> fields =
-                    SportFieldDB.findByOwnerId(DEMO_OWNER_ID);
+                    SportFieldDB.findByOwnerId(ownerId);
 
             request.setAttribute("fields", fields);
-            request.setAttribute("ownerId", DEMO_OWNER_ID);
-            request.setAttribute("bookingPage", "/owner/bookings".equals(request.getServletPath()));
+            request.setAttribute("ownerId", ownerId);
             request.setAttribute("bookingPage", "/owner/bookings".equals(request.getServletPath()));
 
             if (request.getSession().getAttribute(UpdateBookingStatusServlet.CSRF_ATTRIBUTE) == null) {
@@ -47,9 +47,9 @@ public class ManageFieldsServlet extends HttpServlet {
             request.setAttribute("bookingCsrfToken",
                     request.getSession().getAttribute(UpdateBookingStatusServlet.CSRF_ATTRIBUTE));
             try {
-                List<Booking> bookings = BookingDB.findByOwnerId(DEMO_OWNER_ID);
+                List<Booking> bookings = BookingDB.findByOwnerId(ownerId);
                 BookingDB.Summary summary = BookingDB.getDashboardSummary(
-                        DEMO_OWNER_ID, LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+                        ownerId, LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 List<BookingDB.BookedSlotSummary> bookedSlots = BookingDB.groupBookedSlots(bookings);
                 request.setAttribute("bookings", bookings);
                 request.setAttribute("bookedSlots", bookedSlots);
