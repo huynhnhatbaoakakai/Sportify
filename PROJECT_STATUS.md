@@ -1,44 +1,29 @@
-# Sportify Current Status
+# Trạng thái Sportify
 
-## Đã hoàn thành
+Cập nhật ngày 17/10/2026. Tài liệu chi tiết: [TINH_NANG_WEBSITE.md](TINH_NANG_WEBSITE.md).
 
-- Trang chủ index.jsp
-- Giao diện đăng nhập và đăng ký
-- Trang hồ sơ
-- Giao diện chat
-- Hình ảnh và icon cho trang chủ
-- Tạo branch feature/owner-dashboard
-- Tạo owner/dashboard.jsp
-- Tạo assets/css/owner-dashboard.css
-- Tạo assets/js/owner-dashboard.js
-- Dashboard hiện đã có cấu trúc JSP cơ bản
+## Đã hoạt động trong mã nguồn hiện tại
 
-## Đang thực hiện
+- Đăng ký, đăng nhập, quyền khách hàng và chủ sân.
+- Tìm sân, xem lịch trống, gửi đơn, xác nhận thủ công hoặc tự động cho sân đủ điều kiện.
+- Quản lý sân, khóa giờ, xử lý đơn, lịch sử và thông báo.
+- Lưu hồ sơ cá nhân, chat trực tiếp, Newsfeed, thích và bình luận.
+- Bộ icon SVG nét mảnh dùng chung cho giao diện khách và chủ sân.
+- Giao diện đặt sân có bố cục riêng cho điện thoại.
+- PostgreSQL là database đang dùng ở bản làm việc này.
 
-Giao diện Dashboard dành cho Chủ sân.
+## Cấu trúc chính
 
-Dashboard cần có:
-- Sidebar
-- Logo Sportify
-- Thông tin chủ sân
-- 4 thẻ thống kê
-- Bảng lịch đặt sân
-- Bộ lọc trạng thái
-- Nút xác nhận và từ chối
-- Giao diện responsive
+- `src/main/java`: Servlet, model và xử lý dữ liệu.
+- `src/main/webapp/WEB-INF/views`: các trang người dùng và lịch chủ sân.
+- `src/main/webapp/owner`: dashboard, khách hàng và đánh giá đang được Servlet sử dụng.
+- `src/main/webapp/assets`: CSS, JavaScript và ảnh dùng chung.
+- `database`: giữ script PostgreSQL, script và backup SQL Server của nhóm.
+- `docs`: tài liệu thiết kế và ghi chú ôn tập.
+- `target`: kết quả build do Maven tạo lại, không đưa vào Git.
 
-## Bước tiếp theo
+## Những phần chưa có
 
-1. Kiểm tra và sửa cấu trúc owner/dashboard.jsp.
-2. Hoàn thiện owner-dashboard.css.
-3. Viết JavaScript lọc trạng thái.
-4. Viết JavaScript xác nhận/từ chối đơn.
-5. Kiểm tra trên Tomcat.
-6. Kiểm tra git diff trước khi commit.
+Thanh toán trực tuyến, tải ảnh đại diện, màn hình khách đăng đánh giá, lịch lặp và trạng thái trực tuyến thật chưa được triển khai. Thuê gear, trang phục và PT đã tắt.
 
-## Giới hạn hiện tại
-
-- Chỉ dùng dữ liệu giả.
-- Không kết nối PostgreSQL.
-- Không tạo Servlet hoặc DAO.
-- Không thay đổi những trang ngoài owner dashboard.
+Backend hiện có phần riêng cho PostgreSQL. Muốn dùng đầy đủ trên SQL Server cần phần tương thích tương ứng; việc đổi icon và dọn file không thay đổi các truy vấn database hiện có.

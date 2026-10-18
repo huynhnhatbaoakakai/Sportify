@@ -25,8 +25,8 @@
     <header class="top-navbar">
         <h1 class="page-title"><span class="app-icon icon-news" aria-hidden="true"></span> Newsfeed</h1>
         <a href="<%= contextPath %>/profile" class="user-profile">
-            <div class="profile-img"><%= currentUser.getFullname().substring(0,1).toUpperCase() %></div>
-            <div class="profile-name"><%= currentUser.getFullname() %></div>
+            <div class="profile-img"><%= com.sportify.util.Html.escape(currentUser.getFullname().substring(0,1).toUpperCase()) %></div>
+            <div class="profile-name"><%= com.sportify.util.Html.escape(currentUser.getFullname()) %></div>
         </a>
     </header>
 
@@ -35,8 +35,8 @@
         <!-- CREATE POST -->
         <div class="create-post-box">
             <div class="create-post-header">
-                <div class="create-post-avatar"><%= currentUser.getFullname().substring(0,1).toUpperCase() %></div>
-                <span style="font-weight:600; color:var(--dark);">Bạn đang nghĩ gì, <%= currentUser.getFullname() %>?</span>
+                <div class="create-post-avatar"><%= com.sportify.util.Html.escape(currentUser.getFullname().substring(0,1).toUpperCase()) %></div>
+                <span style="font-weight:600; color:var(--dark);">Bạn đang nghĩ gì, <%= com.sportify.util.Html.escape(currentUser.getFullname()) %>?</span>
             </div>
             <textarea id="postContent" class="create-post-input"
                       placeholder="Chia sẻ hoạt động thể thao của bạn hôm nay..."></textarea>
@@ -57,7 +57,7 @@
     // Giá trị từ server cho file JS của trang
     const CTX = '<%= contextPath %>';
     const ME_ID = <%= currentUser.getId() %>;
-    const ME_NAME = '<%= currentUser.getFullname().replace("'", "\\'") %>';
+    const ME_NAME = <%= com.sportify.util.JsonResponse.getGson().toJson(currentUser.getFullname()) %>;
 </script>
 <script src="<%= contextPath %>/assets/js/pages/newsfeed.js"></script>
 </body>

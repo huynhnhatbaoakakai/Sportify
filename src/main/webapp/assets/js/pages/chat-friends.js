@@ -3,6 +3,7 @@ const API = CTX + '/chat-api';
 
 let friends = [];       // danh sách bạn bè với messages
 let currentFriendId = null;
+const requestedFriendId = new URLSearchParams(window.location.search).get('friendId');
 let pollingTimer = null;
 
 // ===== LOAD FRIENDS FROM API =====
@@ -27,9 +28,10 @@ async function loadFriends(keepCurrent) {
             return;
         }
 
-        // Chọn người đầu tiên nếu chưa chọn ai
+        // Mở đúng chủ sân/khách hàng khi đi từ sân hoặc đơn đặt sân.
         if (!keepCurrent && !currentFriendId && friends.length > 0) {
-            currentFriendId = friends[0].id;
+            const requestedFriend = friends.find(friend => String(friend.id) === requestedFriendId);
+            currentFriendId = requestedFriend ? requestedFriend.id : friends[0].id;
         }
 
         renderList();

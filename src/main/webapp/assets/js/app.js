@@ -14,7 +14,7 @@ function normalizeText(text) {
         .replace(/đ/g, "d");
 }
 
-function filterServices(keyword) {
+function filterCourts(keyword) {
     const normalizedKeyword = normalizeText(keyword.trim());
     let visibleCount = 0;
 
@@ -29,40 +29,31 @@ function filterServices(keyword) {
         }
     });
 
-    const queryLabels = {
-    venue: "thuê sân/phòng tập",
-    clothing: "thuê quần áo",
-    gear: "thuê gear",
-    pt: "thuê PT"
-};
-
-    const displayQuery = queryLabels[keyword] || keyword;
-
     resultMessage.textContent = keyword.trim()
-        ? `Tìm thấy ${visibleCount} dịch vụ cho "${displayQuery}".`
-        : "Đang hiển thị tất cả dịch vụ.";
+        ? `Tìm thấy ${visibleCount} nhóm sân cho "${keyword}".`
+        : "Đang hiển thị tất cả nhóm sân.";
 
-        emptyState.hidden = visibleCount !== 0;
+    emptyState.hidden = visibleCount !== 0;
 
-        document.querySelector("#featured").scrollIntoView({
-            behavior: "smooth"
-        });
-    }
+    document.querySelector("#featured").scrollIntoView({
+        behavior: "smooth"
+    });
+}
 
 searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    filterServices(searchInput.value);
+    filterCourts(searchInput.value);
 });
 
 filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
         const keyword = button.dataset.query;
         searchInput.value = keyword;
-        filterServices(keyword);
+        filterCourts(keyword);
     });
 });
 
 clearFilterButton.addEventListener("click", () => {
     searchInput.value = "";
-    filterServices("");
+    filterCourts("");
 });

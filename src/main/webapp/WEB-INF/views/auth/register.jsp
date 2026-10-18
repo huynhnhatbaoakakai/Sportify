@@ -37,7 +37,7 @@
         <div class="auth-card">
             <div class="auth-header">
                 <h1>Tạo tài khoản mới</h1>
-                <p>Tham gia Sportify để trải nghiệm dịch vụ</p>
+                <p>Tham gia Sportify để đặt sân và kết nối cộng đồng</p>
             </div>
             
             <form action="<%= contextPath %>/register" method="POST">

@@ -30,6 +30,8 @@ public class AppointmentServlet extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ("/appointments/delete".equals(req.getServletPath())) {
             delete(req, resp);
+        } else if (req.getParameter("type") != null && !"court".equals(req.getParameter("type"))) {
+            redirect(req, resp, "/home#fields");
         } else {
             showPage(req, resp);
         }
@@ -37,6 +39,11 @@ public class AppointmentServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (!"court".equals(req.getParameter("type"))) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Chỉ hỗ trợ lịch nhắc đặt sân. Các dịch vụ thuê khác đã tắt.");
+            return;
+        }
         User user = currentUser(req);
         String title = req.getParameter("title");
         String date = req.getParameter("date");
@@ -51,11 +58,11 @@ public class AppointmentServlet extends BaseServlet {
             a.setTitle(title.trim());
             a.setAppointmentDate(date);
             a.setAppointmentTime(time);
-            a.setType(req.getParameter("type"));
+            a.setType("court");
             a.setNote(note != null ? note.trim() : "");
 
             if (appointmentDAO.createAppointment(a)) {
-                req.setAttribute("successMsg", "Đã thêm lịch hẹn thành công!");
+                req.setAttribute("successMsg", "Đã lưu lịch nhắc cá nhân. Để giữ chỗ, vui lòng đặt sân ở trang danh sách sân.");
             } else {
                 req.setAttribute("errorMsg", "Không thể lưu lịch hẹn. Vui lòng thử lại.");
             }
