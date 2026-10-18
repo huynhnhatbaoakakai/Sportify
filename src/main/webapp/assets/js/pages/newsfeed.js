@@ -43,14 +43,14 @@ async function loadFeed() {
 
         const feedList = document.getElementById('feedList');
         if (!Array.isArray(posts) || posts.length === 0) {
-            feedList.innerHTML = '<div class="feed-empty"><div class="big-icon">🏃‍♂️</div><p>Chưa có bài đăng nào.<br>Hãy là người đầu tiên chia sẻ!</p></div>';
+            feedList.innerHTML = '<div class="feed-empty"><div class="big-icon"><span class="app-icon icon-news" aria-hidden="true"></span></div><p>Chưa có bài đăng nào.<br>Hãy là người đầu tiên chia sẻ!</p></div>';
             return;
         }
 
         feedList.innerHTML = posts.map(post => renderPost(post)).join('');
     } catch(e) {
         document.getElementById('feedList').innerHTML =
-            '<div style="color:red;padding:20px;text-align:center;">❌ Lỗi tải bài viết: ' + e.message + '</div>';
+            '<div style="color:red;padding:20px;text-align:center;">Lỗi tải bài viết: ' + e.message + '</div>';
     }
 }
 
@@ -58,7 +58,7 @@ async function loadFeed() {
 function renderPost(post) {
     const initials = post.authorName ? post.authorName[0].toUpperCase() : '?';
     const likedClass = post.likedByMe ? 'liked' : '';
-    const heartIcon = post.likedByMe ? '❤️' : '🤍';
+    const heartIcon = '<span class="app-icon icon-heart" aria-hidden="true"></span>';
 
     const commentsHtml = (post.comments || []).map(c => renderComment(c)).join('');
 
@@ -67,17 +67,17 @@ function renderPost(post) {
             '<div class="post-avatar">' + esc(initials) + '</div>' +
             '<div>' +
                 '<div class="post-author-name">' + esc(post.authorName) + '</div>' +
-                '<div class="post-time">🕐 ' + esc(post.createdAt) + '</div>' +
+                '<div class="post-time"><span class="app-icon icon-clock" aria-hidden="true"></span> ' + esc(post.createdAt) + '</div>' +
             '</div>' +
         '</div>' +
         '<div class="post-body">' + esc(post.content) + '</div>' +
         '<div class="post-actions">' +
-            '<button class="action-btn ' + likedClass + '" id="like-btn-' + post.id + '" onclick="toggleLike(' + post.id + ')">' +
+            '<button class="action-btn ' + likedClass + '" id="like-btn-' + post.id + '" aria-pressed="' + String(Boolean(post.likedByMe)) + '" onclick="toggleLike(' + post.id + ')">' +
                 '<span class="heart-icon" id="heart-' + post.id + '">' + heartIcon + '</span>' +
                 '<span id="like-count-' + post.id + '">' + post.likeCount + '</span> Thích' +
             '</button>' +
             '<button class="action-btn" onclick="toggleComments(' + post.id + ')">' +
-                '💬 <span id="cmt-count-' + post.id + '">' + (post.comments ? post.comments.length : 0) + '</span> Bình luận' +
+                '<span class="app-icon icon-chat" aria-hidden="true"></span> <span id="cmt-count-' + post.id + '">' + (post.comments ? post.comments.length : 0) + '</span> Bình luận' +
             '</button>' +
         '</div>' +
         '<div class="comments-section hidden" id="comments-' + post.id + '">' +
@@ -87,7 +87,7 @@ function renderPost(post) {
                 '<input class="comment-input" id="cmt-input-' + post.id + '" ' +
                        'placeholder="Bình luận..." ' +
                        'onkeypress="handleCmtEnter(event,' + post.id + ')">' +
-                '<button class="comment-send-btn" onclick="addComment(' + post.id + ')">➤</button>' +
+                '<button class="comment-send-btn" aria-label="Gửi bình luận" onclick="addComment(' + post.id + ')"><span class="app-icon icon-send" aria-hidden="true"></span></button>' +
             '</div>' +
         '</div>' +
     '</div>';
@@ -118,17 +118,18 @@ async function toggleLike(postId) {
     btn.disabled = false;
 
     if (data.likeCount !== undefined) {
+        btn.setAttribute("aria-pressed", String(Boolean(data.liked)));
         document.getElementById('like-count-' + postId).textContent = data.likeCount;
         const heartEl = document.getElementById('heart-' + postId);
         if (data.liked) {
             btn.classList.add('liked');
-            heartEl.textContent = '❤️';
+            heartEl.innerHTML = '<span class="app-icon icon-heart" aria-hidden="true"></span>';
             heartEl.classList.remove('heart-icon');
             void heartEl.offsetWidth; // force reflow
             heartEl.classList.add('heart-icon');
         } else {
             btn.classList.remove('liked');
-            heartEl.textContent = '🤍';
+            heartEl.innerHTML = '<span class="app-icon icon-heart" aria-hidden="true"></span>';
         }
     }
 }

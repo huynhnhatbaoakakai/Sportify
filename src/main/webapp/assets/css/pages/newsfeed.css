@@ -198,3 +198,8 @@ body {
 .feed-loading { text-align: center; color: var(--muted); padding: 40px; font-size: 15px; }
 .feed-empty { text-align: center; color: var(--muted); padding: 60px 20px; }
 .feed-empty .big-icon { font-size: 56px; margin-bottom: 16px; }
+/* SVG outline controls share the site's navigation style. */
+.action-btn .app-icon { font-size: 17px; }
+.action-btn.liked { color: #287449; background: #edf7ef; }
+.comment-send-btn { display: inline-flex; align-items: center; justify-content: center; }
+.post-time .app-icon { font-size: 12px; }

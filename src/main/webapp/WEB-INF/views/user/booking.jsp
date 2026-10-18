@@ -62,7 +62,7 @@
     String st = field.getSportType() != null ? field.getSportType().toUpperCase(Locale.ROOT) : "GENERAL";
     String badgeClass = "badge-default";
     String badgeText = field.getSportType() != null ? field.getSportType() : "THỂ THAO";
-    String badgeIcon = "🏟️";
+    String badgeIcon = "court";
     String productUnitLabel = "sân";
     String defaultImg = contextPath + "/assets/images/basketball.jpg";
     String amenitiesHtml = "";
@@ -70,38 +70,38 @@
     if ("GYM".equals(st)) {
         badgeClass = "badge-gym";
         badgeText = "Phòng Gym & Fitness";
-        badgeIcon = "🏋️";
+        badgeIcon = "gym";
         productUnitLabel = "khu tập / phòng";
         defaultImg = contextPath + "/assets/images/gymfitzone.jfif";
-        amenitiesHtml = "<span class='amenity-pill'>🏋️ Full thiết bị tập</span><span class='amenity-pill'>❄️ Máy lạnh 24/7</span><span class='amenity-pill'>🚿 Phòng tắm nóng lạnh</span><span class='amenity-pill'>📶 Wifi miễn phí</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Full thiết bị tập</span><span class='amenity-pill'>Máy lạnh 24/7</span><span class='amenity-pill'>Phòng tắm nóng lạnh</span><span class='amenity-pill'>Wifi miễn phí</span>";
     } else if ("BASKETBALL".equals(st)) {
         badgeClass = "badge-basketball";
         badgeText = "Sân Bóng Rổ";
-        badgeIcon = "🏀";
+        badgeIcon = "basketball";
         productUnitLabel = "sân bóng rổ";
         defaultImg = contextPath + "/assets/images/basketballcourt1.jpg";
-        amenitiesHtml = "<span class='amenity-pill'>🏀 Sàn gỗ chuẩn FIBA</span><span class='amenity-pill'>💡 Đèn LED chiếu sáng</span><span class='amenity-pill'>🅿️ Bãi giữ xe rộng</span><span class='amenity-pill'>🥤 Nước uống miễn phí</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Sàn gỗ chuẩn FIBA</span><span class='amenity-pill'>Đèn LED chiếu sáng</span><span class='amenity-pill'>Bãi giữ xe rộng</span><span class='amenity-pill'>Nước uống miễn phí</span>";
     } else if ("SWIMMING".equals(st)) {
         badgeClass = "badge-swimming";
         badgeText = "Hồ Bơi Thể Thao";
-        badgeIcon = "🏊";
+        badgeIcon = "swimming";
         productUnitLabel = "làn bơi tiêu chuẩn";
         defaultImg = contextPath + "/assets/images/swimmingpoolaqua.jfif";
-        amenitiesHtml = "<span class='amenity-pill'>🏊 Làn bơi Olympic</span><span class='amenity-pill'>🌡️ Nước ấm 4 mùa</span><span class='amenity-pill'>🛟 Cứu hộ chuyên nghiệp</span><span class='amenity-pill'>🚿 Phòng thay đồ VIP</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Làn bơi Olympic</span><span class='amenity-pill'>Nước ấm 4 mùa</span><span class='amenity-pill'>Cứu hộ chuyên nghiệp</span><span class='amenity-pill'>Phòng thay đồ VIP</span>";
     } else if ("PICKLEBALL".equals(st)) {
         badgeClass = "badge-pickleball";
         badgeText = "Sân Pickleball";
-        badgeIcon = "🏓";
+        badgeIcon = "racket";
         productUnitLabel = "sân pickleball";
         defaultImg = contextPath + "/assets/images/greenpickleballcourt.jfif";
-        amenitiesHtml = "<span class='amenity-pill'>🏓 Mặt sân chuẩn thi đấu</span><span class='amenity-pill'>💡 Đèn chơi ban đêm</span><span class='amenity-pill'>🅿️ Đỗ xe ô tô</span><span class='amenity-pill'>🥤 Quầy căng tin</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Mặt sân chuẩn thi đấu</span><span class='amenity-pill'>Đèn chơi ban đêm</span><span class='amenity-pill'>Đỗ xe ô tô</span><span class='amenity-pill'>Quầy căng tin</span>";
     } else if ("TABLE_TENNIS".equals(st)) {
         badgeClass = "badge-pickleball";
         badgeText = "Sân Bóng Bàn";
-        badgeIcon = "🏓";
+        badgeIcon = "racket";
         productUnitLabel = "sân bóng bàn";
         defaultImg = contextPath + "/assets/images/pickleball.jpg";
-        amenitiesHtml = "<span class='amenity-pill'>🏓 Bàn chuẩn ITTF</span><span class='amenity-pill'>❄️ Điều hòa mát mẻ</span><span class='amenity-pill'>💡 Ánh sáng chống lóa</span><span class='amenity-pill'>🏓 Có sẵn vợt & bóng</span>";
+        amenitiesHtml = "<span class='amenity-pill'>Bàn chuẩn ITTF</span><span class='amenity-pill'>Điều hòa mát mẻ</span><span class='amenity-pill'>Ánh sáng chống lóa</span><span class='amenity-pill'>Có sẵn vợt & bóng</span>";
     }
 
     String imgSrc = field.getImageUrl() != null && !field.getImageUrl().trim().isEmpty()
@@ -593,6 +593,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -603,7 +604,7 @@
     <header class="top-navbar">
         <div style="display: flex; align-items: center; gap: 14px;">
             <a href="<%= contextPath %>/home" class="back-link-btn">
-                <span>←</span> Quay lại trang chủ
+                <span><span class="app-icon icon-arrow-left" aria-hidden="true"></span></span> Quay lại trang chủ
             </a>
             <h1 class="page-title" style="margin: 0;">Đặt sân & Bảng chọn khung giờ</h1>
         </div>
@@ -622,7 +623,7 @@
                 <div class="venue-img-wrap">
                     <img src="<%= imgSrc %>" alt="<%= escapeHtml(field.getFieldName()) %>" onerror="this.src='<%= defaultImg %>'">
                     <span class="venue-badge <%= badgeClass %>">
-                        <span><%= badgeIcon %></span> <%= badgeText %>
+                        <span><span class="app-icon icon-<%= badgeIcon %>" aria-hidden="true"></span></span> <%= badgeText %>
                     </span>
                     <span class="venue-qty-badge">
                         🏟️ Quy mô: <%= fieldQuantity %> <%= productUnitLabel %> (sản phẩm)
@@ -632,7 +633,7 @@
                 <h2 class="venue-title"><%= escapeHtml(field.getFieldName()) %></h2>
 
                 <div class="venue-rating-row">
-                    <span style="color: #f59e0b; font-weight: 700;">★★★★★</span>
+
                     <strong>4.9 / 5</strong>
                     <span>•</span>
                     <span style="background: #eaf8ef; color: var(--primary-dark); padding: 3px 9px; border-radius: 6px; font-weight: 700; font-size: 11.5px;">
@@ -655,19 +656,19 @@
 
                 <div class="venue-spec-list">
                     <div class="venue-spec-item">
-                        <span>📍</span>
+                        <span><span class="app-icon icon-map" aria-hidden="true"></span></span>
                         <span>Địa chỉ: <strong><%= field.getAddress() != null ? escapeHtml(field.getAddress()) : "TP. Hồ Chí Minh" %></strong></span>
                     </div>
                     <div class="venue-spec-item">
-                        <span>🕒</span>
+                        <span><span class="app-icon icon-clock" aria-hidden="true"></span></span>
                         <span>Khung giờ mở cửa: <strong><%= openTimeStr %> - <%= closeTimeStr %></strong> hàng ngày</span>
                     </div>
                     <div class="venue-spec-item">
-                        <span>🏟️</span>
+                        <span><span class="app-icon icon-court" aria-hidden="true"></span></span>
                         <span>Công suất phục vụ: <strong><%= fieldQuantity %> đơn đặt / 1 khung giờ</strong> (<%= fieldQuantity %> sản phẩm)</span>
                     </div>
                     <div class="venue-spec-item">
-                        <span>💰</span>
+                        <span><span class="app-icon icon-wallet" aria-hidden="true"></span></span>
                         <span>Giá thuê niêm yết: <strong style="color: var(--primary); font-size: 16px;"><%= vndFormat.format(price) %> đ</strong> / giờ / 1 <%= productUnitLabel %></span>
                     </div>
                 </div>
@@ -688,7 +689,7 @@
             <!-- CỘT PHẢI: BẢNG CHỌN KHUNG GIỜ, BẢNG CHỌN SẢN PHẨM & FORM ĐẶT SÂN -->
             <div class="booking-form-box">
                 <div class="booking-form-header">
-                    <h3><span>📅</span> Bảng Chọn Khung Giờ & Đặt Sân</h3>
+                    <h3><span><span class="app-icon icon-calendar" aria-hidden="true"></span></span> Bảng Chọn Khung Giờ & Đặt Sân</h3>
                     <p>Chọn ngày để xem tình trạng lấp đầy của <strong><%= fieldQuantity %> <%= productUnitLabel %></strong> theo từng khung giờ. Khung giờ đã đủ <%= fieldQuantity %>/<%= fieldQuantity %> đơn sẽ không thể bấm đặt.</p>
                 </div>
 
@@ -788,7 +789,7 @@
                             Hủy bỏ
                         </a>
                         <button type="submit" id="btnSubmitBooking" class="btn-submit" style="flex: 2; font-size: 14px;">
-                            Xác nhận đặt sân ➔
+                            Xác nhận đặt sân <span class="app-icon icon-arrow" aria-hidden="true"></span>
                         </button>
                     </div>
                 </form>

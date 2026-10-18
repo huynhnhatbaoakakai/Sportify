@@ -41,12 +41,6 @@ body { background: var(--background); display: flex; height: 100vh; overflow: hi
 }
 .btn-add:hover { background: var(--primary-dark); }
 
-/* TYPE RADIO */
-.type-options { display: flex; gap: 12px; }
-.type-option { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 18px; border: 2px solid var(--border); border-radius: 10px; font-weight: 600; font-size: 14px; transition: 0.2s; }
-.type-option:has(input:checked) { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
-.type-option input { display: none; }
-
 /* ALERTS */
 .alert { padding: 12px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; margin-bottom: 18px; }
 .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
@@ -66,10 +60,7 @@ body { background: var(--background); display: flex; height: 100vh; overflow: hi
     width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center; font-size: 22px;
 }
-.badge-court { background: #e0f2fe; }
-.badge-pt { background: #fef3c7; }
-.badge-gear { background: #f3e8ff; }
-.badge-clothing { background: #fce7f3; }
+.badge-court { background: #edf5ef; color: #287449; }
 .appt-info { flex: 1; }
 .appt-title { font-weight: 700; color: var(--dark); font-size: 15px; }
 .appt-meta { display: flex; gap: 14px; margin-top: 5px; }
@@ -77,10 +68,7 @@ body { background: var(--background); display: flex; height: 100vh; overflow: hi
 .appt-tag {
     font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
 }
-.tag-court { background: #e0f2fe; color: #0284c7; }
-.tag-pt { background: #fef3c7; color: #d97706; }
-.tag-gear { background: #f3e8ff; color: #7e22ce; }
-.tag-clothing { background: #fce7f3; color: #be185d; }
+.tag-court { background: #edf5ef; color: #287449; }
 .appt-date-col { text-align: right; font-weight: 700; color: var(--primary); font-size: 14px; min-width: 90px; }
 .appt-date-col small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; margin-top: 2px; }
 .btn-delete { background: none; border: 1px solid #fca5a5; color: #ef4444; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
@@ -96,3 +84,6 @@ body { background: var(--background); display: flex; height: 100vh; overflow: hi
 .tab-btn.active { background: var(--primary-light); color: var(--primary); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
+
+.reminder-help { margin: 12px 0 20px; color: var(--muted); line-height: 1.6; }
+.reminder-help a { color: var(--primary); font-weight: 700; }

@@ -3,6 +3,7 @@ const API = CTX + '/chat-api';
 
 let friends = [];       // danh sách bạn bè với messages
 let currentFriendId = null;
+const requestedFriendId = new URLSearchParams(window.location.search).get('friendId');
 let pollingTimer = null;
 
 // ===== LOAD FRIENDS FROM API =====
@@ -14,7 +15,7 @@ async function loadFriends(keepCurrent) {
         const data = await res.json();
         if (data.error) {
             document.getElementById('chatList').innerHTML =
-                '<div style="padding:15px;color:red;font-size:12px;">❌ Lỗi: ' + data.error + '</div>';
+                '<div style="padding:15px;color:red;font-size:12px;">Lỗi: ' + data.error + '</div>';
             return;
         }
 
@@ -27,9 +28,10 @@ async function loadFriends(keepCurrent) {
             return;
         }
 
-        // Chọn người đầu tiên nếu chưa chọn ai
+        // Mở đúng chủ sân/khách hàng khi đi từ sân hoặc đơn đặt sân.
         if (!keepCurrent && !currentFriendId && friends.length > 0) {
-            currentFriendId = friends[0].id;
+            const requestedFriend = friends.find(friend => String(friend.id) === requestedFriendId);
+            currentFriendId = requestedFriend ? requestedFriend.id : friends[0].id;
         }
 
         renderList();
@@ -38,7 +40,7 @@ async function loadFriends(keepCurrent) {
 
     } catch (e) {
         document.getElementById('chatList').innerHTML =
-            '<div style="padding:15px;color:red;font-size:12px;">❌ Không kết nối được API: ' + e.message + '</div>';
+            '<div style="padding:15px;color:red;font-size:12px;">Không kết nối được API: ' + e.message + '</div>';
     }
 }
 
@@ -60,7 +62,7 @@ function renderList() {
         div.className = 'chat-item' + (f.id == currentFriendId ? ' active' : '');
         div.onclick = () => selectFriend(f.id);
         div.innerHTML = `
-            <div class="avatar avatar-online">${initial}</div>
+            <div class="avatar">${escHtml(initial)}</div>
             <div class="chat-item-content">
                 <div class="chat-item-header">
                     <span class="chat-item-name">${escHtml(f.partnerName)}${roleBadge}</span>
@@ -85,7 +87,7 @@ function renderMessages() {
 
     const msgs = f.messages || [];
     if (msgs.length === 0) {
-        msgEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào. Hãy gửi tin đầu tiên! 👋</div>';
+        msgEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào. Hãy gửi tin đầu tiên!</div>';
         return;
     }
 
@@ -115,7 +117,7 @@ function updateHeader() {
             ? '<span class="badge-role-owner" style="font-size:11.5px;padding:2px 8px;background:#dcfce7;color:#15803d;border-radius:6px;margin-left:8px;font-weight:700;">🏟️ Chủ sân • Phục vụ đơn hàng</span>' : '';
         document.getElementById('currentAvatar').textContent = initial;
         document.getElementById('currentName').innerHTML = escHtml(f.partnerName) + headerRole;
-        document.getElementById('currentStatus').textContent = '🟢 Đang hoạt động';
+        document.getElementById('currentStatus').textContent = 'Tin nhắn trực tiếp';
         document.getElementById('messageInput').disabled = false;
         document.getElementById('sendBtn').disabled = false;
         document.getElementById('messageInput').focus();
@@ -158,12 +160,12 @@ async function sendMessage() {
         const res = await fetch(API, { method: 'POST', body: body });
         const data = await res.json();
         if (data.error) {
-            document.getElementById('statusBar').textContent = '❌ Lỗi gửi: ' + data.error;
+            document.getElementById('statusBar').textContent = 'Lỗi gửi: ' + data.error;
         } else {
             document.getElementById('statusBar').textContent = '';
         }
     } catch (e) {
-        document.getElementById('statusBar').textContent = '❌ Không thể gửi: ' + e.message;
+        document.getElementById('statusBar').textContent = 'Không thể gửi: ' + e.message;
     }
 }
 

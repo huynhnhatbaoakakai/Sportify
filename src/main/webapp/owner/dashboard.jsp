@@ -116,8 +116,6 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@0..1&amp;display=swap"
-          rel="stylesheet">
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/owner-dashboard.css?v=<%= dashboardScriptVersion %>">
     <link rel="stylesheet"
@@ -126,6 +124,7 @@
             src="<%= contextPath %>/assets/js/owner-dashboard.js?v=<%= dashboardScriptVersion %>"></script>
     <script defer
             src="<%= contextPath %>/assets/js/order-chat.js"></script>
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 
 <body>
@@ -139,7 +138,7 @@
             </a>
 
             <button class="sidebar-close" type="button" data-sidebar-close aria-label="Đóng menu">
-                <span class="material-symbols-rounded" aria-hidden="true">close</span>
+                <span class="app-icon icon-close" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -155,45 +154,45 @@
             <p class="nav-label">Quản lý</p>
 
             <a class="nav-item <%= bookingPage ? "" : "active" %>" href="<%= contextPath %>/owner/fields#overview" <%= bookingPage ? "" : "aria-current=\"page\"" %>>
-                <span class="material-symbols-rounded" aria-hidden="true">dashboard</span>
+                <span class="app-icon icon-grid" aria-hidden="true"></span>
                 <span>Tổng quan</span>
             </a>
             <a class="nav-item <%= bookingPage ? "active" : "" %>" href="<%= contextPath %>/owner/bookings#booking-section" <%= bookingPage ? "aria-current=\"page\"" : "" %>>
-                <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span>
+                <span class="app-icon icon-calendar" aria-hidden="true"></span>
                 <span>Lịch đặt sân</span>
                 <span class="nav-count" data-pending-nav-count><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %></span>
             </a>
             <a class="nav-item" href="#fields">
-                <span class="material-symbols-rounded" aria-hidden="true">sports_tennis</span>
+                <span class="app-icon icon-racket" aria-hidden="true"></span>
                 <span>Quản lý sân</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/customers">
-                <span class="material-symbols-rounded" aria-hidden="true">groups</span>
+                <span class="app-icon icon-users" aria-hidden="true"></span>
                 <span>Khách hàng</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/reviews">
-                <span class="material-symbols-rounded" aria-hidden="true">star</span>
+                <span class="app-icon icon-star" aria-hidden="true"></span>
                 <span>Đánh giá</span>
             </a>
 
             <p class="nav-label nav-label-spaced">Tài khoản</p>
 
             <a class="nav-item" href="<%= contextPath %>/home">
-                <span class="material-symbols-rounded" aria-hidden="true">home</span>
+                <span class="app-icon icon-home" aria-hidden="true"></span>
                 <span>Về trang chủ</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/home">
-                <span class="material-symbols-rounded" aria-hidden="true">person</span>
+                <span class="app-icon icon-user" aria-hidden="true"></span>
                 <span>Về trang khách hàng</span>
             </a>
             <a class="nav-item" href="#">
-                <span class="material-symbols-rounded" aria-hidden="true">help</span>
+                <span class="app-icon icon-help" aria-hidden="true"></span>
                 <span>Trợ giúp</span>
             </a>
         </nav>
 
         <a class="logout-link" href="<%= contextPath %>/owner/access/logout">
-            <span class="material-symbols-rounded" aria-hidden="true">logout</span>
+            <span class="app-icon icon-logout" aria-hidden="true"></span>
             <span>Đăng xuất</span>
         </a>
     </aside>
@@ -203,7 +202,7 @@
             <div class="topbar-start">
                 <button class="menu-toggle" type="button" data-sidebar-toggle
                         aria-label="Mở menu" aria-controls="owner-sidebar" aria-expanded="false">
-                    <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+                    <span class="app-icon icon-menu" aria-hidden="true"></span>
                 </button>
 
                 <div>
@@ -214,17 +213,17 @@
 
             <div class="topbar-actions">
                 <a class="btn-customer-portal" href="<%= contextPath %>/home" title="Trở về trang khách hàng" style="display:inline-flex; align-items:center; gap:6px; padding:7px 12px; background:var(--surface,#fff); border:1px solid var(--border,#e2e8f0); border-radius:8px; text-decoration:none; color:var(--text,#1e293b); font-size:13px; font-weight:600;">
-                    <span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">arrow_back</span>
+                    <span class="app-icon icon-arrow-left" aria-hidden="true" style="font-size:18px;"></span>
                     <span>Trang khách hàng</span>
                 </a>
 
                 <div class="today" aria-label="Ngày hiện tại">
-                    <span class="material-symbols-rounded" aria-hidden="true">calendar_today</span>
+                    <span class="app-icon icon-calendar" aria-hidden="true"></span>
                     <span data-current-date>Hôm nay</span>
                 </div>
 
                 <button class="notification-button" type="button" aria-label="Thông báo mới">
-                    <span class="material-symbols-rounded" aria-hidden="true">notifications</span>
+                    <span class="app-icon icon-bell" aria-hidden="true"></span>
                     <span class="notification-dot" aria-hidden="true" <%= pendingBookingCount == 0 ? "hidden" : "" %>></span>
                 </button>
 
@@ -246,7 +245,7 @@
                     <p>Bạn có <strong data-pending-message-count><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %> lịch đặt</strong> đang chờ xác nhận.</p>
                 </div>
                 <div class="demo-label">
-                    <span class="material-symbols-rounded" aria-hidden="true">info</span>
+                    <span class="app-icon icon-info" aria-hidden="true"></span>
                     Lịch đặt từ cơ sở dữ liệu
                 </div>
             </section>
@@ -255,7 +254,7 @@
                 <article class="stat-card stat-fields">
                     <div class="stat-card-top">
                         <span class="stat-icon">
-                            <span class="material-symbols-rounded" aria-hidden="true">sports_soccer</span>
+                            <span class="app-icon icon-court" aria-hidden="true"></span>
                         </span>
                         <span class="stat-caption">Đang mở</span>
                     </div>
@@ -267,7 +266,7 @@
                 <article class="stat-card stat-bookings">
                     <div class="stat-card-top">
                         <span class="stat-icon">
-                            <span class="material-symbols-rounded" aria-hidden="true">event_available</span>
+                            <span class="app-icon icon-calendar-check" aria-hidden="true"></span>
                         </span>
                         <span class="stat-caption">Hôm nay</span>
                     </div>
@@ -279,7 +278,7 @@
                 <article class="stat-card stat-pending">
                     <div class="stat-card-top">
                         <span class="stat-icon">
-                            <span class="material-symbols-rounded" aria-hidden="true">pending_actions</span>
+                            <span class="app-icon icon-clock" aria-hidden="true"></span>
                         </span>
                         <span class="stat-caption warning">Cần xử lý</span>
                     </div>
@@ -291,7 +290,7 @@
                 <article class="stat-card stat-revenue">
                     <div class="stat-card-top">
                         <span class="stat-icon">
-                            <span class="material-symbols-rounded" aria-hidden="true">payments</span>
+                            <span class="app-icon icon-wallet" aria-hidden="true"></span>
                         </span>
                         <span class="stat-caption">Lịch hoàn thành</span>
                     </div>
@@ -316,7 +315,7 @@
 
                     <a class="view-calendar-link" href="#booked-slots-section">
                         Xem các khung giờ đã đặt (<%= bookedSlots.size() %>)
-                        <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+                        <span class="app-icon icon-arrow" aria-hidden="true"></span>
                     </a>
                 </div>
 
@@ -337,7 +336,7 @@
                     </div>
 
                     <label class="booking-search">
-                        <span class="material-symbols-rounded" aria-hidden="true">search</span>
+                        <span class="app-icon icon-search" aria-hidden="true"></span>
                         <span class="sr-only">Tìm lịch đặt</span>
                         <input type="search" data-booking-search
                                placeholder="Tìm mã đơn, khách hàng..."
@@ -381,7 +380,7 @@
                             <td data-label="Mã đặt sân"><strong class="booking-code">#<%= booking.getBookingCode() %></strong></td>
                             <td data-label="Khách hàng">
                                 <div class="customer-cell">
-                                    <span class="customer-avatar"><span class="material-symbols-rounded" aria-hidden="true">person</span></span>
+                                    <span class="customer-avatar"><span class="app-icon icon-user" aria-hidden="true"></span></span>
                                     <div>
                                         <strong><%= escapeHtml(booking.getCustomerName()) %></strong>
                                         <span><%= booking.getCustomerPhone() == null || booking.getCustomerPhone().trim().isEmpty() ? "Chưa có SĐT" : escapeHtml(booking.getCustomerPhone()) %></span>
@@ -437,7 +436,7 @@
                 </div>
 
                 <div class="empty-state" data-empty-state <%= bookings.isEmpty() ? "" : "hidden" %>>
-                    <span class="material-symbols-rounded" aria-hidden="true">event_busy</span>
+                    <span class="app-icon icon-calendar-x" aria-hidden="true"></span>
                     <strong><%= bookingLoadFailed ? "Chưa thể tải lịch đặt" : "Chưa có lịch đặt phù hợp" %></strong>
                     <p><%= bookingLoadFailed ? "Vui lòng thử lại sau ít phút." : "Đơn đặt sân sẽ xuất hiện tại đây. Bạn cũng có thể thử đổi bộ lọc hoặc từ khóa." %></p>
                 </div>
@@ -538,7 +537,7 @@
                         <p>Cập nhật thông tin, số lượng sản phẩm (sân cho thuê) và xem các khung giờ đã đặt của từng danh mục sân.</p>
                     </div>
                     <button class="primary-button" type="button" data-field-add>
-                        <span class="material-symbols-rounded" aria-hidden="true">add</span>
+                        <span class="app-icon icon-plus" aria-hidden="true"></span>
                         Thêm danh mục sân
                     </button>
                 </div>
@@ -546,7 +545,7 @@
                 <div class="fields-grid" data-fields-grid>
                     <% if (fields.isEmpty()) { %>
                     <div class="empty-state">
-                        <span class="material-symbols-rounded" aria-hidden="true">sports_soccer</span>
+                        <span class="app-icon icon-court" aria-hidden="true"></span>
                         <strong>Chưa có sân nào</strong>
                         <p>Hãy thêm dữ liệu vào bảng sports_fields.</p>
                     </div>
@@ -599,7 +598,7 @@
                             </div>
                             <h3 data-field-name><%= escapeHtml(field.getFieldName()) %></h3>
                             <p class="field-address">
-                                <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
+                                <span class="app-icon icon-map" aria-hidden="true"></span>
                                 <span data-field-address><%= escapeHtml(field.getAddress()) %></span>
                             </p>
 
@@ -668,7 +667,7 @@
                     </div>
                     <h3 data-field-name></h3>
                     <p class="field-address">
-                        <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
+                        <span class="app-icon icon-map" aria-hidden="true"></span>
                         <span data-field-address></span>
                     </p>
                     <div class="field-price"><strong data-field-price></strong><span>/ giờ</span></div>
@@ -690,7 +689,7 @@
                 <h2 id="field-modal-title" data-field-modal-title>Thêm sân</h2>
             </div>
             <button class="modal-close" type="button" data-field-modal-close aria-label="Đóng biểu mẫu">
-                <span class="material-symbols-rounded" aria-hidden="true">close</span>
+                <span class="app-icon icon-close" aria-hidden="true"></span>
             </button>
         </div>
         <form class="field-form"

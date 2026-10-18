@@ -105,8 +105,8 @@
             document.querySelectorAll('[data-booking-action-form]').forEach(form => {
                 const button = form.querySelector('button');
                 button.disabled = false;
-                button.textContent = form.querySelector('[name="status"]').value === 'CONFIRMED'
-                    ? 'Xác nhận' : 'Từ chối';
+                const action = form.querySelector('[name="status"]').value;
+                button.textContent = action === 'CONFIRMED' ? 'Xác nhận' : action === 'COMPLETED' ? 'Xác nhận đã sử dụng' : 'Từ chối';
             });
         });
 

@@ -15,15 +15,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Sportify - Dịch vụ thể thao</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"
-        rel="stylesheet">
-
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/style.css">
 
     <script defer
             src="<%= contextPath %>/assets/js/app.js"></script>
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 
 <body>
@@ -51,7 +48,7 @@
         <div class="header-actions">
             <a class="btn" style="background: #0d2d1c; color: white;"
                href="<%= contextPath %>/owner/fields">
-                🏟️ Quản lý dịch vụ
+                <span class="app-icon icon-court" aria-hidden="true"></span> Quản lý dịch vụ
             </a>
             <% if (currentUser == null) { %>
             <a class="btn btn-outline"
@@ -61,7 +58,7 @@
                href="<%= contextPath %>/register">Đăng ký</a>
             <% } else { %>
             <a class="btn btn-outline"
-               href="<%= contextPath %>/home">🏠 <%= currentUser.getFullname() %></a>
+               href="<%= contextPath %>/home"><span class="app-icon icon-home" aria-hidden="true"></span> <%= currentUser.getFullname() %></a>
             <a class="btn" style="background: #ef4444; color: white;"
                href="<%= contextPath %>/logout">Đăng xuất</a>
             <% } %>
@@ -105,10 +102,10 @@
 
             <div class="hero-visual">
                 <div class="hero-circle">
-                    <span class="material-symbols-rounded">fitness_center</span>
-                    <span class="material-symbols-rounded">sports_basketball</span>
-                    <span class="material-symbols-rounded">pool</span>
-                    <span class="material-symbols-rounded">sports_tennis</span>
+                    <span class="app-icon icon-gym" aria-hidden="true"></span>
+                    <span class="app-icon icon-basketball" aria-hidden="true"></span>
+                    <span class="app-icon icon-swimming" aria-hidden="true"></span>
+                    <span class="app-icon icon-racket" aria-hidden="true"></span>
                 </div>
             </div>
         </div>
@@ -130,7 +127,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="gym">
-                    <span class="category-icon material-symbols-rounded">fitness_center</span>
+                    <span class="category-icon app-icon icon-gym" aria-hidden="true"></span>
                     <strong>Gym</strong>
                     <small>Phòng tập, quần áo và PT</small>
                 </button>
@@ -138,7 +135,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="bóng rổ">
-                    <span class="category-icon material-symbols-rounded">sports_basketball</span>
+                    <span class="category-icon app-icon icon-basketball" aria-hidden="true"></span>
                     <strong>Bóng rổ</strong>
                     <small>Sân, bóng và trang phục</small>
                 </button>
@@ -146,7 +143,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="bơi">
-                  <span class="category-icon material-symbols-rounded">pool</span>
+                  <span class="category-icon app-icon icon-swimming" aria-hidden="true"></span>
                     <strong>Bơi</strong>
                     <small>Hồ bơi, đồ bơi và HLV</small>
                 </button>
@@ -154,7 +151,7 @@
                 <button class="category-card filter-button"
                         type="button"
                         data-query="pickleball">
-                  <span class="category-icon material-symbols-rounded">sports_tennis</span>
+                  <span class="category-icon app-icon icon-racket" aria-hidden="true"></span>
                     <strong>Pickleball</strong>
                     <small>Sân, vợt và huấn luyện viên</small>
                 </button>
@@ -178,7 +175,7 @@
                 <button class="service-type filter-button"
                         type="button"
                         data-query="venue">
-                    <span class="type-icon material-symbols-rounded">calendar_month</span>
+                    <span class="type-icon app-icon icon-calendar" aria-hidden="true"></span>
                     <div>
                         <strong>Thuê sân/phòng tập</strong>
                         <small>Chọn ngày và khung giờ</small>
@@ -188,7 +185,7 @@
                 <button class="service-type filter-button"
                         type="button"
                         data-query="quần áo">   
-                    <span class="type-icon material-symbols-rounded">checkroom</span>
+                    <span class="type-icon app-icon icon-user" aria-hidden="true"></span>
                     <div>
                         <strong>Thuê quần áo</strong>
                         <small>Chọn kích thước và thời gian thuê</small>
@@ -198,7 +195,7 @@
                 <button class="service-type filter-button"
                         type="button"
                         data-query="gear dụng cụ">
-                  <span class="type-icon material-symbols-rounded">sports</span>
+                  <span class="type-icon app-icon icon-racket" aria-hidden="true"></span>
                     <div>
                         <strong>Thuê gear</strong>
                         <small>Vợt, bóng và phụ kiện</small>
@@ -208,7 +205,7 @@
                 <button class="service-type filter-button"
                         type="button"
                         data-query="pt huấn luyện viên">
-                    <span class="type-icon material-symbols-rounded">sports_gymnastics</span>
+                    <span class="type-icon app-icon icon-gym" aria-hidden="true"></span>
                     <div>
                         <strong>Thuê PT</strong>
                         <small>Đặt lịch huấn luyện cá nhân</small>
@@ -241,7 +238,7 @@
                 <article class="service-card"
                          data-search="venue gym phòng tập quận 7">
                    <div class="service-image">
-                         <img src="<%= contextPath %>/assets/images/services/gymfitzone.jfif" alt="Phòng Gym FitZone">
+                         <img src="<%= contextPath %>/assets/images/gymfitzone.jfif" alt="Phòng Gym FitZone">
 </div>
 
                     <div class="service-body">
@@ -260,7 +257,7 @@
                          data-search="venue sân bóng rổ quận 3">
                     <div class="service-image">
                             <img
-                                src="<%= contextPath %>/assets/images/services/basketballcourt1.jpg"
+                                src="<%= contextPath %>/assets/images/basketballcourt1.jpg"
                                 alt="Sân bóng rổ Sunrise">
                         </div>
 
@@ -280,7 +277,7 @@
                         data-search="venue bơi hồ bơi quận 1">
                     <div class="service-image">
                                 <img
-                                    src="<%= contextPath %>/assets/images/services/swimmingpoolaqua.jfif"
+                                    src="<%= contextPath %>/assets/images/swimmingpoolaqua.jfif"
                                     alt="Hồ bơi Aqua Center">
                             </div>
 
@@ -300,7 +297,7 @@
                          data-search="venue pickleball sân quận 7">
                    <div class="service-image">
                     <img
-                        src="<%= contextPath %>/assets/images/services/greenpickleballcourt.jfif"
+                        src="<%= contextPath %>/assets/images/greenpickleballcourt.jfif"
                         alt="Green Pickleball Court">
                 </div>
 
@@ -320,7 +317,7 @@
                          data-search="gear dụng cụ vợt pickleball">
                                     <div class="service-image">
                         <img
-                            src="<%= contextPath %>/assets/images/services/pickleballloan.jfif"
+                            src="<%= contextPath %>/assets/images/pickleballloan.jfif"
                             alt="Bộ vợt Pickleball">
                     </div>
 
@@ -340,7 +337,7 @@
 
     <div class="service-image">
         <img
-            src="<%= contextPath %>/assets/images/services/swimset.jfif"
+            src="<%= contextPath %>/assets/images/swimset.jfif"
             alt="Combo đồ bơi trọn bộ">
     </div>
 
@@ -367,7 +364,7 @@
 
                     <div class="service-image">
                         <img
-                            src="<%= contextPath %>/assets/images/services/pt1.png"
+                            src="<%= contextPath %>/assets/images/pt1.png"
                             alt="PT Nguyễn Minh Anh">
                     </div>
 

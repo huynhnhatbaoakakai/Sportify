@@ -12,6 +12,7 @@
     <title>Chat với Bạn bè - Sportify</title>
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/chat-friends.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
 </head>
 <body>
 
@@ -24,7 +25,7 @@
         <!-- Friends List -->
         <aside class="chat-sidebar">
             <div class="chat-sidebar-header">
-                <h2>👥 Bạn bè (<span id="friendCount">...</span>)</h2>
+                <h2><span class="app-icon icon-users" aria-hidden="true"></span> Bạn bè (<span id="friendCount">...</span>)</h2>
             </div>
             <div class="chat-list" id="chatList">
                 <div style="padding:20px; color:#999; font-size:13px;">Đang tải danh sách...</div>
@@ -34,7 +35,7 @@
         <!-- Chat Area -->
         <section class="chat-main">
             <div class="chat-header">
-                <div class="avatar avatar-online" id="currentAvatar">?</div>
+                <div class="avatar" id="currentAvatar">?</div>
                 <div class="chat-header-info">
                     <h3 id="currentName">Chọn một người để nhắn tin</h3>
                     <div class="status" id="currentStatus"></div>
@@ -42,7 +43,7 @@
             </div>
 
             <div class="chat-messages" id="chatMessages">
-                <div class="chat-empty">← Chọn một người bạn để bắt đầu trò chuyện</div>
+                <div class="chat-empty"><span class="app-icon icon-arrow-left" aria-hidden="true"></span> Chọn một người bạn để bắt đầu trò chuyện</div>
             </div>
 
             <div id="statusBar"></div>
@@ -51,7 +52,7 @@
                 <input type="text" id="messageInput" class="chat-input"
                        placeholder="Nhập tin nhắn... (Enter để gửi)"
                        onkeypress="handleEnter(event)" disabled>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+                <button class="send-btn" id="sendBtn" aria-label="Gửi tin nhắn" onclick="sendMessage()" disabled><span class="app-icon icon-send" aria-hidden="true"></span></button>
             </div>
         </section>
     </div>

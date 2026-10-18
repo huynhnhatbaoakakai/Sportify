@@ -71,6 +71,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Rounded:FILL@0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/owner-dashboard.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/owner-customers.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/order-chat.css">
@@ -88,7 +89,7 @@
                 <img src="<%= contextPath %>/assets/images/logo.jpeg" alt="Sportify">
             </a>
             <button class="sidebar-close" type="button" data-sidebar-close aria-label="Đóng menu">
-                <span class="material-symbols-rounded" aria-hidden="true">close</span>
+                <span class="app-icon icon-close" aria-hidden="true"></span>
             </button>
         </div>
         <div class="owner-summary">
@@ -101,30 +102,33 @@
         <nav class="sidebar-nav">
             <p class="nav-label">Quản lý cơ sở</p>
             <a class="nav-item" href="<%= contextPath %>/owner/fields#overview">
-                <span class="material-symbols-rounded" aria-hidden="true">dashboard</span><span>Tổng quan</span>
+                <span class="app-icon icon-grid" aria-hidden="true"></span><span>Tổng quan</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/bookings#booking-section">
-                <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span><span>Lịch đặt sân</span>
+                <span class="app-icon icon-calendar" aria-hidden="true"></span><span>Lịch đặt sân</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/fields#fields">
-                <span class="material-symbols-rounded" aria-hidden="true">sports_tennis</span><span>Quản lý sân</span>
+                <span class="app-icon icon-racket" aria-hidden="true"></span><span>Quản lý sân</span>
             </a>
             <a class="nav-item active" href="<%= contextPath %>/owner/customers" aria-current="page">
-                <span class="material-symbols-rounded" aria-hidden="true">groups</span><span>Khách hàng</span>
+                <span class="app-icon icon-users" aria-hidden="true"></span><span>Khách hàng</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/owner/reviews">
-                <span class="material-symbols-rounded" aria-hidden="true">star</span><span>Đánh giá</span>
+                <span class="app-icon icon-star" aria-hidden="true"></span><span>Đánh giá</span>
             </a>
             <p class="nav-label nav-label-spaced">Cổng người dùng</p>
             <a class="nav-item" href="<%= contextPath %>/home">
-                <span class="material-symbols-rounded" aria-hidden="true">home</span><span>Về trang chủ</span>
+                <span class="app-icon icon-home" aria-hidden="true"></span><span>Về trang chủ</span>
             </a>
             <a class="nav-item" href="<%= contextPath %>/home">
-                <span class="material-symbols-rounded" aria-hidden="true">person</span><span>Trang khách hàng</span>
+                <span class="app-icon icon-user" aria-hidden="true"></span><span>Về trang khách hàng</span>
+            </a>
+            <a class="nav-item" href="#">
+                <span class="app-icon icon-help" aria-hidden="true"></span><span>Trợ giúp</span>
             </a>
         </nav>
         <a class="logout-link" href="<%= contextPath %>/owner/access/logout">
-            <span class="material-symbols-rounded" aria-hidden="true">logout</span><span>Đăng xuất</span>
+            <span class="app-icon icon-logout" aria-hidden="true"></span><span>Đăng xuất</span>
         </a>
     </aside>
 
@@ -134,20 +138,20 @@
             <div class="topbar-start">
                 <button class="menu-toggle" type="button" data-sidebar-toggle aria-label="Mở menu"
                         aria-controls="owner-sidebar" aria-expanded="false">
-                    <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+                    <span class="app-icon icon-menu" aria-hidden="true"></span>
                 </button>
                 <div>
                     <p class="topbar-label">Quản lý cơ sở thể thao</p>
                     <h1>Quản lý Khách hàng</h1>
                 </div>
             </div>
-            <div class="topbar-actions">
-                <a class="btn-customer-portal" href="<%= contextPath %>/home" title="Trở về trang khách hàng">
-                    <span class="material-symbols-rounded" aria-hidden="true">storefront</span>
-                    <span>Xem trang người dùng</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a class="btn-customer-portal" href="<%= contextPath %>/home" title="Trở về trang khách hàng" style="display:inline-flex; align-items:center; gap:6px; padding:7px 12px; background:var(--surface,#fff); border:1px solid var(--border,#e2e8f0); border-radius:8px; text-decoration:none; color:var(--text,#1e293b); font-size:13px; font-weight:600;">
+                    <span class="app-icon icon-arrow-left" aria-hidden="true" style="font-size:18px;"></span>
+                    <span>Trang khách hàng</span>
                 </a>
                 <div class="today" aria-label="Ngày hiện tại">
-                    <span class="material-symbols-rounded" aria-hidden="true">calendar_today</span>
+                    <span class="app-icon icon-calendar" aria-hidden="true"></span>
                     <span data-current-date>Hôm nay</span>
                 </div>
             </div>
@@ -182,7 +186,6 @@
                 </div>
             </div>
             <% } %>
-
             <% if (errorMessage != null) { %>
             <div class="customer-alert-error" role="alert">
                 <span class="material-symbols-rounded" aria-hidden="true">error</span>

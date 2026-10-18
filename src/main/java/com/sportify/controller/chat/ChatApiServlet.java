@@ -11,12 +11,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * API JSON cho 2 trang chat.
+ * API JSON cho chat giữa người dùng. Chat dịch vụ mẫu đã ngừng hoạt động.
  *
  * <pre>
- * GET  /chat-api?action=getConversations          → hội thoại với dịch vụ   (trang /chat)
+ * GET  /chat-api?action=getConversations          → HTTP 410 (chat dịch vụ mẫu đã tắt)
  * GET  /chat-api?action=getFriends                → hội thoại với bạn bè    (trang /chat-friends)
- * POST /chat-api  action=sendMessage       sessionId, text, time
+ * POST /chat-api  action=sendMessage             → HTTP 410
  * POST /chat-api  action=sendFriendMessage receiverId, text, time
  * </pre>
  */
@@ -25,13 +25,18 @@ public class ChatApiServlet extends BaseServlet {
 
     private final ChatService chatService = new ChatService();
 
+    private static void serviceChatDisabled(HttpServletResponse resp) throws IOException {
+        JsonResponse.error(resp, HttpServletResponse.SC_GONE,
+                "Chat dịch vụ mẫu đã tắt. Vui lòng dùng tin nhắn trực tiếp với chủ sân hoặc khách hàng.");
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = currentUser(req);
         String action = req.getParameter("action");
         try {
             if ("getConversations".equals(action)) {
-                JsonResponse.ok(resp, chatService.getServiceConversations(user.getId()));
+                serviceChatDisabled(resp);
             } else if ("getFriends".equals(action)) {
                 JsonResponse.ok(resp, chatService.getFriendConversations(user.getId()));
             } else if ("getOrderChat".equals(action)) {
@@ -56,9 +61,7 @@ public class ChatApiServlet extends BaseServlet {
         String time = req.getParameter("time");
         try {
             if ("sendMessage".equals(action)) {
-                int sessionId = Integer.parseInt(req.getParameter("sessionId"));
-                chatService.sendServiceMessage(sessionId, text, time);
-                JsonResponse.success(resp);
+                serviceChatDisabled(resp);
             } else if ("sendFriendMessage".equals(action)) {
                 int receiverId = Integer.parseInt(req.getParameter("receiverId"));
                 chatService.sendFriendMessage(user.getId(), receiverId, text, time);

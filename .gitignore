@@ -10,3 +10,4 @@ target/
 Thumbs.db
 
 .env
+src/main/resources/database.properties

@@ -76,6 +76,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Rounded:FILL@0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css?v=<%= assetVer %>">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/home.css?v=<%= assetVer %>">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/order-chat.css?v=<%= assetVer %>">
     <style>
         /* Đảm bảo đóng khung thẻ sân & bố cục trang chủ luôn chuẩn xác không bị ảnh hưởng bởi cache */
@@ -295,7 +296,7 @@
             </a>
 
             <a href="#my-bookings" class="stat-card">
-                <div class="stat-icon" style="background: #ede9fe; color: #6d28d9;">📑</div>
+                <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);"><span class="app-icon icon-court" aria-hidden="true"></span></div>
                 <div class="stat-info">
                     <h4>Đơn đặt sân của bạn</h4>
                     <span><%= customerBookings.size() %> <small class="stat-unit">đơn</small></span>
@@ -702,11 +703,11 @@
                             <td><strong style="color: #159447; font-size: 14.5px;"><%= vndFormat.format(b.getTotalPrice()) %> đ</strong></td>
                             <td>
                                 <span class="status-pill <%= stClass %>">
-                                    <% if ("PENDING".equals(b.getStatus())) { %>⏳<% }
-                                       else if ("CONFIRMED".equals(b.getStatus())) { %>✅<% }
-                                       else if ("REJECTED".equals(b.getStatus())) { %>❌<% }
-                                       else if ("COMPLETED".equals(b.getStatus())) { %>🏆<% }
-                                       else { %>🚫<% } %>
+                                    <% if ("PENDING".equals(b.getStatus())) { %><span class="app-icon icon-clock" aria-hidden="true"></span><% }
+                                       else if ("CONFIRMED".equals(b.getStatus())) { %><span class="app-icon icon-check" aria-hidden="true"></span><% }
+                                       else if ("REJECTED".equals(b.getStatus())) { %><span class="app-icon icon-close" aria-hidden="true"></span><% }
+                                       else if ("COMPLETED".equals(b.getStatus())) { %><span class="app-icon icon-trophy" aria-hidden="true"></span><% }
+                                       else { %><span class="app-icon icon-ban" aria-hidden="true"></span><% } %>
                                     <%= stText %>
                                 </span>
                             </td>
@@ -774,7 +775,7 @@
             %>
             <div class="appt-mini">
                 <div class="appt-mini-icon" style="background: <%= bg %>">
-                    <%= icon %>
+                    <span class="app-icon icon-<%= icon %>" aria-hidden="true"></span>
                 </div>
                 <div class="appt-mini-info">
                     <div class="appt-mini-title"><%= a.getTitle() %></div>

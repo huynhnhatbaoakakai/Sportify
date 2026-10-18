@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sportify — Web hoạt động như thế nào?</title>
+<style>
+:root{color-scheme:light dark}body{margin:0;color:var(--foreground,#e2e8f0);font-family:inherit}main{width:100%;max-width:1040px}h2{font-size:22px;margin:0 0 8px}p{color:var(--muted-foreground,#94a3b8);line-height:1.6;margin:0 0 14px}.canvas{border:1px solid var(--border,#334155);border-radius:16px;overflow:hidden;background:var(--card,rgba(15,23,42,.8))}svg{display:block;width:100%;height:auto;font-family:inherit}text{fill:var(--foreground,#e2e8f0)}.small{font-size:17px}.label{font-size:20px;font-weight:700}.detail{font-size:18px}.branch{fill:none;stroke-width:3}.box{fill:var(--card,#0f172a);stroke-width:2}.note{padding:12px 14px;margin-top:12px;border-left:3px solid #a78bfa;font-size:15px;line-height:1.65;color:var(--muted-foreground,#94a3b8)}@media(max-width:600px){.canvas{overflow-x:auto}svg{min-width:760px}h2{font-size:19px}}
+</style></head><body><main>
+<h2>Bài 1 · Web hoạt động như thế nào?</h2>
+<p>Ví dụ xuyên suốt: bạn mở trang <strong>Quản lý sân</strong> của Sportify. Đọc sơ đồ từ giữa ra các nhánh, rồi xem luồng ở dưới.</p>
+<div class="canvas"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 860" role="img" aria-labelledby="title desc">
+<title id="title">Sơ đồ tư duy Browser, Server, Database, Request và Response</title><desc id="desc">Browser hiển thị giao diện và gửi HTTP request đến server. Server nhận yêu cầu, chạy code Java và đọc database khi cần. PostgreSQL lưu dữ liệu sân. Server trả HTTP response chứa HTML cho browser. Database không gửi HTTP response trực tiếp cho browser.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#94a3b8"/></marker></defs>
+<!-- Nhánh khái niệm, không phải mũi tên luồng dữ liệu -->
+<path class="branch" stroke="#22d3ee" d="M400 265 C320 265 355 155 335 155"/>
+<path class="branch" stroke="#34d399" d="M600 265 C665 265 620 155 655 155"/>
+<path class="branch" stroke="#fbbf24" d="M400 300 C320 300 355 415 335 415"/>
+<path class="branch" stroke="#a78bfa" d="M600 300 C665 300 620 415 655 415"/>
+<rect class="box" x="350" y="230" width="300" height="100" rx="22" stroke="#94a3b8"/>
+<text x="500" y="269" text-anchor="middle" class="label">SPORTIFY · MỘT TRANG WEB</text>
+<text x="500" y="301" text-anchor="middle" class="detail">Mở danh sách sân</text>
+<!-- Browser -->
+<rect class="box" x="30" y="40" width="305" height="195" rx="16" stroke="#22d3ee"/>
+<text x="50" y="75" class="label" style="fill:#22d3ee">1. BROWSER · Trình duyệt</text>
+<text x="50" y="111" class="detail">Ví dụ: Chrome, Edge</text>
+<text x="50" y="145" class="detail">• Hiển thị giao diện</text>
+<text x="50" y="176" class="detail">• Nhận thao tác bấm, nhập</text>
+<text x="50" y="207" class="detail">• Gửi yêu cầu tới server</text>
+<!-- Server -->
+<rect class="box" x="655" y="40" width="315" height="195" rx="16" stroke="#34d399"/>
+<text x="675" y="75" class="label" style="fill:#34d399">2. SERVER · Phía xử lý</text>
+<text x="675" y="111" class="detail">Tomcat chạy ứng dụng Java</text>
+<text x="675" y="145" class="detail">• Nhận và xử lý yêu cầu</text>
+<text x="675" y="176" class="detail">• Đọc database khi cần</text>
+<text x="675" y="207" class="detail">• Chuẩn bị kết quả trả về</text>
+<!-- HTTP -->
+<rect class="box" x="30" y="355" width="305" height="190" rx="16" stroke="#fbbf24"/>
+<text x="50" y="390" class="label" style="fill:#fbbf24">4. REQUEST / RESPONSE</text>
+<text x="50" y="428" class="detail">Request = yêu cầu gửi đi</text>
+<text x="50" y="460" class="detail">Response = phản hồi trả về</text>
+<text x="50" y="496" class="small">Ví dụ: “Cho tôi xem sân”</text>
+<text x="50" y="524" class="small">→ Nhận trang HTML danh sách</text>
+<!-- Database -->
+<rect class="box" x="655" y="355" width="315" height="190" rx="16" stroke="#a78bfa"/>
+<text x="675" y="390" class="label" style="fill:#a78bfa">3. DATABASE · Nơi lưu</text>
+<text x="675" y="428" class="detail">Sportify dùng PostgreSQL</text>
+<text x="675" y="460" class="detail">Dữ liệu sân: sports_fields</text>
+<text x="675" y="496" class="small">Đóng tab không tự xóa dữ liệu</text>
+<text x="675" y="524" class="small">đã lưu trong database.</text>
+<!-- Luồng riêng, tránh nhầm mind map với data flow -->
+<text x="30" y="595" class="label">LUỒNG XEM DANH SÁCH SÂN</text>
+<rect class="box" x="30" y="665" width="215" height="75" rx="14" stroke="#22d3ee"/>
+<text x="137" y="710" text-anchor="middle" class="label">BROWSER</text>
+<rect class="box" x="390" y="665" width="220" height="75" rx="14" stroke="#34d399"/>
+<text x="500" y="710" text-anchor="middle" class="label">SERVER</text>
+<rect class="box" x="755" y="665" width="215" height="75" rx="14" stroke="#a78bfa"/>
+<text x="862" y="710" text-anchor="middle" class="label">DATABASE</text>
+<path d="M245 686 H387" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="317" y="650" text-anchor="middle" class="small">① HTTP request</text>
+<path d="M610 686 H752" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="683" y="650" text-anchor="middle" class="small">② Truy vấn sân</text>
+<path d="M755 721 H613" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="683" y="772" text-anchor="middle" class="small">③ Dữ liệu sân</text>
+<path d="M390 721 H248" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="317" y="772" text-anchor="middle" class="small">④ HTTP response</text>
+<text x="317" y="799" text-anchor="middle" class="small">chứa HTML</text>
+<text x="30" y="836" class="small">Browser hiển thị · Server xử lý · Database lưu dữ liệu</text>
+</svg></div>
+<div class="note"><strong>Chưa cần học tên class.</strong> Trước hết hãy phân biệt ba vai trò. Với luồng Servlet/JSP đang học, browser không tự truy vấn PostgreSQL; server lấy dữ liệu và tạo HTML. Kết quả database → server không phải HTTP response gửi thẳng tới browser.<br/>Đây là sơ đồ khái niệm để học, không phải bằng chứng ứng dụng đã chạy thành công.</div>
+</main></body></html>
