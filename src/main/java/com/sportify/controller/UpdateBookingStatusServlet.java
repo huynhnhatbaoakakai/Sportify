@@ -15,9 +15,7 @@ import java.util.Locale;
 @WebServlet("/owner/bookings/status")
 public class UpdateBookingStatusServlet extends HttpServlet {
 
-    // TODO: use session.getAttribute("userId") and require the OWNER role.
-    private static final Long DEMO_OWNER_ID = 1L;
-    static final String CSRF_ATTRIBUTE = "OWNER_BOOKING_CSRF_TOKEN";
+    static final String CSRF_ATTRIBUTE = com.sportify.util.Csrf.SESSION_KEY;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,7 +38,7 @@ public class UpdateBookingStatusServlet extends HttpServlet {
             Long bookingId = Long.valueOf(id.trim());
             if (bookingId <= 0) throw new IllegalArgumentException();
             String status = request.getParameter("status");
-            if (!"CONFIRMED".equals(status) && !"REJECTED".equals(status)) throw new IllegalArgumentException();
+            if (!"CONFIRMED".equals(status) && !"REJECTED".equals(status) && !"COMPLETED".equals(status)) throw new IllegalArgumentException();
 
             Long ownerId = com.sportify.util.OwnerAccess.resolveOwnerId(request);
             BookingDB.StatusChangeResult changed = BookingDB.changeStatus(bookingId, ownerId, status);

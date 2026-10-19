@@ -20,7 +20,7 @@ import com.sportify.model.SportField;
 import jakarta.servlet.ServletException;
 
 /**
- * Khách hàng đặt sân / dịch vụ:
+ * Khách hàng đặt sân:
  * <pre>
  * GET  /field-booking?fieldId= → hiển thị giao diện riêng để đặt lịch cho sân đó (user/booking.jsp)
  * POST /field-booking          → tạo đơn PENDING (chủ sân xác nhận/từ chối ở kênh chủ sân)
@@ -67,6 +67,10 @@ public class FieldBookingServlet extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
+        if (!com.sportify.util.Csrf.isValid(req)) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Biểu mẫu đã hết hiệu lực. Vui lòng tải lại trang.");
+            return;
+        }
         User user = currentUser(req);
         if (user == null) {
             redirect(req, resp, "/login");
@@ -137,14 +141,20 @@ public class FieldBookingServlet extends BaseServlet {
         }
 
         switch (result) {
+            case AUTO_CONFIRMED:
+                back(req, resp, true, "Đặt sân thành công! Hệ thống đã tự xác nhận và giữ khung giờ cho bạn. Thanh toán tại sân.");
+                break;
+            case BLOCKED:
+                back(req, resp, false, "Khung giờ này đã được chủ sân khóa. Vui lòng chọn giờ khác.");
+                break;
             case CREATED:
                 back(req, resp, true, "Đã gửi yêu cầu đặt lịch thành công! Vui lòng chờ chủ sân xác nhận.");
                 break;
             case FIELD_NOT_FOUND:
-                back(req, resp, false, "Không tìm thấy sân/dịch vụ.");
+                back(req, resp, false, "Không tìm thấy sân.");
                 break;
             case FIELD_INACTIVE:
-                back(req, resp, false, "Sân/dịch vụ này đang tạm ngưng hoạt động.");
+                back(req, resp, false, "Sân này đang tạm ngưng hoạt động.");
                 break;
             case PAST_TIME:
                 back(req, resp, false, "Không thể đặt lịch trong quá khứ.");

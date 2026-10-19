@@ -126,9 +126,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt lịch: <%= escapeHtml(field.getFieldName()) %> - Sportify</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Rounded:FILL@0..1&display=swap" rel="stylesheet">
+
+
+
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css?v=<%= System.currentTimeMillis() %>">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/home.css?v=<%= System.currentTimeMillis() %>">
     <style>
@@ -626,7 +626,7 @@
                         <span><span class="app-icon icon-<%= badgeIcon %>" aria-hidden="true"></span></span> <%= badgeText %>
                     </span>
                     <span class="venue-qty-badge">
-                        🏟️ Quy mô: <%= fieldQuantity %> <%= productUnitLabel %> (sản phẩm)
+                        <span class="app-icon icon-court" aria-hidden="true"></span> Quy mô: <%= fieldQuantity %> <%= productUnitLabel %> (sản phẩm)
                     </span>
                 </div>
 
@@ -644,7 +644,7 @@
                 <!-- HỘP QUY MÔ SẢN PHẨM CỦA DANH MỤC SÂN -->
                 <div class="inventory-highlight-box">
                     <div class="inventory-highlight-top">
-                        <strong>📦 Số lượng sản phẩm trong danh mục</strong>
+                        <strong><span class="app-icon icon-box" aria-hidden="true"></span> Số lượng sản phẩm trong danh mục</strong>
                         <span class="inventory-count-pill">Còn <%= fieldQuantity %> <%= productUnitLabel %> cho thuê</span>
                     </div>
                     <p>
@@ -694,7 +694,8 @@
                 </div>
 
                 <form method="post" action="<%= contextPath %>/field-booking" id="bookingForm" onsubmit="return validateBookingForm()">
-                    <input type="hidden" name="fieldId" value="<%= field.getFieldId() %>">
+                    <input type="hidden" name="csrfToken" value="<%= com.sportify.util.Csrf.token(request) %>">
+<input type="hidden" name="fieldId" value="<%= field.getFieldId() %>">
                     <input type="hidden" name="courtNumber" id="selectedCourtNumber" value="">
 
                     <!-- CHỌN NGÀY -->
@@ -708,7 +709,7 @@
                     <div class="slot-picker-section">
                         <div class="slot-picker-header">
                             <div class="slot-picker-title">
-                                <span>⏰</span> 2. Bảng chọn khung giờ (<%= openTimeStr %> - <%= closeTimeStr %>)
+                                <span><span class="app-icon icon-clock" aria-hidden="true"></span></span> 2. Bảng chọn khung giờ (<%= openTimeStr %> - <%= closeTimeStr %>)
                             </div>
                             <div class="slot-legend">
                                 <span class="legend-item"><span class="legend-dot" style="background:#22c55e;"></span> Còn đủ <%= fieldQuantity %>/<%= fieldQuantity %></span>
@@ -717,7 +718,7 @@
                             </div>
                         </div>
                         <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">
-                            💡 Bấm vào một khung giờ còn trống dưới đây để chọn nhanh, hoặc điều chỉnh giờ bắt đầu - kết thúc ở mục 3.
+                            <span class="app-icon icon-info" aria-hidden="true"></span> Bấm vào một khung giờ còn trống dưới đây để chọn nhanh, hoặc điều chỉnh giờ bắt đầu - kết thúc ở mục 3.
                         </p>
                         <div id="timeSlotGrid" class="slot-grid"></div>
                     </div>
@@ -750,7 +751,7 @@
 
                     <!-- CẢNH BÁO NẾU KHUNG GIỜ ĐÃ ĐỦ 4/4 ĐƠN -->
                     <div id="slotConflictBanner" class="slot-conflict-banner" role="alert">
-                        🚫 <strong>Khung giờ này đã kín chỗ (<%= fieldQuantity %>/<%= fieldQuantity %> sản phẩm đã được đặt)!</strong><br>
+                        <span class="app-icon icon-ban" aria-hidden="true"></span> <strong>Khung giờ này đã kín chỗ (<%= fieldQuantity %>/<%= fieldQuantity %> sản phẩm đã được đặt)!</strong><br>
                         Tất cả <%= fieldQuantity %> <%= productUnitLabel %> trong khung giờ bạn chọn đều đã có đơn đặt trùng. Vui lòng chọn khung giờ khác còn sản phẩm trống.
                     </div>
 
@@ -801,7 +802,7 @@
         <section class="booked-slots-panel" id="booked-slots-list">
             <div class="booked-slots-panel-header">
                 <div>
-                    <h3>📋 Danh sách các khung giờ đã có người đặt — <%= escapeHtml(field.getFieldName()) %></h3>
+                    <h3><span class="app-icon icon-file" aria-hidden="true"></span> Danh sách các khung giờ đã có người đặt — <%= escapeHtml(field.getFieldName()) %></h3>
                     <p style="font-size: 13px; color: var(--muted); margin: 4px 0 0;">
                         Hiển thị toàn bộ các khung giờ đã có khách đặt tại cơ sở này (tối đa <strong><%= fieldQuantity %> đơn / khung giờ</strong>).
                     </p>
@@ -813,7 +814,7 @@
 
             <% if (fieldBookedSlots.isEmpty()) { %>
             <div class="empty-appt" style="margin: 0;">
-                ✨ Hiện chưa có khung giờ nào được đặt tại <strong><%= escapeHtml(field.getFieldName()) %></strong>. Tất cả <%= fieldQuantity %> <%= productUnitLabel %> đều đang trống!
+                <span class="app-icon icon-grid" aria-hidden="true"></span> Hiện chưa có khung giờ nào được đặt tại <strong><%= escapeHtml(field.getFieldName()) %></strong>. Tất cả <%= fieldQuantity %> <%= productUnitLabel %> đều đang trống!
             </div>
             <% } else { %>
             <div class="card-framed-box" style="margin-bottom: 0;">
@@ -853,15 +854,15 @@
                             </td>
                             <td>
                                 <% if (full) { %>
-                                <span class="slot-pill-tag slot-pill-full">🔒 Đã đủ <%= slot.getTotalQuantity() %>/<%= slot.getTotalQuantity() %> sân (Hết chỗ)</span>
+                                <span class="slot-pill-tag slot-pill-full"><span class="app-icon icon-lock" aria-hidden="true"></span> Đã đủ <%= slot.getTotalQuantity() %>/<%= slot.getTotalQuantity() %> sân (Hết chỗ)</span>
                                 <% } else { %>
-                                <span class="slot-pill-tag slot-pill-avail">⏳ Đã đặt <%= slot.getBookedCount() %>/<%= slot.getTotalQuantity() %> • Còn <%= slot.getRemainingCount() %> sân trống</span>
+                                <span class="slot-pill-tag slot-pill-avail"><span class="app-icon icon-clock" aria-hidden="true"></span> Đã đặt <%= slot.getBookedCount() %>/<%= slot.getTotalQuantity() %> • Còn <%= slot.getRemainingCount() %> sân trống</span>
                                 <% } %>
                             </td>
                             <td>
                                 <div class="order-mini-chips">
                                     <% for (Booking b : slot.getBookings()) {
-                                        String stBadge = "CONFIRMED".equals(b.getStatus()) || "COMPLETED".equals(b.getStatus()) ? "✅ Đã duyệt" : "⏳ Chờ duyệt";
+                                        String stBadge = "CONFIRMED".equals(b.getStatus()) || "COMPLETED".equals(b.getStatus()) ? "Đã duyệt" : "Chờ duyệt";
                                     %>
                                     <span class="order-mini-chip" title="Mã đơn #<%= b.getBookingCode() %>">
                                         <strong>Sân #<%= b.getCourtNumber() %></strong>
@@ -874,12 +875,12 @@
                             <td>
                                 <% if (full) { %>
                                 <button type="button" class="btn-cancel-sm" disabled style="opacity: 0.65; cursor: not-allowed; background: #f1f5f9; color: #64748b; border-color: #cbd5e1;">
-                                    🚫 Hết sân (<%= slot.getTotalQuantity() %>/<%= slot.getTotalQuantity() %>)
+                                    <span class="app-icon icon-ban" aria-hidden="true"></span> Hết sân (<%= slot.getTotalQuantity() %>/<%= slot.getTotalQuantity() %>)
                                 </button>
                                 <% } else { %>
                                 <button type="button" class="btn-book-action" style="border: none; cursor: pointer; padding: 6px 12px; font-size: 12px;"
                                         onclick="quickPickSlot('<%= slotDateIso %>', '<%= slotStartStr %>', '<%= slotEndStr %>')">
-                                    ⚡ Đặt sân còn trống (<%= slot.getRemainingCount() %>)
+                                    <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Đặt sân còn trống (<%= slot.getRemainingCount() %>)
                                 </button>
                                 <% } %>
                             </td>
@@ -1014,7 +1015,7 @@
                 barColor = '#94a3b8';
             } else if (isFull) {
                 stateClass = 'slot-full';
-                statusLabel = '🔒 Đủ ' + currentFieldQuantity + '/' + currentFieldQuantity + ' (Hết)';
+                statusLabel = 'Đủ ' + currentFieldQuantity + '/' + currentFieldQuantity + ' (Hết)';
                 barColor = '#ef4444';
             } else if (bookedCount > 0) {
                 stateClass = 'slot-partial';
@@ -1109,12 +1110,12 @@
             if (isBusy) {
                 const who = bookedOrder ? bookedOrder.customerName : 'Đã kín';
                 courtHtml += '<button type="button" class="court-card-btn" disabled>' +
-                        '<strong>🔒 Sân #' + c + '</strong>' +
+                        '<strong><span class="app-icon icon-lock" aria-hidden="true"></span> Sân #' + c + '</strong>' +
                         '<span style="color:#dc2626;">Đã đặt (' + who + ')</span>' +
                         '</button>';
             } else {
                 courtHtml += '<button type="button" class="court-card-btn ' + (isSelected ? 'active' : '') + '" onclick="selectCourtNumber(' + c + ')">' +
-                        '<strong>' + (isSelected ? '✅ ' : '🏟️ ') + 'Sân #' + c + '</strong>' +
+                        '<strong>' + (isSelected ? '<span class="app-icon icon-check" aria-hidden="true"></span> ' : '<span class="app-icon icon-court" aria-hidden="true"></span> ') + 'Sân #' + c + '</strong>' +
                         '<span style="color:#15803d;">' + (isSelected ? 'Đang chọn đặt' : 'Còn trống • Bấm chọn') + '</span>' +
                         '</button>';
             }
@@ -1125,7 +1126,7 @@
             conflictBanner.style.display = 'block';
             summaryBanner.style.display = 'none';
             submitBtn.disabled = true;
-            submitBtn.innerText = '🚫 Đã đủ ' + currentFieldQuantity + '/' + currentFieldQuantity + ' đơn - Không thể bấm đặt sân';
+            submitBtn.innerText = 'Đã đủ ' + currentFieldQuantity + '/' + currentFieldQuantity + ' đơn - Không thể bấm đặt sân';
         } else {
             conflictBanner.style.display = 'none';
             summaryBanner.style.display = 'flex';

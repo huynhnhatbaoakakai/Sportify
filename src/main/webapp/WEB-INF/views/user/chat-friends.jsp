@@ -44,7 +44,7 @@
                 </div>
                 <button type="button" id="headerTransferBtn" onclick="openTransferBookingModal()"
                         style="display:none; align-items:center; gap:6px; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; border-radius:10px; padding:8px 14px; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 4px 10px rgba(2,132,199,0.25);">
-                    🎟️ Chuyển lịch đặt sân cho người này
+                    <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Chuyển lịch đặt sân cho người này
                 </button>
             </div>
 
@@ -58,7 +58,7 @@
                 <button type="button" id="transferBookingBtn" onclick="openTransferBookingModal()" disabled
                         title="Chuyển quyền sở hữu lịch đặt sân đã xác nhận cho tài khoản này"
                         style="display:inline-flex; align-items:center; gap:6px; background:#e0f2fe; color:#0369a1; border:1.5px solid #7dd3fc; border-radius:12px; padding:0 14px; height:44px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;">
-                    🎟️ Chuyển lịch sân
+                    <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Chuyển lịch sân
                 </button>
                 <input type="text" id="messageInput" class="chat-input"
                        placeholder="Nhập tin nhắn... (Enter để gửi)"
@@ -73,7 +73,7 @@
         <div style="background:#fff; width:100%; max-width:560px; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25); overflow:hidden; display:flex; flex-direction:column; max-height:90vh;">
             <div style="background:linear-gradient(135deg,#0f172a,#1e293b); color:#fff; padding:18px 22px; display:flex; align-items:center; justify-content:space-between;">
                 <div>
-                    <h3 style="margin:0; font-size:17px; font-weight:800;">🎟️ Chuyển nhượng Tài sản Lịch Đặt Sân</h3>
+                    <h3 style="margin:0; font-size:17px; font-weight:800;"><span class="app-icon icon-calendar-check" aria-hidden="true"></span> Chuyển nhượng Tài sản Lịch Đặt Sân</h3>
                     <p style="margin:4px 0 0 0; font-size:12.5px; color:#cbd5e1;">Lịch sân đã xác nhận sẽ chuyển sang quyền sở hữu của tài khoản người nhận</p>
                 </div>
                 <button type="button" onclick="closeTransferBookingModal()" style="background:rgba(255,255,255,0.12); color:#fff; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:16px; font-weight:700;">✕</button>
@@ -81,20 +81,20 @@
 
             <div style="padding:20px 22px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;">
                 <div>
-                    <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:6px;">👤 Tài khoản nhận quyền sở hữu lịch sân:</label>
+                    <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:6px;"><span class="app-icon icon-user" aria-hidden="true"></span> Tài khoản nhận quyền sở hữu lịch sân:</label>
                     <select id="transferReceiverSelect" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:14px; font-weight:600; color:#0f172a; background:#f8fafc;">
                     </select>
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:8px;">💎 Chọn lịch đặt sân đã xác nhận (Tài sản của bạn):</label>
+                    <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:8px;"><span class="app-icon icon-calendar-check" aria-hidden="true"></span> Chọn lịch đặt sân đã xác nhận (Tài sản của bạn):</label>
                     <div id="transferBookingList" style="display:flex; flex-direction:column; gap:10px; max-height:260px; overflow-y:auto;">
                         <div style="padding:16px; text-align:center; color:#64748b; font-size:13px;">Đang tải kho tài sản lịch sân của bạn...</div>
                     </div>
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:6px;">💬 Lời nhắn đính kèm khi chuyển sân:</label>
+                    <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:6px;"><span class="app-icon icon-chat" aria-hidden="true"></span> Lời nhắn đính kèm khi chuyển sân:</label>
                     <input type="text" id="transferNoteInput" placeholder="VD: Mình nhượng lại lịch đặt sân này cho bạn nhé!"
                            style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:13.5px; box-sizing:border-box;">
                 </div>
@@ -109,7 +109,7 @@
                 </button>
                 <button type="button" id="confirmTransferBtn" onclick="submitBookingTransfer()"
                         style="padding:9px 18px; border-radius:10px; border:none; background:linear-gradient(135deg,#159447,#15803d); color:#fff; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(21,148,71,0.25);">
-                    🎁 Xác nhận chuyển quyền sở hữu
+                    <span class="app-icon icon-refresh" aria-hidden="true"></span> Xác nhận chuyển quyền sở hữu
                 </button>
             </div>
         </div>

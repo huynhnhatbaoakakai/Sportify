@@ -20,8 +20,6 @@ import java.time.ZoneId;
 @WebServlet({"/owner/fields", "/owner/bookings"})
 public class ManageFieldsServlet extends HttpServlet {
 
-    // TODO: use session.getAttribute("userId") and require the OWNER role.
-    private static final Long DEMO_OWNER_ID = 1L;
 
     @Override
     protected void doGet(
@@ -37,6 +35,7 @@ public class ManageFieldsServlet extends HttpServlet {
                     SportFieldDB.findByOwnerId(ownerId);
 
             request.setAttribute("fields", fields);
+            request.setAttribute("bookingHistory", com.sportify.data.BookingActivityDB.findByOwner(ownerId));
             request.setAttribute("ownerId", ownerId);
             request.setAttribute("bookingPage", "/owner/bookings".equals(request.getServletPath()));
 

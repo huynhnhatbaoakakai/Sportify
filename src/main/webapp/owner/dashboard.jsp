@@ -84,6 +84,7 @@
     String bookingSuccess = request.getParameter("success");
     if ("booking_confirmed".equals(bookingSuccess)) bookingNotice = "Đã xác nhận đơn đặt sân.";
     if ("booking_rejected".equals(bookingSuccess)) bookingNotice = "Đã từ chối đơn đặt sân.";
+    if ("booking_completed".equals(bookingSuccess)) bookingNotice = "Đã xác nhận khách sử dụng sân và hoàn thành đơn.";
     String bookingError = request.getParameter("error");
     if (bookingError != null) {
         switch (bookingError) {
@@ -94,6 +95,7 @@
             case "booking_field_inactive": bookingNotice = "Sân đang tạm ngưng, không thể xác nhận đơn."; break;
             case "booking_invalid_time": bookingNotice = "Lịch đặt đã qua hoặc nằm ngoài giờ hoạt động của sân."; break;
             case "booking_conflict": bookingNotice = "Khung giờ này đã có lịch được xác nhận. Đơn vẫn ở trạng thái chờ."; break;
+            case "booking_blocked": bookingNotice = "Khung giờ này đã được khóa. Vui lòng mở lại giờ trước khi xác nhận."; break;
             case "booking_save": bookingNotice = "Không thể cập nhật đơn. Vui lòng thử lại sau."; break;
             default: break;
         }
@@ -114,8 +116,7 @@
 
     <title><%= bookingPage ? "Quản lý đặt sân" : "Tổng quan chủ sân" %> - Sportify</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/owner-dashboard.css?v=<%= dashboardScriptVersion %>">
     <link rel="stylesheet"
@@ -143,9 +144,9 @@
         </div>
 
         <div class="owner-summary">
-            <div class="owner-avatar" aria-hidden="true"><%= ownerInitials %></div>
+            <div class="owner-avatar" aria-hidden="true"><%= escapeHtml(ownerInitials) %></div>
             <div class="owner-summary-text">
-                <strong><%= ownerDisplayName %></strong>
+                <strong><%= escapeHtml(ownerDisplayName) %></strong>
                 <span>Chủ sân Sportify</span>
             </div>
         </div>
@@ -166,6 +167,7 @@
                 <span class="app-icon icon-racket" aria-hidden="true"></span>
                 <span>Quản lý sân</span>
             </a>
+            <a class="nav-item" href="<%= contextPath %>/owner/calendar"><span class="app-icon icon-calendar" aria-hidden="true"></span><span>Lịch trống và khóa giờ</span></a>
             <a class="nav-item" href="<%= contextPath %>/owner/customers">
                 <span class="app-icon icon-users" aria-hidden="true"></span>
                 <span>Khách hàng</span>
@@ -217,6 +219,7 @@
                     <span>Trang khách hàng</span>
                 </a>
 
+                <%@ include file="/WEB-INF/views/common/notification-link.jspf" %>
                 <div class="today" aria-label="Ngày hiện tại">
                     <span class="app-icon icon-calendar" aria-hidden="true"></span>
                     <span data-current-date>Hôm nay</span>
@@ -228,9 +231,9 @@
                 </button>
 
                 <div class="topbar-owner">
-                    <div class="owner-avatar owner-avatar-small" aria-hidden="true"><%= ownerInitials %></div>
+                    <div class="owner-avatar owner-avatar-small" aria-hidden="true"><%= escapeHtml(ownerInitials) %></div>
                     <div>
-                        <strong><%= ownerDisplayName %></strong>
+                        <strong><%= escapeHtml(ownerDisplayName) %></strong>
                         <span>Chủ sân</span>
                     </div>
                 </div>
@@ -241,7 +244,7 @@
             <section class="welcome-panel" aria-labelledby="welcome-title">
                 <div>
                     <span class="eyebrow">TỔNG QUAN HOẠT ĐỘNG</span>
-                    <h2 id="welcome-title">Chào <%= ownerShortName %>!</h2>
+                    <h2 id="welcome-title">Chào <%= escapeHtml(ownerShortName) %>!</h2>
                     <p>Bạn có <strong data-pending-message-count><%= bookingLoadFailed ? "—" : String.valueOf(pendingBookingCount) %> lịch đặt</strong> đang chờ xác nhận.</p>
                 </div>
                 <div class="demo-label">
@@ -377,7 +380,18 @@
                         %>
                         <tr data-booking-row data-booking-id="<%= booking.getBookingId() %>"
                             data-status="<%= escapeHtml(bookingStatus) %>" data-search="<%= escapeHtml(bookingSearch) %>">
-                            <td data-label="Mã đặt sân"><strong class="booking-code">#<%= booking.getBookingCode() %></strong></td>
+                            <td data-label="Mã đặt sân"><strong class="booking-code">#<%= booking.getBookingCode() %></strong>
+                                <% if (booking.isAutomaticallyConfirmed()) { %><span class="approval-badge">Hệ thống tự xác nhận</span><% } %>
+                                <details class="booking-history"><summary>Lịch sử xử lý</summary><ul>
+                                <%
+                                    java.util.Map<Long, java.util.List<com.sportify.data.BookingActivityDB.HistoryEntry>> history =
+                                        (java.util.Map<Long, java.util.List<com.sportify.data.BookingActivityDB.HistoryEntry>>) request.getAttribute("bookingHistory");
+                                    java.util.List<com.sportify.data.BookingActivityDB.HistoryEntry> events = history == null ? java.util.List.of() : history.getOrDefault(booking.getBookingId(), java.util.List.of());
+                                    if (events.isEmpty()) { %><li>Đơn cũ chưa có lịch sử chi tiết.</li><% }
+                                    for (com.sportify.data.BookingActivityDB.HistoryEntry event : events) { %>
+                                    <li><strong><%= event.actorLabel() %></strong> · <%= event.occurredAt().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM HH:mm")) %><br><%= escapeHtml(event.reason()) %></li>
+                                <% } %></ul></details>
+                            </td>
                             <td data-label="Khách hàng">
                                 <div class="customer-cell">
                                     <span class="customer-avatar"><span class="app-icon icon-user" aria-hidden="true"></span></span>
@@ -386,7 +400,7 @@
                                         <span><%= booking.getCustomerPhone() == null || booking.getCustomerPhone().trim().isEmpty() ? "Chưa có SĐT" : escapeHtml(booking.getCustomerPhone()) %></span>
                                         <a href="<%= contextPath %>/owner/customers?q=<%= java.net.URLEncoder.encode(booking.getCustomerPhone() != null && !booking.getCustomerPhone().trim().isEmpty() ? booking.getCustomerPhone() : booking.getCustomerName(), "UTF-8") %>"
                                            class="customer-history-chip" title="Xem hồ sơ và toàn bộ lịch sử khách hàng này">
-                                            <span class="material-symbols-rounded" style="font-size:14px;">history</span>
+                                            <span class="material-symbols-rounded app-icon icon-clock" style="font-size:14px;" aria-hidden="true"></span>
                                             <span>Lịch sử khách</span>
                                         </a>
                                     </div>
@@ -394,7 +408,7 @@
                             </td>
                             <td data-label="Danh mục sân & Sản phẩm">
                                 <strong><%= escapeHtml(booking.getField().getFieldName()) %></strong>
-                                <span class="cell-note">🏟️ Sản phẩm: <strong>Sân #<%= booking.getCourtNumber() %></strong> / Tổng <%= totalQty %> sân</span>
+                                <span class="cell-note"><span class="app-icon icon-court" aria-hidden="true"></span> Sản phẩm: <strong>Sân #<%= booking.getCourtNumber() %></strong> / Tổng <%= totalQty %> sân</span>
                             </td>
                             <td data-label="Thời gian & Lấp đầy khung giờ">
                                 <strong><time datetime="<%= booking.getStartsAt() %>"><%= booking.getStartsAt().format(bookingTimeFormat) %> - <%= booking.getEndsAt().format(bookingTimeFormat) %></time></strong>
@@ -407,7 +421,7 @@
                                     <button type="button" class="action-button chat-order-btn"
                                             onclick="openOrderChat(<%= booking.getBookingId() %>, <%= booking.getCustomerId() != null ? booking.getCustomerId() : 0 %>)"
                                             title="Nhắn tin phục vụ đơn đặt sân này">
-                                        <span class="material-symbols-rounded" style="font-size:15px;vertical-align:middle;">chat</span> Chat
+                                        <span class="material-symbols-rounded app-icon icon-chat" style="font-size:15px;vertical-align:middle;" aria-hidden="true"></span> Chat
                                     </button>
                                     <% if ("PENDING".equals(booking.getStatus())) { %>
                                     <form class="booking-action-form" method="post"
@@ -426,7 +440,16 @@
                                         <button class="action-button reject-button" type="submit"
                                                 aria-label="Từ chối đơn <%= booking.getBookingCode() %>">Từ chối</button>
                                     </form>
-                                    <% } else { %><span class="action-finished">Đã xử lý</span><% } %>
+                                    <% } else if ("CONFIRMED".equals(booking.getStatus())) {
+                                        if (!booking.getEndsAt().isAfter(java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh")))) { %>
+                                    <form class="booking-action-form" method="post" action="<%= contextPath %>/owner/bookings/status" data-booking-action-form>
+                                        <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
+                                        <input type="hidden" name="status" value="COMPLETED">
+                                        <input type="hidden" name="csrfToken" value="<%= escapeHtml(bookingCsrfToken) %>">
+                                        <button class="action-button confirm-button" type="submit">Xác nhận đã sử dụng</button>
+                                    </form>
+                                    <% } else { %><span class="action-finished">Chờ kết thúc buổi chơi</span><% }
+                                    } else { %><span class="action-finished">Đã xử lý</span><% } %>
                                 </div>
                             </td>
                         </tr>
@@ -456,14 +479,14 @@
                         <p>Liệt kê đầy đủ những khung giờ đã có khách đặt thuê theo từng danh mục sân và số lượng sản phẩm còn trống.</p>
                     </div>
                     <div class="demo-label">
-                        <span class="material-symbols-rounded" aria-hidden="true">schedule</span>
+                        <span class="material-symbols-rounded app-icon icon-clock" aria-hidden="true"></span>
                         <%= bookedSlots.size() %> khung giờ có người đặt
                     </div>
                 </div>
 
                 <% if (bookedSlots.isEmpty()) { %>
                 <div class="empty-state">
-                    <span class="material-symbols-rounded" aria-hidden="true">event_available</span>
+                    <span class="material-symbols-rounded app-icon icon-calendar-check" aria-hidden="true"></span>
                     <strong>Chưa có khung giờ nào được đặt</strong>
                     <p>Khi khách hàng đặt sân, các khung giờ đã đặt và số lượng sản phẩm lấp đầy sẽ hiển thị chi tiết tại đây.</p>
                 </div>
@@ -487,7 +510,7 @@
                         <tr>
                             <td>
                                 <strong><%= escapeHtml(slot.getField().getFieldName()) %></strong>
-                                <span class="cell-note">📦 Quy mô: <strong><%= slot.getTotalQuantity() %> sản phẩm (sân)</strong></span>
+                                <span class="cell-note"><span class="app-icon icon-box" aria-hidden="true"></span> Quy mô: <strong><%= slot.getTotalQuantity() %> sản phẩm (sân)</strong></span>
                             </td>
                             <td><strong><%= slot.getStartsAt().format(bookingDateFormat) %></strong></td>
                             <td><strong><%= slot.getStartsAt().format(bookingTimeFormat) %> - <%= slot.getEndsAt().format(bookingTimeFormat) %></strong></td>
@@ -501,9 +524,9 @@
                             </td>
                             <td>
                                 <% if (full) { %>
-                                <span class="status-badge status-rejected">🔒 Đã kín <%= slot.getTotalQuantity() %>/<%= slot.getTotalQuantity() %> sân (Không nhận thêm)</span>
+                                <span class="status-badge status-rejected"><span class="app-icon icon-lock" aria-hidden="true"></span> Đã kín <%= slot.getTotalQuantity() %>/<%= slot.getTotalQuantity() %> sân (Không nhận thêm)</span>
                                 <% } else { %>
-                                <span class="status-badge status-confirmed">✅ Còn trống <%= slot.getRemainingCount() %>/<%= slot.getTotalQuantity() %> sân</span>
+                                <span class="status-badge status-confirmed"><span class="app-icon icon-check" aria-hidden="true"></span> Còn trống <%= slot.getRemainingCount() %>/<%= slot.getTotalQuantity() %> sân</span>
                                 <% } %>
                             </td>
                             <td style="white-space: normal; min-width: 320px;">
@@ -603,13 +626,13 @@
                             </p>
 
                             <div class="field-quantity-row">
-                                <span>📦 Số lượng sản phẩm hiện có: <strong><%= field.getQuantity() %> sân cho thuê</strong></span>
+                                <span><span class="app-icon icon-box" aria-hidden="true"></span> Số lượng sản phẩm hiện có: <strong><%= field.getQuantity() %> sân cho thuê</strong></span>
                                 <span>Giới hạn: <strong><%= field.getQuantity() %> đơn / khung giờ</strong></span>
                             </div>
 
                             <div class="field-booked-mini">
                                 <div class="field-booked-mini-title">
-                                    <span>⏰ Khung giờ đã có người đặt (<%= thisFieldSlots.size() %>)</span>
+                                    <span><span class="app-icon icon-clock" aria-hidden="true"></span> Khung giờ đã có người đặt (<%= thisFieldSlots.size() %>)</span>
                                     <span style="font-size:11px; color:var(--text-light);">Giờ mở: <%= field.getOpenTime() %> - <%= field.getCloseTime() %></span>
                                 </div>
                                 <% if (thisFieldSlots.isEmpty()) { %>
@@ -631,6 +654,16 @@
                                 <strong data-field-price><%= priceFormat.format(field.getPricePerHour()) %>đ</strong>
                                 <span>/ giờ / 1 sản phẩm</span>
                             </div>
+                            <div class="approval-controls">
+                                <a class="automation-button secondary" href="<%= contextPath %>/owner/calendar?fieldId=<%= field.getFieldId() %>">Xem lịch / khóa giờ</a>
+                                <% if (field.supportsAutoApproval()) { %>
+                                <form method="post" action="<%= contextPath %>/owner/fields/approval">
+                                    <input type="hidden" name="csrfToken" value="<%= escapeHtml((String) request.getAttribute("csrfToken")) %>"><input type="hidden" name="fieldId" value="<%= field.getFieldId() %>"><input type="hidden" name="enabled" value="<%= !field.isAutoApprove() %>">
+                                    <button class="automation-button secondary" type="submit"><%= field.isAutoApprove() ? "Tắt tự xác nhận" : "Bật tự xác nhận" %></button>
+                                </form>
+                                <% } %>
+                            </div>
+                            <span class="approval-badge"><%= field.isAutoApprove() ? "Tự động xác nhận đơn mới" : "Duyệt thủ công" %></span>
                             <div class="field-actions">
                                 <button class="field-edit-button"
                                         type="button"
@@ -642,6 +675,7 @@
                                       method="post"
                                       action="<%= contextPath %>/owner/fields/toggle"
                                       data-field-toggle-form>
+<input type="hidden" name="csrfToken" value="<%= com.sportify.util.Html.escape(request.getAttribute("csrfToken")) %>">
                                     <input type="hidden"
                                            name="fieldId"
                                            value="<%= field.getFieldId() %>">
@@ -698,6 +732,7 @@
               action="<%= contextPath %>/owner/fields/create"
               data-create-action="<%= contextPath %>/owner/fields/create"
               data-update-action="<%= contextPath %>/owner/fields/update">
+<input type="hidden" name="csrfToken" value="<%= com.sportify.util.Html.escape(request.getAttribute("csrfToken")) %>">
 
     <input type="hidden"
            name="fieldId"

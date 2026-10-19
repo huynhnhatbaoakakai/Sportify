@@ -215,17 +215,17 @@
         }
 
         const ownerChips = [
-            '👋 Chào bạn, shop đã nhận được yêu cầu đặt sân của bạn.',
-            '⚽ Sân đã sẵn sàng, mời bạn đến trước 10 phút để nhận sân nhé!',
-            '💡 Bạn có cần chuẩn bị thêm bóng, áo tập hay nước uống không ạ?',
-            '⚠️ Khung giờ này sân đang bảo trì, bạn đổi sang giờ khác được không?'
+            'Chào bạn, shop đã nhận được yêu cầu đặt sân của bạn.',
+            'Sân đã sẵn sàng, mời bạn đến trước 10 phút để nhận sân nhé!',
+            'Bạn có cần chuẩn bị thêm bóng, áo tập hay nước uống không ạ?',
+            'Khung giờ này sân đang bảo trì, bạn đổi sang giờ khác được không?'
         ];
 
         const customerChips = [
-            '👋 Chào chủ sân, mình muốn xác nhận thông tin đơn đặt lịch này ạ.',
-            '⚽ Cho mình hỏi bên sân có sẵn bóng và áo pitch cho mượn không ạ?',
-            '⏰ Khoảng mấy giờ thì bên mình có thể vào sân nhận sân được vậy shop?',
-            '🙏 Mình có thể đến sớm hơn 15 phút để khởi động được không?'
+            'Chào chủ sân, mình muốn xác nhận thông tin đơn đặt lịch này ạ.',
+            'Cho mình hỏi bên sân có sẵn bóng và áo pitch cho mượn không ạ?',
+            'Khoảng mấy giờ thì bên mình có thể vào sân nhận sân được vậy shop?',
+            'Mình có thể đến sớm hơn 15 phút để khởi động được không?'
         ];
 
         const chips = isOwnerViewing ? ownerChips : customerChips;
@@ -267,7 +267,7 @@
         if (messages.length === 0) {
             stream.innerHTML = `
                 <div class="chat-empty-state">
-                    <span class="material-symbols-rounded empty-icon">chat_bubble</span>
+                    <span class="material-symbols-rounded empty-icon app-icon icon-chat" aria-hidden="true"></span>
                     <h5>Bắt đầu trò chuyện phục vụ đơn hàng</h5>
                     <p>Hai bên có thể trao đổi thông tin nhận sân, thời gian, thiết bị hoặc các yêu cầu đặc biệt tại đây. Tin nhắn được lưu an toàn vào tài khoản của bạn.</p>
                 </div>
@@ -291,7 +291,7 @@
                         <div class="msg-text-content">${esc(msg.text)}</div>
                         <div class="msg-meta-row">
                             <span class="msg-timestamp">${esc(msg.time)}</span>
-                            ${isMine ? `<span class="material-symbols-rounded msg-check-icon">done_all</span>` : ''}
+                            ${isMine ? `<span class="material-symbols-rounded msg-check-icon app-icon icon-check" aria-hidden="true"></span>` : ''}
                         </div>
                     </div>
                 </div>
@@ -311,7 +311,7 @@
         if (stream) {
             stream.innerHTML = `
                 <div class="chat-empty-state" style="color: #ef4444;">
-                    <span class="material-symbols-rounded empty-icon" style="color: #ef4444; background: #fee2e2;">error</span>
+                    <span class="material-symbols-rounded empty-icon app-icon icon-alert" style="color: #ef4444; background: #fee2e2;" aria-hidden="true"></span>
                     <h5>Có lỗi xảy ra</h5>
                     <p>${esc(msg)}</p>
                 </div>

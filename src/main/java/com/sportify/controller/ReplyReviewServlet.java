@@ -11,8 +11,6 @@ import java.io.IOException;
 @WebServlet("/owner/reviews/reply")
 public class ReplyReviewServlet extends HttpServlet {
 
-    // TODO: use session.getAttribute("userId") and require the OWNER role.
-    private static final Long DEMO_OWNER_ID = 1L;
 
     @Override
     protected void doPost(

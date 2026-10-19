@@ -87,9 +87,9 @@
             </button>
         </div>
         <div class="owner-summary">
-            <div class="owner-avatar" aria-hidden="true"><%= ownerInitials %></div>
+            <div class="owner-avatar" aria-hidden="true"><%= escapeHtml(ownerInitials) %></div>
             <div class="owner-summary-text">
-                <strong><%= ownerDisplayName %></strong>
+                <strong><%= escapeHtml(ownerDisplayName) %></strong>
                 <span>Chủ sân Sportify</span>
             </div>
         </div>
@@ -107,6 +107,7 @@
                 <span class="app-icon icon-racket" aria-hidden="true"></span>
                 <span>Quản lý sân</span>
             </a>
+            <a class="nav-item" href="<%= contextPath %>/owner/calendar"><span class="app-icon icon-calendar" aria-hidden="true"></span><span>Lịch trống và khóa giờ</span></a>
             <a class="nav-item" href="<%= contextPath %>/owner/customers">
                 <span class="app-icon icon-users" aria-hidden="true"></span>
                 <span>Khách hàng</span>
@@ -152,6 +153,7 @@
                     <span class="app-icon icon-arrow-left" aria-hidden="true" style="font-size:18px;"></span>
                     <span>Trang khách hàng</span>
                 </a>
+                <%@ include file="/WEB-INF/views/common/notification-link.jspf" %>
                 <div class="today" aria-label="Ngày hiện tại">
                     <span class="app-icon icon-calendar" aria-hidden="true"></span>
                     <span data-current-date>Hôm nay</span>
@@ -262,6 +264,7 @@
                         <details class="review-reply-editor" <%= hasReply ? "" : "open" %>>
                             <summary><%= hasReply ? "Chỉnh sửa phản hồi" : "Phản hồi đánh giá" %></summary>
                             <form class="review-reply-form" method="post" action="<%= contextPath %>/owner/reviews/reply">
+<input type="hidden" name="csrfToken" value="<%= com.sportify.util.Html.escape(request.getAttribute("csrfToken")) %>">
                                 <input type="hidden" name="reviewId" value="<%= review.getReviewId() %>">
                                 <input type="hidden" name="rating" value="<%= selectedRating == null ? "" : selectedRating %>">
                                 <label for="owner-reply-<%= review.getReviewId() %>">Nội dung phản hồi</label>

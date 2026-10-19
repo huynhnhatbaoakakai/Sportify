@@ -68,9 +68,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Quản lý khách hàng và theo dõi toàn bộ lịch sử đặt sân trên Sportify">
     <title>Quản lý Khách hàng & Lịch sử Đặt sân - Sportify</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Rounded:FILL@0..1&display=swap" rel="stylesheet">
+
+
+
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/owner-dashboard.css">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/owner-customers.css">
@@ -110,6 +110,7 @@
             <a class="nav-item" href="<%= contextPath %>/owner/fields#fields">
                 <span class="app-icon icon-racket" aria-hidden="true"></span><span>Quản lý sân</span>
             </a>
+            <a class="nav-item" href="<%= contextPath %>/owner/calendar"><span class="app-icon icon-calendar" aria-hidden="true"></span><span>Lịch trống và khóa giờ</span></a>
             <a class="nav-item active" href="<%= contextPath %>/owner/customers" aria-current="page">
                 <span class="app-icon icon-users" aria-hidden="true"></span><span>Khách hàng</span>
             </a>
@@ -150,6 +151,7 @@
                     <span class="app-icon icon-arrow-left" aria-hidden="true" style="font-size:18px;"></span>
                     <span>Trang khách hàng</span>
                 </a>
+                <%@ include file="/WEB-INF/views/common/notification-link.jspf" %>
                 <div class="today" aria-label="Ngày hiện tại">
                     <span class="app-icon icon-calendar" aria-hidden="true"></span>
                     <span data-current-date>Hôm nay</span>
@@ -162,7 +164,7 @@
             <section class="customers-hero-banner" aria-labelledby="customers-heading">
                 <div class="hero-text-col">
                     <span class="hero-badge">
-                        <span class="material-symbols-rounded" aria-hidden="true">verified_user</span>
+                        <span class="material-symbols-rounded app-icon icon-check" aria-hidden="true"></span>
                         <span>Dữ liệu khách hàng thực tế</span>
                     </span>
                     <h2 id="customers-heading">Hồ sơ Khách hàng & Lịch sử Đặt sân</h2>
@@ -170,7 +172,7 @@
                 </div>
                 <div class="hero-actions-col">
                     <a class="hero-btn-secondary" href="<%= contextPath %>/owner/bookings#booking-section">
-                        <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span>
+                        <span class="material-symbols-rounded app-icon icon-calendar" aria-hidden="true"></span>
                         <span>Xem lịch đặt sân</span>
                     </a>
                 </div>
@@ -179,7 +181,7 @@
             <!-- THÔNG BÁO THAO TÁC THÀNH CÔNG -->
             <% if (actionNotice != null) { %>
             <div class="customer-alert-success" role="status">
-                <span class="material-symbols-rounded" aria-hidden="true">check_circle</span>
+                <span class="material-symbols-rounded app-icon icon-check" aria-hidden="true"></span>
                 <div>
                     <strong>Thành công!</strong>
                     <span><%= escapeHtml(actionNotice) %></span>
@@ -188,7 +190,7 @@
             <% } %>
             <% if (errorMessage != null) { %>
             <div class="customer-alert-error" role="alert">
-                <span class="material-symbols-rounded" aria-hidden="true">error</span>
+                <span class="material-symbols-rounded app-icon icon-alert" aria-hidden="true"></span>
                 <span><%= escapeHtml(errorMessage) %></span>
             </div>
             <% } %>
@@ -198,7 +200,7 @@
                 <article class="stat-card modern-stat-card">
                     <div class="stat-card-top">
                         <span class="stat-icon-wrap icon-emerald">
-                            <span class="material-symbols-rounded" aria-hidden="true">groups</span>
+                            <span class="material-symbols-rounded app-icon icon-users" aria-hidden="true"></span>
                         </span>
                         <span class="stat-tag tag-emerald">Khách đặt</span>
                     </div>
@@ -212,7 +214,7 @@
                 <article class="stat-card modern-stat-card">
                     <div class="stat-card-top">
                         <span class="stat-icon-wrap icon-blue">
-                            <span class="material-symbols-rounded" aria-hidden="true">event_available</span>
+                            <span class="material-symbols-rounded app-icon icon-calendar-check" aria-hidden="true"></span>
                         </span>
                         <span class="stat-tag tag-blue">Đơn đặt</span>
                     </div>
@@ -226,7 +228,7 @@
                 <article class="stat-card modern-stat-card">
                     <div class="stat-card-top">
                         <span class="stat-icon-wrap icon-purple">
-                            <span class="material-symbols-rounded" aria-hidden="true">payments</span>
+                            <span class="material-symbols-rounded app-icon icon-wallet" aria-hidden="true"></span>
                         </span>
                         <span class="stat-tag tag-purple">Doanh số</span>
                     </div>
@@ -240,7 +242,7 @@
                 <article class="stat-card modern-stat-card">
                     <div class="stat-card-top">
                         <span class="stat-icon-wrap icon-amber">
-                            <span class="material-symbols-rounded" aria-hidden="true">pending_actions</span>
+                            <span class="material-symbols-rounded app-icon icon-clock" aria-hidden="true"></span>
                         </span>
                         <span class="stat-tag tag-amber">Cần duyệt</span>
                     </div>
@@ -266,13 +268,13 @@
                     <!-- THANH TÌM KIẾM & BỘ LỌC TỨC THÌ -->
                     <div class="customer-filter-toolbar">
                         <div class="search-input-box">
-                            <span class="material-symbols-rounded search-icon" aria-hidden="true">search</span>
+                            <span class="material-symbols-rounded search-icon app-icon icon-search" aria-hidden="true"></span>
                             <input id="customer-search-input" type="search" maxlength="100"
                                    value="<%= escapeHtml(search) %>" placeholder="Tìm theo tên khách, số điện thoại, mã đơn..."
                                    autocomplete="off">
                             <% if (search != null && !search.isEmpty()) { %>
                                 <a class="clear-search-btn" href="<%= contextPath %>/owner/customers" title="Xóa tìm kiếm">
-                                    <span class="material-symbols-rounded">close</span>
+                                    <span class="material-symbols-rounded app-icon icon-close" aria-hidden="true"></span>
                                 </a>
                             <% } %>
                         </div>
@@ -290,11 +292,11 @@
                         <span>Có đơn chờ duyệt</span>
                     </button>
                     <button type="button" class="chip-btn" data-filter="frequent">
-                        <span class="material-symbols-rounded chip-icon">star</span>
+                        <span class="material-symbols-rounded chip-icon app-icon icon-star" aria-hidden="true"></span>
                         <span>Khách quen (≥2 đơn)</span>
                     </button>
                     <button type="button" class="chip-btn" data-filter="registered">
-                        <span class="material-symbols-rounded chip-icon">account_circle</span>
+                        <span class="material-symbols-rounded chip-icon app-icon icon-user" aria-hidden="true"></span>
                         <span>Tài khoản Sportify</span>
                     </button>
                 </div>
@@ -302,7 +304,7 @@
                 <% if (customers.isEmpty()) { %>
                 <div class="empty-state customer-empty-state">
                     <div class="empty-icon-wrap">
-                        <span class="material-symbols-rounded" aria-hidden="true"><%= loadFailed ? "cloud_off" : "person_search" %></span>
+                        <span class="material-symbols-rounded app-icon icon-<%= loadFailed ? "cloud-off" : "users-search" %>" aria-hidden="true"></span>
                     </div>
                     <h3><%= loadFailed ? "Chưa thể tải danh sách khách hàng" : search != null && !search.isEmpty() ? "Không tìm thấy khách hàng phù hợp" : "Chưa có lượt đặt sân nào" %></h3>
                     <p><%= loadFailed ? "Vui lòng kiểm tra lại kết nối cơ sở dữ liệu." : search != null && !search.isEmpty() ? "Hãy thử tìm theo tên, số điện thoại khác hoặc xóa bộ lọc." : "Khi khách hàng tạo lịch hẹn trên trang chủ, thông tin của họ sẽ tự động được ghi nhận tại đây." %></p>
@@ -354,14 +356,14 @@
                                             <strong class="customer-name-text"><%= escapeHtml(cName) %></strong>
                                             <% if (isFrequent) { %>
                                                 <span class="vip-badge" title="Khách hàng thân thiết">
-                                                    <span class="material-symbols-rounded">stars</span> VIP
+                                                    <span class="material-symbols-rounded app-icon icon-star" aria-hidden="true"></span> VIP
                                                 </span>
                                             <% } %>
                                         </div>
                                         <div class="account-tag-line">
                                             <% if (isReg) { %>
                                                 <span class="badge-account-user">
-                                                    <span class="material-symbols-rounded">verified</span>
+                                                    <span class="material-symbols-rounded app-icon icon-check" aria-hidden="true"></span>
                                                     <span>Tài khoản #<%= customer.getCustomerId() %></span>
                                                 </span>
                                             <% } else { %>
@@ -377,11 +379,11 @@
                             <!-- CỘT 2: SỐ ĐIỆN THOẠI -->
                             <td data-label="Số điện thoại">
                                 <div class="phone-display-wrap">
-                                    <span class="material-symbols-rounded phone-badge-icon">call</span>
+                                    <span class="material-symbols-rounded phone-badge-icon app-icon icon-phone" aria-hidden="true"></span>
                                     <span class="phone-number-str"><%= escapeHtml(cPhone) %></span>
                                     <% if (!"Chưa có SĐT".equals(cPhone)) { %>
                                         <button type="button" class="copy-phone-btn" data-copy-phone="<%= escapeHtml(cPhone) %>" title="Sao chép số điện thoại">
-                                            <span class="material-symbols-rounded">content_copy</span>
+                                            <span class="material-symbols-rounded app-icon icon-copy" aria-hidden="true"></span>
                                         </button>
                                     <% } %>
                                 </div>
@@ -392,7 +394,7 @@
                                 <div class="email-display-wrap">
                                     <% if (customer.getEmail() != null && !customer.getEmail().isEmpty()) { %>
                                         <a href="mailto:<%= escapeHtml(customer.getEmail()) %>" class="email-link" title="Gửi email cho khách">
-                                            <span class="material-symbols-rounded">mail</span>
+                                            <span class="material-symbols-rounded app-icon icon-mail" aria-hidden="true"></span>
                                             <span><%= escapeHtml(customer.getEmail()) %></span>
                                         </a>
                                     <% } else { %>
@@ -422,13 +424,13 @@
                                 <% if (customer.getLastBookingAt() != null) { %>
                                     <div class="last-booking-block">
                                         <div class="last-date-str">
-                                            <span class="material-symbols-rounded">schedule</span>
+                                            <span class="material-symbols-rounded app-icon icon-clock" aria-hidden="true"></span>
                                             <strong><%= customer.getLastBookingAt().format(dateFormat) %></strong>
                                             <span><%= customer.getLastBookingAt().format(timeFormat) %></span>
                                         </div>
                                         <% if (customer.getLastFieldName() != null) { %>
                                             <div class="last-field-tag">
-                                                <span class="material-symbols-rounded">location_on</span>
+                                                <span class="material-symbols-rounded app-icon icon-pin" aria-hidden="true"></span>
                                                 <span><%= escapeHtml(customer.getLastFieldName()) %></span>
                                             </div>
                                         <% } %>
@@ -447,13 +449,13 @@
                                     <button type="button" class="btn-chat-order-sm"
                                             onclick="openOrderChat(<%= latestBooking.getBookingId() %>, <%= customer.getCustomerId() != null ? customer.getCustomerId() : 0 %>)"
                                             title="Nhắn tin với khách về đơn gần nhất (#<%= latestBooking.getBookingCode() %>)">
-                                        <span class="material-symbols-rounded">chat</span> Chat đơn
+                                        <span class="material-symbols-rounded app-icon icon-chat" aria-hidden="true"></span> Chat đơn
                                     </button>
                                     <% } %>
                                     <button type="button" class="btn-open-history"
                                             data-open-modal="<%= escapeHtml(customer.getCustomerKey()) %>"
                                             title="Xem chi tiết hồ sơ và lịch sử các lần đặt sân">
-                                        <span class="material-symbols-rounded">history</span>
+                                        <span class="material-symbols-rounded app-icon icon-clock" aria-hidden="true"></span>
                                         <span>Xem lịch sử</span>
                                     </button>
                                 </div>
@@ -490,21 +492,21 @@
                     </div>
                     <div class="modal-contact-pills">
                         <div class="contact-pill" id="modalPhoneWrapper">
-                            <span class="material-symbols-rounded">call</span>
+                            <span class="material-symbols-rounded app-icon icon-phone" aria-hidden="true"></span>
                             <strong id="modalCustomerPhone">0901234567</strong>
                             <button type="button" id="modalCopyPhoneBtn" class="pill-copy-btn" title="Sao chép số điện thoại">
-                                <span class="material-symbols-rounded">content_copy</span>
+                                <span class="material-symbols-rounded app-icon icon-copy" aria-hidden="true"></span>
                             </button>
                         </div>
                         <div class="contact-pill" id="modalEmailWrapper">
-                            <span class="material-symbols-rounded">mail</span>
+                            <span class="material-symbols-rounded app-icon icon-mail" aria-hidden="true"></span>
                             <span id="modalCustomerEmail">email@example.com</span>
                         </div>
                     </div>
                 </div>
             </div>
             <button type="button" class="modal-dismiss-btn" data-close-modal aria-label="Đóng cửa sổ">
-                <span class="material-symbols-rounded">close</span>
+                <span class="material-symbols-rounded app-icon icon-close" aria-hidden="true"></span>
             </button>
         </header>
 
@@ -538,7 +540,7 @@
             <div class="modal-history-wrap">
                 <div class="history-section-header">
                     <div class="section-title-group">
-                        <span class="material-symbols-rounded title-icon">receipt_long</span>
+                        <span class="material-symbols-rounded title-icon app-icon icon-file" aria-hidden="true"></span>
                         <h4>Toàn bộ Lịch sử Đặt lịch của khách</h4>
                     </div>
                     <span class="history-sub-note">Sắp xếp theo đơn mới nhất</span>
@@ -556,7 +558,7 @@
         <footer class="modal-bottom-bar">
             <span class="modal-footer-note">Chủ sân có thể duyệt hoặc từ chối ngay đối với các đơn đang chờ</span>
             <button type="button" class="btn-modal-close" data-close-modal>
-                <span class="material-symbols-rounded">close</span>
+                <span class="material-symbols-rounded app-icon icon-close" aria-hidden="true"></span>
                 <span>Đóng lại</span>
             </button>
         </footer>
@@ -641,7 +643,7 @@
                             <button type="button" class="btn-chat-order-sm"
                                     onclick="openOrderChat(<%= b.getBookingId() %>, <%= customer.getCustomerId() != null ? customer.getCustomerId() : 0 %>)"
                                     title="Nhắn tin với khách phục vụ đơn này">
-                                <span class="material-symbols-rounded">chat</span> Chat
+                                <span class="material-symbols-rounded app-icon icon-chat" aria-hidden="true"></span> Chat
                             </button>
                             <% if ("PENDING".equals(bStatus)) { %>
                             <div class="quick-booking-actions">
@@ -651,7 +653,7 @@
                                     <input type="hidden" name="from" value="customers">
                                     <input type="hidden" name="csrfToken" value="<%= escapeHtml(bookingCsrfToken) %>">
                                     <button type="submit" class="action-btn-confirm" title="Xác nhận đơn">
-                                        <span class="material-symbols-rounded">check</span> Duyệt
+                                        <span class="material-symbols-rounded app-icon icon-check" aria-hidden="true"></span> Duyệt
                                     </button>
                                 </form>
                                 <form method="post" action="<%= contextPath %>/owner/bookings/status" style="display:inline;">
@@ -660,7 +662,7 @@
                                     <input type="hidden" name="from" value="customers">
                                     <input type="hidden" name="csrfToken" value="<%= escapeHtml(bookingCsrfToken) %>">
                                     <button type="submit" class="action-btn-reject" title="Từ chối đơn">
-                                        <span class="material-symbols-rounded">close</span>
+                                        <span class="material-symbols-rounded app-icon icon-close" aria-hidden="true"></span>
                                     </button>
                                 </form>
                             </div>
@@ -679,7 +681,7 @@
 
 <!-- TOAST THÔNG BÁO SAO CHÉP NHANH -->
 <div id="copyToast" class="copy-toast" aria-live="polite">
-    <span class="material-symbols-rounded">check_circle</span>
+    <span class="material-symbols-rounded app-icon icon-check" aria-hidden="true"></span>
     <span id="copyToastMsg">Đã sao chép số điện thoại!</span>
 </div>
 

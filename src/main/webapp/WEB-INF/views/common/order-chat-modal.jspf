@@ -22,7 +22,7 @@
                 </div>
             </div>
             <button type="button" class="chat-modal-close-btn" onclick="closeOrderChatModal()" aria-label="Đóng hộp chat">
-                <span class="material-symbols-rounded">close</span>
+                <span class="material-symbols-rounded app-icon icon-close" aria-hidden="true"></span>
             </button>
         </header>
 
@@ -38,15 +38,15 @@
             </div>
             <div class="context-card-bottom">
                 <div class="context-meta-col">
-                    <span class="material-symbols-rounded">schedule</span>
+                    <span class="material-symbols-rounded app-icon icon-clock" aria-hidden="true"></span>
                     <span id="orderContextTime">00:00 - 00:00, 01/01/2026</span>
                 </div>
                 <div class="context-meta-col">
-                    <span class="material-symbols-rounded">payments</span>
+                    <span class="material-symbols-rounded app-icon icon-wallet" aria-hidden="true"></span>
                     <strong id="orderContextPrice">0 đ</strong>
                 </div>
                 <div class="context-meta-col" id="orderContextContactCol">
-                    <span class="material-symbols-rounded">person</span>
+                    <span class="material-symbols-rounded app-icon icon-user" aria-hidden="true"></span>
                     <span id="orderContextContact">Khách hàng</span>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                    placeholder="Nhập tin nhắn trao đổi về đơn hàng... (Enter để gửi)"
                    autocomplete="off" maxlength="1000">
             <button type="button" id="orderChatSendBtn" class="order-chat-send-action" onclick="sendOrderChatMessage()" title="Gửi tin nhắn">
-                <span class="material-symbols-rounded">send</span>
+                <span class="material-symbols-rounded app-icon icon-send" aria-hidden="true"></span>
                 <span>Gửi</span>
             </button>
         </footer>

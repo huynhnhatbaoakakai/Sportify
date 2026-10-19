@@ -33,7 +33,7 @@ public class Booking implements Serializable {
     private SportField field;
 
     // TODO: link to customer/user ID when real accounts are available.
-    @Column(name = "customer_name", nullable = false, length = 100, columnDefinition = "nvarchar(100)")
+    @Column(name = "customer_name", nullable = false, length = 100)
     private String customerName;
 
     /** ID tài khoản khách đặt từ trang chủ (null với đơn cũ/đơn nhập tay). */
@@ -57,6 +57,12 @@ public class Booking implements Serializable {
 
     @Column(name = "court_number", nullable = false)
     private Integer courtNumber = 1;
+    @Column(name = "confirmation_source", nullable = false, length = 20)
+    private String confirmationSource = "MANUAL";
+
+    public String getConfirmationSource() { return confirmationSource; }
+    public void setConfirmationSource(String source) { this.confirmationSource = source; }
+    public boolean isAutomaticallyConfirmed() { return "AUTOMATIC".equals(confirmationSource); }
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

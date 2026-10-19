@@ -7,7 +7,7 @@ body {
     display: flex;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
     color: #0f172a;
 }
 
@@ -62,6 +62,7 @@ body {
 /* MAIN WRAPPER & TOP NAVBAR */
 .main-wrapper {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -914,6 +915,7 @@ body {
 
 .bookings-table {
     width: 100%;
+    min-width: 1080px;
     border-collapse: collapse;
     font-size: 13px;
     text-align: left;
@@ -947,7 +949,10 @@ body {
 }
 
 .date-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
     padding: 4px 10px;
     border-radius: 8px;
     background: #f1f5f9;
@@ -957,12 +962,16 @@ body {
 }
 
 .time-range-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
     padding: 4px 10px;
     border-radius: 8px;
     background: #eff6ff;
     color: #1e40af;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 12.5px;
 }
 
@@ -973,6 +982,8 @@ body {
 .capacity-numbers {
     display: flex;
     justify-content: space-between;
+    gap: 12px;
+    white-space: nowrap;
     font-size: 12px;
     margin-bottom: 5px;
 }
@@ -1006,6 +1017,7 @@ body {
 
 .court-unit-tag {
     display: inline-block;
+    white-space: nowrap;
     padding: 3px 8px;
     border-radius: 6px;
     font-size: 11px;
@@ -1025,6 +1037,7 @@ body {
 }
 
 .btn-slot-disabled {
+    white-space: nowrap;
     padding: 6px 12px;
     border-radius: 8px;
     background: #f1f5f9;
@@ -1039,6 +1052,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    white-space: nowrap;
     padding: 6px 12px;
     border-radius: 8px;
     background: #dcfce7;
@@ -1058,6 +1072,7 @@ body {
 .court-assigned-pill {
     display: inline-flex;
     align-items: center;
+    gap: 5px;
     padding: 2px 8px;
     border-radius: 6px;
     background: #eff6ff;
@@ -1189,4 +1204,21 @@ body {
     .content-area {
         padding: 18px;
     }
+}
+
+@media (max-width: 640px) {
+    body { flex-direction: column; height: auto; min-height: 100vh; overflow: auto; }
+    .sidebar { width: 100%; padding: 8px 0; border-right: 0; border-bottom: 1px solid #dbe3ee; }
+    .sidebar-brand, .sidebar-menu > div { display: none; }
+    .sidebar-menu { flex-direction: row; overflow-x: auto; gap: 4px; padding: 0 10px; }
+    .sidebar-menu .menu-item { flex-shrink: 0; white-space: nowrap; padding: 8px 10px; gap: 6px; font-size: 12px; }
+    .main-wrapper { overflow: visible; }
+    .top-navbar { height: auto; min-height: 64px; padding: 12px 16px; gap: 10px; }
+    .page-title { font-size: 18px; }
+    .navbar-subtitle, .profile-name, .nav-quick-pill { display: none; }
+    .content-area { padding: 16px 12px; }
+    .section-title { font-size: 17px; }
+    .home-section-block { padding: 16px; }
+    .search-box-wrap { min-width: 0; width: 100%; }
+    .card-framed-box { max-width: 100%; }
 }

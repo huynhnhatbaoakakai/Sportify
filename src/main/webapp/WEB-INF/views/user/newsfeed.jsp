@@ -42,27 +42,24 @@
                       placeholder="Chia sẻ hoạt động thể thao, rủ hội nhóm giao lưu hoặc nhượng lại lịch đặt sân của bạn..."></textarea>
 
             <!-- KHUNG XEM TRƯỚC LỊCH SÂN ĐÍNH KÈM -->
-            <div id="attachedBookingPreview" style="display:none; margin-top:12px; background:linear-gradient(145deg,#f0fdf4,#ffffff); border:2px solid #86efac; border-radius:14px; padding:14px 16px;">
+            <div id="attachedBookingPreview" class="booking-attachment booking-preview" style="display:none;">
             </div>
 
             <!-- BẢNG CHỌN LỊCH ĐẶT SÂN ĐÃ XÁC NHẬN CỦA TÔI -->
-            <div id="bookingSelectorPanel" style="display:none; margin-top:12px; background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:14px 16px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                    <strong style="font-size:13.5px; color:#0f172a;">💎 Chọn lịch đặt sân đã xác nhận của bạn để đính kèm:</strong>
-                    <button type="button" onclick="toggleBookingSelector(false)" style="background:none; border:none; color:#64748b; cursor:pointer; font-weight:700;">Đóng ✕</button>
+            <div id="bookingSelectorPanel" class="booking-selector-panel" style="display:none;">
+                <div class="booking-selector-heading">
+                    <strong>Chọn lịch sân đã xác nhận</strong>
+                    <button type="button" class="booking-small-btn" onclick="toggleBookingSelector(false)">Đóng <span class="app-icon icon-close" aria-hidden="true"></span></button>
                 </div>
                 <div id="myConfirmedBookingsList" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto;">
                     <div style="font-size:13px; color:#64748b; padding:10px;">Đang tải lịch đặt sân...</div>
                 </div>
             </div>
 
-            <div class="create-post-footer" style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:12px;">
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                    <button type="button" onclick="toggleBookingSelector()"
-                            style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; color:#15803d; border:1.5px solid #86efac; border-radius:10px; padding:8px 14px; font-size:13px; font-weight:700; cursor:pointer;">
-                        🏟️ Đính kèm lịch đặt sân (Rủ nhóm / Rao bán)
-                    </button>
-                </div>
+            <div class="create-post-footer">
+                <button type="button" class="booking-attach-btn" onclick="toggleBookingSelector()">
+                    <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Đính kèm lịch sân
+                </button>
                 <button class="post-submit-btn" id="postBtn" onclick="createPost()">Đăng ngay</button>
             </div>
         </div>

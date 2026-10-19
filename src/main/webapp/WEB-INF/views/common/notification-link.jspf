@@ -1,0 +1,7 @@
+<%@ page pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/booking-automation.css">
+<a class="notification-link" href="${pageContext.request.contextPath}/notifications">
+    <span aria-hidden="true"><span class="app-icon icon-bell" aria-hidden="true"></span></span> Thông báo
+    <span class="notification-count" data-notification-count aria-label="Số thông báo chưa đọc"><%= request.getAttribute("unreadNotificationCount") == null ? "0" : request.getAttribute("unreadNotificationCount") %></span>
+</a>
+<script defer src="${pageContext.request.contextPath}/assets/js/notifications.js" data-notifications-poller data-context="${pageContext.request.contextPath}"></script>

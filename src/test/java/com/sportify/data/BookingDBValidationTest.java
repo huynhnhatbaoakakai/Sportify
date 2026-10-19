@@ -10,7 +10,7 @@ public class BookingDBValidationTest {
     public void rejectsInvalidBookingId() { BookingDB.changeStatus(0L, 1L, "CONFIRMED"); }
 
     @Test(expected = IllegalArgumentException.class)
-    public void rejectsUnsupportedTransition() { BookingDB.changeStatus(1L, 1L, "COMPLETED"); }
+    public void rejectsUnsupportedTransition() { BookingDB.changeStatus(1L, 1L, "PAID"); }
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectsMissingStatisticsDate() { BookingDB.getDashboardSummary(1L, null); }

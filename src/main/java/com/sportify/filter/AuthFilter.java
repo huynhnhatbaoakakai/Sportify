@@ -26,6 +26,7 @@ import java.io.IOException;
         "/chat", "/chat-friends", "/chat-api",
         "/appointments", "/appointments/*",
         "/field-booking", "/field-booking/*",
+        "/availability-api", "/notifications", "/notifications-api",
         "/profile",
         "/owner/*"
 })
@@ -38,6 +39,11 @@ public class AuthFilter extends HttpFilter {
         boolean loggedIn = session != null && session.getAttribute(BaseServlet.SESSION_USER) != null;
 
         if (loggedIn) {
+            req.setAttribute("csrfToken", com.sportify.util.Csrf.token(req));
+            if ("GET".equals(req.getMethod()) && !req.getServletPath().endsWith("-api")) {
+                com.sportify.model.User user = (com.sportify.model.User) session.getAttribute(BaseServlet.SESSION_USER);
+                req.setAttribute("unreadNotificationCount", com.sportify.data.NotificationDB.countUnread(user.getId()));
+            }
             chain.doFilter(req, resp);
         } else if (req.getServletPath().endsWith("-api")) {
             JsonResponse.error(resp, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");

@@ -30,8 +30,9 @@ public class LoginServlet extends BaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = userDAO.checkLogin(req.getParameter("email"), req.getParameter("password"));
         if (user != null) {
+            if (req.getSession(false) != null) req.getSession(false).invalidate();
             req.getSession().setAttribute(SESSION_USER, user);
-            redirect(req, resp, "/home");
+            redirect(req, resp, user.isOwner() ? "/owner/fields" : "/home");
         } else {
             redirect(req, resp, "/login?error=invalid");
         }

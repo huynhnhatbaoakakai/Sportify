@@ -1,0 +1,5 @@
+# Copy to database.properties (ignored by Git), then use your pgAdmin server credentials.
+# JVM -Dsportify.db.* and SPORTIFY_DB_* environment variables take precedence.
+db.url=jdbc:postgresql://localhost:5432/sporttrent
+db.user=postgres
+db.password=your-postgresql-password

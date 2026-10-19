@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "SportsFields")
+@Table(name = "sports_fields")
 public class SportField implements Serializable {
 
     @Id
@@ -23,19 +23,19 @@ public class SportField implements Serializable {
     @Column(name = "field_id")
     private Long fieldId;
 
-    @Column(name = "owner_id", nullable = false, columnDefinition = "int")
+    @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
-    @Column(name = "field_name", nullable = false, length = 150, columnDefinition = "nvarchar(150)")
+    @Column(name = "field_name", nullable = false, length = 150)
     private String fieldName;
 
-    @Column(name = "sport_type", nullable = false, length = 30, columnDefinition = "nvarchar(30)")
+    @Column(name = "sport_type", nullable = false, length = 30)
     private String sportType;
 
-    @Column(name = "address", nullable = false, length = 255, columnDefinition = "nvarchar(255)")
+    @Column(name = "address", nullable = false, length = 255)
     private String address;
 
-    @Column(name = "description", columnDefinition = "nvarchar(max)")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Column(
@@ -52,14 +52,22 @@ public class SportField implements Serializable {
     @Column(name = "close_time", nullable = false)
     private LocalTime closeTime;
 
-    @Column(name = "image_url", length = 500, columnDefinition = "nvarchar(500)")
+    @Column(name = "image_url", length = 500)
     private String imageUrl;
 
-    @Column(name = "status", nullable = false, length = 20, columnDefinition = "nvarchar(20)")
+    @Column(name = "status", nullable = false, length = 20)
     private String status;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity = 4;
+    private Integer quantity = 1;
+    @Column(name = "auto_approve", nullable = false)
+    private boolean autoApprove;
+
+    public boolean isAutoApprove() { return autoApprove; }
+    public void setAutoApprove(boolean autoApprove) { this.autoApprove = autoApprove; }
+    public boolean supportsAutoApproval() {
+        return "BASKETBALL".equals(sportType) || "PICKLEBALL".equals(sportType);
+    }
 
     @Column(
         name = "created_at",
@@ -96,7 +104,7 @@ public class SportField implements Serializable {
         this.closeTime = closeTime;
         this.imageUrl = imageUrl;
         this.status = status;
-        this.quantity = 4;
+        this.quantity = 1;
     }
 
     @PrePersist
@@ -115,7 +123,7 @@ public class SportField implements Serializable {
         }
 
         if (quantity == null || quantity <= 0) {
-            quantity = 4;
+            quantity = 1;
         }
     }
 
@@ -123,7 +131,7 @@ public class SportField implements Serializable {
     public void beforeUpdate() {
         updatedAt = LocalDateTime.now();
         if (quantity == null || quantity <= 0) {
-            quantity = 4;
+            quantity = 1;
         }
     }
 
@@ -263,11 +271,6 @@ public class SportField implements Serializable {
         }
     }
 
-    public int getQuantity() {
-        return quantity != null && quantity > 0 ? quantity : 4;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = (quantity != null && quantity > 0) ? quantity : 4;
-    }
+    public int getQuantity() { return quantity != null && quantity > 0 ? quantity : 1; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity != null && quantity > 0 ? quantity : 1; }
 }

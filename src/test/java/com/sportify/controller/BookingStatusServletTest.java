@@ -35,7 +35,7 @@ public class BookingStatusServletTest {
 
     @Test
     public void rejectsUnsupportedStatusAndInjectedStatus() throws Exception {
-        for (String status : new String[]{null, "", "PENDING", "COMPLETED", "CANCELLED", "confirmed", "CONFIRMED' OR 1=1"}) {
+        for (String status : new String[]{null, "", "PENDING", "PAID", "CANCELLED", "confirmed", "CONFIRMED' OR 1=1"}) {
             Exchange exchange = new Exchange("1", status, "test-token");
             exchange.submit();
             assertEquals("/Sportify/owner/bookings?error=booking_invalid#booking-section", exchange.redirect);

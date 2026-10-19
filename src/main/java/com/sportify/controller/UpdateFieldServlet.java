@@ -16,7 +16,6 @@ import java.util.Set;
 @WebServlet("/owner/fields/update")
 public class UpdateFieldServlet extends HttpServlet {
 
-    private static final Long DEMO_OWNER_ID = 1L;
 
     private static final Set<String> VALID_TYPES = Set.of(
             "GYM",

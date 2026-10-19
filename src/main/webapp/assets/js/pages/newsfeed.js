@@ -21,6 +21,15 @@ function esc(str) {
         .replace(/"/g, '&quot;');
 }
 
+function feedIcon(name) {
+    return `<span class="app-icon icon-${name}" aria-hidden="true"></span>`;
+}
+
+function sportLabel(type) {
+    return ({ PICKLEBALL: 'Pickleball', TABLE_TENNIS: 'Bóng bàn', BASKETBALL: 'Bóng rổ',
+        GYM: 'Phòng Gym', SWIMMING: 'Bơi lội', FOOTBALL: 'Bóng đá' })[type] || type || 'Thể thao';
+}
+
 // ===== LOAD MY CONFIRMED BOOKINGS FOR ATTACHMENT =====
 async function loadMyBookingsForAttach(autoSelectId) {
     try {
@@ -56,9 +65,9 @@ function renderBookingSelectorList() {
 
     if (!myConfirmedBookings || myConfirmedBookings.length === 0) {
         listEl.innerHTML = `
-            <div style="padding:14px; text-align:center; background:#fff; border:1px dashed #cbd5e1; border-radius:10px; color:#64748b; font-size:13px;">
-                📭 Bạn hiện chưa có lịch đặt sân nào ở trạng thái <b>Đã xác nhận (CONFIRMED)</b> để đính kèm.<br>
-                <a href="${CTX}/home#fields" style="display:inline-block; margin-top:6px; color:#15803d; font-weight:700;">+ Đặt sân ngay tại Trang chủ</a>
+            <div class="booking-selector-empty">
+                ${feedIcon('inbox')} Bạn chưa có lịch đặt sân đã xác nhận để đính kèm.<br>
+                <a href="${CTX}/home#fields">Đặt sân tại Trang chủ ${feedIcon('arrow')}</a>
             </div>`;
         return;
     }
@@ -66,24 +75,24 @@ function renderBookingSelectorList() {
     listEl.innerHTML = myConfirmedBookings.map(b => {
         const isSelected = selectedBookingAsset && String(selectedBookingAsset.bookingId) === String(b.bookingId);
         return `
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; background:${isSelected ? '#dcfce7' : '#ffffff'}; border:1.5px solid ${isSelected ? '#16a34a' : '#e2e8f0'}; border-radius:10px;">
+            <div class="booking-selector-item${isSelected ? ' is-selected' : ''}">
                 <div>
-                    <div style="font-weight:800; color:#0f172a; font-size:13.5px;">
-                        🏟️ ${esc(b.fieldName)} (Sân #${b.courtNumber})
-                        <span style="background:#15803d; color:#fff; font-size:10.5px; padding:2px 7px; border-radius:999px; margin-left:6px;">#${esc(b.bookingCode)}</span>
+                    <div class="booking-selector-title">
+                        ${feedIcon('court')} ${esc(b.fieldName)} · Sân #${esc(b.courtNumber || 1)}
+                        <span class="booking-code">#${esc(b.bookingCode)}</span>
                     </div>
-                    <div style="font-size:12px; color:#475569; margin-top:3px;">
-                        📅 ${esc(b.dateStr)} • 🕒 ${esc(b.timeStr)} • 💰 <b style="color:#15803d;">${esc(b.priceFormatted)}</b>
+                    <div class="booking-selector-meta">
+                        <span>${feedIcon('calendar')} ${esc(b.dateStr)}</span>
+                        <span>${feedIcon('clock')} ${esc(b.timeStr)}</span>
+                        <span>${feedIcon('wallet')} ${esc(b.priceFormatted)}</span>
                     </div>
                 </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button type="button" onclick="selectBookingToAttach(${b.bookingId}, 'TIM_DOI', true)"
-                            style="background:#159447; color:#fff; border:none; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:700; cursor:pointer;">
-                        🤝 Rủ hội nhóm
+                <div class="booking-selector-actions">
+                    <button type="button" class="booking-small-btn" onclick="selectBookingToAttach(${Number(b.bookingId)}, 'TIM_DOI', true)">
+                        ${feedIcon('users')} Rủ hội nhóm
                     </button>
-                    <button type="button" onclick="selectBookingToAttach(${b.bookingId}, 'PASS_SAN', true)"
-                            style="background:#ea580c; color:#fff; border:none; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:700; cursor:pointer;">
-                        🏷️ Rao bán sân
+                    <button type="button" class="booking-small-btn" onclick="selectBookingToAttach(${Number(b.bookingId)}, 'PASS_SAN', true)">
+                        ${feedIcon('refresh')} Nhượng lịch sân
                     </button>
                 </div>
             </div>`;
@@ -135,30 +144,24 @@ function renderAttachedBookingPreview() {
     const isPass = selectedPostPurpose === 'PASS_SAN';
     previewEl.style.display = 'block';
     previewEl.innerHTML = `
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <span style="background:${isPass ? '#ea580c' : '#15803d'}; color:#fff; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px;">
-                    ${isPass ? '🏷️ ĐÍNH KÈM RAO BÁN / NHƯỢNG LỊCH SÂN' : '🤝 ĐÍNH KÈM RỦ HỘI NHÓM CHƠI CÙNG'}
-                </span>
-                <button type="button" onclick="changeAttachedPurpose('${isPass ? 'TIM_DOI' : 'PASS_SAN'}')"
-                        style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:3px 9px; font-size:11.5px; font-weight:700; cursor:pointer; color:#334155;">
-                    🔄 Đổi sang: ${isPass ? '🤝 Rủ hội nhóm' : '🏷️ Rao bán sân'}
-                </button>
-            </div>
-            <button type="button" onclick="clearAttachedBooking()"
-                    style="background:#fee2e2; color:#991b1b; border:none; border-radius:8px; padding:4px 10px; font-size:12px; font-weight:700; cursor:pointer;">
-                ✕ Bỏ đính kèm
+        <div class="booking-attachment-header">
+            <span class="booking-purpose${isPass ? ' purpose-transfer' : ''}">
+                ${feedIcon(isPass ? 'refresh' : 'users')} ${isPass ? 'Nhượng lịch sân' : 'Rủ hội nhóm'}
+            </span>
+            <button type="button" class="booking-small-btn booking-remove" onclick="clearAttachedBooking()">
+                ${feedIcon('close')} Bỏ đính kèm
             </button>
         </div>
-        <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:4px;">
-            🏟️ ${esc(b.fieldName)} — Sân #${b.courtNumber} / ${b.fieldQuantity || 4} (${esc(b.sportType)})
+        <div class="booking-attachment-title">${feedIcon('court')} ${esc(b.fieldName)}</div>
+        <div class="booking-attachment-subtitle">Sân #${esc(b.courtNumber || 1)} / ${esc(b.fieldQuantity || 1)} · ${esc(sportLabel(b.sportType))} · #${esc(b.bookingCode)}</div>
+        <div class="booking-selector-meta">
+            <span>${feedIcon('calendar')} ${esc(b.dateStr)}</span>
+            <span>${feedIcon('clock')} ${esc(b.timeStr)}</span>
+            <span>${feedIcon('wallet')} ${esc(b.priceFormatted)}</span>
         </div>
-        <div style="font-size:12.5px; color:#334155; display:flex; flex-wrap:wrap; gap:12px;">
-            <span>🔖 Mã vé: <b>#${esc(b.bookingCode)}</b></span>
-            <span>📅 Ngày: <b>${esc(b.dateStr)}</b></span>
-            <span>🕒 Giờ: <b>${esc(b.timeStr)}</b></span>
-            <span>💰 Giá: <b style="color:#15803d;">${esc(b.priceFormatted)}</b></span>
-        </div>`;
+        <button type="button" class="booking-small-btn booking-purpose-switch" onclick="changeAttachedPurpose('${isPass ? 'TIM_DOI' : 'PASS_SAN'}')">
+            ${feedIcon('refresh')} Đổi sang ${isPass ? 'rủ hội nhóm' : 'nhượng lịch sân'}
+        </button>`;
 }
 
 // ===== CREATE POST =====
@@ -208,60 +211,44 @@ async function loadFeed() {
         feedList.innerHTML = posts.map(post => renderPost(post)).join('');
     } catch(e) {
         document.getElementById('feedList').innerHTML =
-            '<div style="color:red;padding:20px;text-align:center;">Lỗi tải bài viết: ' + e.message + '</div>';
+            '<div class="feed-empty">Không thể tải bài viết. Vui lòng thử lại.</div>';
     }
 }
 
 function renderAttachedBookingCardInPost(post) {
     if (!post.bookingId || !post.fieldName) return '';
     const isPass = post.postPurpose === 'PASS_SAN';
-    const badgeBg = isPass ? '#ea580c' : '#15803d';
-    const badgeLabel = isPass ? '🏷️ RAO BÁN / NHƯỢNG LẠI LỊCH SÂN ĐÃ XÁC NHẬN' : '🤝 RỦ HỘI NHÓM / TÌM ĐỒNG ĐỘI CÙNG CHƠI';
     const ownerName = post.bookingOwnerName || post.authorName || 'Thành viên';
     const contactUserId = post.bookingOwnerId || post.userId;
-
-    let actionBtnHtml = '';
-    if (Number(contactUserId) === Number(ME_ID)) {
-        actionBtnHtml = `
-            <a href="${CTX}/chat-friends?transferBookingId=${post.bookingId}"
-               style="display:inline-flex; align-items:center; gap:6px; background:#0284c7; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-size:12.5px; font-weight:700;">
-                🔁 Chuyển quyền sở hữu lịch sân này qua Tin nhắn →
-            </a>`;
-    } else {
-        actionBtnHtml = `
-            <a href="${CTX}/chat-friends?friendId=${contactUserId}"
-               style="display:inline-flex; align-items:center; gap:6px; background:${badgeBg}; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-size:12.5px; font-weight:700;">
-                💬 Nhắn tin liên hệ ${isPass ? 'nhận nhượng sân' : 'tham gia hội nhóm'} ngay →
-            </a>`;
-    }
+    const isOwner = Number(contactUserId) === Number(ME_ID);
+    const actionUrl = isOwner ? `transferBookingId=${Number(post.bookingId)}` : `friendId=${Number(contactUserId)}`;
+    const statusLabel = ({CONFIRMED: 'Đã xác nhận', COMPLETED: 'Đã hoàn thành',
+        CANCELLED: 'Đã hủy', REJECTED: 'Đã từ chối', PENDING: 'Chờ xác nhận'})[post.bookingStatus];
 
     return `
-        <div style="margin: 12px 0 6px 0; background:linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%); border:2px solid #86efac; border-radius:14px; padding:15px 18px; box-shadow:0 4px 14px rgba(21,128,61,0.08);">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-                <span style="background:${badgeBg}; color:#fff; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px;">
-                    ${badgeLabel}
+        <article class="booking-attachment${isPass ? ' is-transfer' : ''}">
+            <div class="booking-attachment-header">
+                <span class="booking-purpose${isPass ? ' purpose-transfer' : ''}">
+                    ${feedIcon(isPass ? 'refresh' : 'users')} ${isPass ? 'Nhượng lịch sân' : 'Rủ hội nhóm'}
                 </span>
-                <span style="background:#dcfce7; color:#166534; font-size:11.5px; font-weight:800; padding:3px 9px; border-radius:8px; border:1px solid #bbf7d0;">
-                    💎 Mã tài sản: #${esc(post.bookingCode)} • Đã xác nhận
-                </span>
+                <span class="booking-code">#${esc(post.bookingCode)}</span>
             </div>
-            <div style="font-size:16px; font-weight:800; color:#0f172a; margin-bottom:4px;">
-                🏟️ ${esc(post.fieldName)} — Sân #${post.courtNumber || 1} / ${post.fieldQuantity || 4} (${esc(post.sportType || '')})
+            <h2 class="booking-attachment-title">${feedIcon('court')} ${esc(post.fieldName)}</h2>
+            <div class="booking-attachment-subtitle">Sân #${esc(post.courtNumber || 1)} / ${esc(post.fieldQuantity || 1)} · ${esc(sportLabel(post.sportType))}</div>
+            ${statusLabel ? `<div class="booking-attachment-status">${feedIcon('info')} ${statusLabel}</div>` : ''}
+            ${post.fieldAddress ? `<div class="booking-attachment-address">${feedIcon('pin')} <span>${esc(post.fieldAddress)}</span></div>` : ''}
+            <dl class="booking-attachment-details">
+                <div><dt>${feedIcon('calendar')} Ngày đặt</dt><dd>${esc(post.bookingDate)}</dd></div>
+                <div><dt>${feedIcon('clock')} Khung giờ</dt><dd>${esc(post.bookingTime)}</dd></div>
+                <div><dt>${feedIcon('wallet')} Giá thuê</dt><dd class="booking-price">${esc(post.bookingPrice)}</dd></div>
+                <div><dt>${feedIcon('user')} Người sở hữu</dt><dd>${esc(ownerName)}</dd></div>
+            </dl>
+            <div class="booking-attachment-footer">
+                <a class="booking-contact-btn" href="${CTX}/chat-friends?${actionUrl}">
+                    ${feedIcon(isOwner ? 'refresh' : 'chat')} ${isOwner ? 'Chuyển lịch qua tin nhắn' : 'Nhắn tin liên hệ'} ${feedIcon('arrow')}
+                </a>
             </div>
-            ${post.fieldAddress ? `<div style="font-size:12.5px; color:#475569; margin-bottom:8px;">📍 ${esc(post.fieldAddress)}</div>` : ''}
-            <div style="display:flex; flex-wrap:wrap; gap:10px; font-size:13px; color:#1e293b; background:#fff; padding:9px 12px; border-radius:10px; border:1px solid #dcfce7; margin-bottom:12px;">
-                <span>📅 Ngày: <b>${esc(post.bookingDate || '')}</b></span>
-                <span>•</span>
-                <span>🕒 Khung giờ: <b>${esc(post.bookingTime || '')}</b></span>
-                <span>•</span>
-                <span>💰 Giá thuê: <b style="color:#15803d;">${esc(post.bookingPrice || '')}</b></span>
-                <span>•</span>
-                <span>👤 Chủ sở hữu hiện tại: <b style="color:#0284c7;">${esc(ownerName)}</b></span>
-            </div>
-            <div style="display:flex; justify-content:flex-end;">
-                ${actionBtnHtml}
-            </div>
-        </div>`;
+        </article>`;
 }
 
 // ===== RENDER POST =====
@@ -281,7 +268,7 @@ function renderPost(post) {
                 '<div class="post-time"><span class="app-icon icon-clock" aria-hidden="true"></span> ' + esc(post.createdAt) + '</div>' +
             '</div>' +
         '</div>' +
-        '<div class="post-body">' + esc(post.content) + attachedCardHtml + '</div>' +
+        '<div class="post-body">' + (post.content ? '<div class="post-text">' + esc(post.content) + '</div>' : '') + attachedCardHtml + '</div>' +
         '<div class="post-actions">' +
             '<button class="action-btn ' + likedClass + '" id="like-btn-' + post.id + '" aria-pressed="' + String(Boolean(post.likedByMe)) + '" onclick="toggleLike(' + post.id + ')">' +
                 '<span class="heart-icon" id="heart-' + post.id + '">' + heartIcon + '</span>' +

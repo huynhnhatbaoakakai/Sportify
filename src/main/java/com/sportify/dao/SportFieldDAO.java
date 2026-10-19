@@ -14,7 +14,7 @@ public class SportFieldDAO {
 
     public List<SportField> findByOwnerId(long ownerId) {
         List<SportField> list = new ArrayList<>();
-        String sql = "SELECT * FROM SportsFields WHERE owner_id = ? ORDER BY created_at DESC";
+        String sql = "SELECT * FROM sports_fields WHERE owner_id = ? ORDER BY created_at DESC";
 
         try (Connection conn = DBContext.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -32,7 +32,7 @@ public class SportFieldDAO {
     }
 
     public void insert(SportField field) {
-        String sql = "INSERT INTO SportsFields (owner_id, field_name, sport_type, address, description, price_per_hour, open_time, close_time, status, quantity) "
+        String sql = "INSERT INTO sports_fields (owner_id, field_name, sport_type, address, description, price_per_hour, open_time, close_time, status, quantity) "
                 +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -45,8 +45,8 @@ public class SportFieldDAO {
             ps.setString(4, field.getAddress());
             ps.setString(5, field.getDescription());
             ps.setBigDecimal(6, field.getPricePerHour());
-            ps.setString(7, field.getOpenTime() != null ? field.getOpenTime().toString() : null);
-            ps.setString(8, field.getCloseTime() != null ? field.getCloseTime().toString() : null);
+            ps.setObject(7, field.getOpenTime());
+            ps.setObject(8, field.getCloseTime());
             ps.setString(9, field.getStatus() != null ? field.getStatus() : "ACTIVE");
             ps.setInt(10, field.getQuantity());
 
@@ -57,7 +57,7 @@ public class SportFieldDAO {
     }
 
     public boolean update(SportField field, long ownerId) {
-        String sql = "UPDATE SportsFields SET field_name=?, sport_type=?, address=?, description=?, price_per_hour=?, open_time=?, close_time=?, quantity=?, updated_at=GETDATE() "
+        String sql = "UPDATE sports_fields SET field_name=?, sport_type=?, address=?, description=?, price_per_hour=?, open_time=?, close_time=?, quantity=?, updated_at=CURRENT_TIMESTAMP "
                 +
                 "WHERE field_id=? AND owner_id=?";
 
@@ -69,8 +69,8 @@ public class SportFieldDAO {
             ps.setString(3, field.getAddress());
             ps.setString(4, field.getDescription());
             ps.setBigDecimal(5, field.getPricePerHour());
-            ps.setString(6, field.getOpenTime() != null ? field.getOpenTime().toString() : null);
-            ps.setString(7, field.getCloseTime() != null ? field.getCloseTime().toString() : null);
+            ps.setObject(6, field.getOpenTime());
+            ps.setObject(7, field.getCloseTime());
             ps.setInt(8, field.getQuantity());
             ps.setLong(9, field.getFieldId());
             ps.setLong(10, ownerId);
@@ -83,7 +83,7 @@ public class SportFieldDAO {
     }
 
     public boolean toggleStatus(long fieldId, long ownerId) {
-        String sql = "UPDATE SportsFields SET status = CASE WHEN status = 'ACTIVE' THEN 'INACTIVE' ELSE 'ACTIVE' END, updated_at=GETDATE() "
+        String sql = "UPDATE sports_fields SET status = CASE WHEN status = 'ACTIVE' THEN 'INACTIVE' ELSE 'ACTIVE' END, updated_at=CURRENT_TIMESTAMP "
                 +
                 "WHERE field_id = ? AND owner_id = ?";
 
@@ -108,7 +108,7 @@ public class SportFieldDAO {
         field.setSportType(rs.getString("sport_type"));
         field.setAddress(rs.getString("address"));
         field.setDescription(rs.getString("description"));
-        field.setPricePerHour(rs.getDouble("price_per_hour"));
+        field.setPricePerHour(rs.getBigDecimal("price_per_hour"));
 
         // Handle time conversion safely
         java.sql.Time open = rs.getTime("open_time");

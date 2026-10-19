@@ -15,8 +15,6 @@ import java.util.List;
 @WebServlet("/owner/reviews")
 public class ManageReviewsServlet extends HttpServlet {
 
-    // TODO: use session.getAttribute("userId") and require the OWNER role.
-    private static final Long DEMO_OWNER_ID = 1L;
 
     @Override
     protected void doGet(

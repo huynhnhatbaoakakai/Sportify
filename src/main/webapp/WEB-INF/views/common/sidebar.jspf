@@ -34,16 +34,19 @@
 
         <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Cá nhân</div>
         <a href="<%= contextPath %>/appointments" class="<%= menuClass(activeMenu, "appointments") %>">
-            <span class="menu-icon"><span class="app-icon icon-calendar" aria-hidden="true"></span></span><span>Lịch hẹn & Đặt chỗ</span>
+            <span class="menu-icon"><span class="app-icon icon-calendar" aria-hidden="true"></span></span><span>Lịch nhắc cá nhân</span>
         </a>
         <a href="<%= contextPath %>/profile" class="<%= menuClass(activeMenu, "profile") %>">
             <span class="menu-icon"><span class="app-icon icon-user" aria-hidden="true"></span></span><span>Hồ sơ cá nhân</span>
         </a>
 
-        <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Dịch vụ</div>
+        <div style="margin: 12px 0 4px 20px; font-size: 11px; color: var(--muted); font-weight: bold; text-transform: uppercase;">Sân và tài khoản</div>
+        <% if (session.getAttribute("user") instanceof com.sportify.model.User && ((com.sportify.model.User) session.getAttribute("user")).isOwner()) { %>
         <a href="<%= contextPath %>/owner/fields" class="menu-item">
-            <span class="menu-icon"><span class="app-icon icon-court" aria-hidden="true"></span></span><span>Quản lý dịch vụ</span>
+            <span class="menu-icon"><span class="app-icon icon-court" aria-hidden="true"></span></span><span>Quản lý sân</span>
         </a>
+        <% } %>
+        <%@ include file="/WEB-INF/views/common/notification-link.jspf" %>
         <a href="<%= contextPath %>/logout" class="menu-item" style="color: #ef4444;">
             <span class="menu-icon"><span class="app-icon icon-logout" aria-hidden="true"></span></span><span>Đăng xuất</span>
         </a>

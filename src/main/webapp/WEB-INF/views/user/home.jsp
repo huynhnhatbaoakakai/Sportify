@@ -71,9 +71,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang chủ - Sportify</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Rounded:FILL@0..1&display=swap" rel="stylesheet">
+
+
+
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css?v=<%= assetVer %>">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/home.css?v=<%= assetVer %>">
     <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
@@ -209,7 +209,7 @@
         </div>
         <div class="navbar-right">
             <a href="#booked-slots-schedule" class="nav-quick-pill">
-                <span>🕒</span>
+                <span><span class="app-icon icon-clock" aria-hidden="true"></span></span>
                 <span><%= bookedSlots.size() %> khung giờ đang có lịch đặt</span>
             </a>
             <a href="<%= contextPath %>/profile" class="user-profile">
@@ -224,7 +224,7 @@
         <!-- THÔNG BÁO NẾU CÓ -->
         <% if (bookingMsg != null && !bookingMsg.trim().isEmpty()) { %>
         <div class="alert-banner <%= bookingOk ? "alert-success" : "alert-error" %>">
-            <span><%= bookingOk ? "✅" : "⚠️" %> <%= bookingMsg %></span>
+            <span><span class="app-icon icon-<%= bookingOk ? "check" : "alert" %>" aria-hidden="true"></span> <%= bookingMsg %></span>
             <button type="button" class="close-alert" onclick="this.parentElement.remove()">✕</button>
         </div>
         <% } %>
@@ -232,16 +232,16 @@
         <!-- HERO BANNER GỌN GÀNG & HIỆN ĐẠI -->
         <section class="home-hero-banner">
             <div class="home-hero-body">
-                <div class="home-hero-eyebrow">⚡ ĐẶT SÂN TRỰC TUYẾN THEO SỐ LƯỢNG SẢN PHẨM</div>
-                <h2>Chào <%= user != null ? user.getFullname() : "bạn" %>! 👋</h2>
+                <div class="home-hero-eyebrow"><span class="app-icon icon-calendar-check" aria-hidden="true"></span> ĐẶT SÂN TRỰC TUYẾN THEO SỐ LƯỢNG SẢN PHẨM</div>
+                <h2>Chào <%= user != null ? user.getFullname() : "bạn" %>! <span class="app-icon icon-user" aria-hidden="true"></span></h2>
                 <p>
                     Mỗi danh mục sân được chuẩn hóa theo <strong>số lượng sản phẩm (sân con)</strong> thực tế.
                     Ở mỗi khung giờ, hệ thống chỉ nhận tối đa bằng tổng số sân hiện có (ví dụ: <strong>4 sân bóng bàn = tối đa 4 đơn/khung giờ</strong>).
                     Khung giờ nào đã đặt kín đủ số sân sẽ tự động khóa nút đặt.
                 </p>
                 <div class="home-hero-actions">
-                    <a href="#fields" class="btn-hero-primary">🏟️ Khám phá sân & Đặt lịch ngay</a>
-                    <a href="#booked-slots-schedule" class="btn-hero-secondary">📋 Xem các khung giờ đã có người đặt (<%= bookedSlots.size() %>)</a>
+                    <a href="#fields" class="btn-hero-primary"><span class="app-icon icon-court" aria-hidden="true"></span> Khám phá sân & Đặt lịch ngay</a>
+                    <a href="#booked-slots-schedule" class="btn-hero-secondary"><span class="app-icon icon-file" aria-hidden="true"></span> Xem các khung giờ đã có người đặt (<%= bookedSlots.size() %>)</a>
                 </div>
             </div>
             <div class="home-hero-aside">
@@ -259,7 +259,7 @@
         <!-- THÔNG BÁO TIN NHẮN TỪ CHỦ SÂN PHỤC VỤ ĐƠN HÀNG -->
         <div id="orderChatCustomerAlert" class="order-chat-live-alert" style="display: none;">
             <div class="live-alert-icon">
-                <span class="material-symbols-rounded">chat_bubble</span>
+                <span class="material-symbols-rounded app-icon icon-chat" aria-hidden="true"></span>
                 <span class="pulse-indicator"></span>
             </div>
             <div class="live-alert-info">
@@ -271,14 +271,14 @@
             </div>
             <button type="button" class="btn-live-alert-action" id="liveAlertActionBtn" onclick="openLatestOrderChat()">
                 <span>Xem đơn & Trả lời</span>
-                <span class="material-symbols-rounded">arrow_forward</span>
+                <span class="material-symbols-rounded app-icon icon-arrow" aria-hidden="true"></span>
             </button>
         </div>
 
         <!-- 4 THẺ CHỈ SỐ TỔNG QUAN (KPI STATS) -->
         <section class="stats-grid">
             <a href="#fields" class="stat-card">
-                <div class="stat-icon" style="background: #dcfce7; color: #15803d;">🏟️</div>
+                <div class="stat-icon" style="background: #dcfce7; color: #15803d;"><span class="app-icon icon-court" aria-hidden="true"></span></div>
                 <div class="stat-info">
                     <h4>Tổng sản phẩm sân</h4>
                     <span><%= totalCourtProducts %> <small class="stat-unit">sân</small></span>
@@ -287,7 +287,7 @@
             </a>
 
             <a href="#booked-slots-schedule" class="stat-card">
-                <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;">🕒</div>
+                <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;"><span class="app-icon icon-clock" aria-hidden="true"></span></div>
                 <div class="stat-info">
                     <h4>Khung giờ đã có khách đặt</h4>
                     <span><%= bookedSlots.size() %> <small class="stat-unit">khung giờ</small></span>
@@ -305,7 +305,7 @@
             </a>
 
             <a href="<%= contextPath %>/appointments" class="stat-card">
-                <div class="stat-icon" style="background: #fef3c7; color: #d97706;">🔥</div>
+                <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><span class="app-icon icon-trend" aria-hidden="true"></span></div>
                 <div class="stat-info">
                     <h4>Giờ tập tháng này</h4>
                     <span><%= trainingHours %>h</span>
@@ -320,13 +320,13 @@
         <section class="home-section-block" id="fields">
             <div class="section-header-bar">
                 <div>
-                    <h3 class="section-title">🏟️ Danh mục Sân & Số lượng Sản phẩm cho thuê</h3>
+                    <h3 class="section-title"><span class="app-icon icon-court" aria-hidden="true"></span> Danh mục Sân & Số lượng Sản phẩm cho thuê</h3>
                     <p class="section-desc">
                         Mỗi cơ sở được đóng khung thành một thẻ sản phẩm riêng biệt, hiển thị rõ số sân cho thuê, giới hạn đơn mỗi khung giờ và danh sách các khung giờ đã có người đặt.
                     </p>
                 </div>
                 <div class="search-box-wrap">
-                    <span class="search-icon">🔍</span>
+                    <span class="search-icon"><span class="app-icon icon-search" aria-hidden="true"></span></span>
                     <input type="text" id="fieldSearchInput" placeholder="Tìm tên sân, môn thể thao, địa chỉ..." oninput="filterHomeFields()">
                 </div>
             </div>
@@ -334,36 +334,36 @@
             <!-- BẢNG CHỌN DANH MỤC MÔN THỂ THAO KÈM SỐ LƯỢNG SẢN PHẨM -->
             <div class="category-tabs" id="categoryTabs">
                 <button type="button" class="cat-tab active" data-category="ALL" onclick="selectCategoryTab(this, 'ALL')">
-                    <span>✨ Tất cả danh mục</span>
+                    <span><span class="app-icon icon-grid" aria-hidden="true"></span> Tất cả danh mục</span>
                     <span class="cat-count"><%= totalCourtProducts %> sản phẩm</span>
                 </button>
                 <% if (categoryProductCount.containsKey("TABLE_TENNIS")) { %>
                 <button type="button" class="cat-tab" data-category="TABLE_TENNIS" onclick="selectCategoryTab(this, 'TABLE_TENNIS')">
-                    <span>🏓 Bóng bàn</span>
+                    <span><span class="app-icon icon-racket" aria-hidden="true"></span> Bóng bàn</span>
                     <span class="cat-count">Còn <%= categoryProductCount.get("TABLE_TENNIS") %> sân</span>
                 </button>
                 <% } %>
                 <% if (categoryProductCount.containsKey("PICKLEBALL")) { %>
                 <button type="button" class="cat-tab" data-category="PICKLEBALL" onclick="selectCategoryTab(this, 'PICKLEBALL')">
-                    <span>🎾 Pickleball</span>
+                    <span><span class="app-icon icon-racket" aria-hidden="true"></span> Pickleball</span>
                     <span class="cat-count">Còn <%= categoryProductCount.get("PICKLEBALL") %> sân</span>
                 </button>
                 <% } %>
                 <% if (categoryProductCount.containsKey("BASKETBALL")) { %>
                 <button type="button" class="cat-tab" data-category="BASKETBALL" onclick="selectCategoryTab(this, 'BASKETBALL')">
-                    <span>🏀 Bóng rổ</span>
+                    <span><span class="app-icon icon-basketball" aria-hidden="true"></span> Bóng rổ</span>
                     <span class="cat-count">Còn <%= categoryProductCount.get("BASKETBALL") %> sân</span>
                 </button>
                 <% } %>
                 <% if (categoryProductCount.containsKey("GYM")) { %>
                 <button type="button" class="cat-tab" data-category="GYM" onclick="selectCategoryTab(this, 'GYM')">
-                    <span>🏋️ Phòng Gym</span>
+                    <span><span class="app-icon icon-gym" aria-hidden="true"></span> Phòng Gym</span>
                     <span class="cat-count">Còn <%= categoryProductCount.get("GYM") %> khu</span>
                 </button>
                 <% } %>
                 <% if (categoryProductCount.containsKey("SWIMMING")) { %>
                 <button type="button" class="cat-tab" data-category="SWIMMING" onclick="selectCategoryTab(this, 'SWIMMING')">
-                    <span>🏊 Hồ bơi</span>
+                    <span><span class="app-icon icon-swimming" aria-hidden="true"></span> Hồ bơi</span>
                     <span class="cat-count">Còn <%= categoryProductCount.get("SWIMMING") %> làn</span>
                 </button>
                 <% } %>
@@ -379,33 +379,33 @@
                     String st = f.getSportType() != null ? f.getSportType().toUpperCase() : "GENERAL";
                     String badgeClass = "badge-default";
                     String badgeText = f.getSportType() != null ? f.getSportType() : "THỂ THAO";
-                    String badgeIcon = "🏟️";
+                    String badgeIcon = "court";
                     String defaultImg = contextPath + "/assets/images/basketball.jpg";
 
                     if ("GYM".equals(st)) {
                         badgeClass = "badge-gym";
                         badgeText = "Phòng Gym";
-                        badgeIcon = "🏋️";
+                        badgeIcon = "gym";
                         defaultImg = contextPath + "/assets/images/gymfitzone.jfif";
                     } else if ("BASKETBALL".equals(st)) {
                         badgeClass = "badge-basketball";
                         badgeText = "Sân Bóng rổ";
-                        badgeIcon = "🏀";
+                        badgeIcon = "basketball";
                         defaultImg = contextPath + "/assets/images/basketballcourt1.jpg";
                     } else if ("SWIMMING".equals(st)) {
                         badgeClass = "badge-swimming";
                         badgeText = "Hồ bơi";
-                        badgeIcon = "🏊";
+                        badgeIcon = "swimming";
                         defaultImg = contextPath + "/assets/images/swimmingpoolaqua.jfif";
                     } else if ("PICKLEBALL".equals(st)) {
                         badgeClass = "badge-pickleball";
                         badgeText = "Sân Pickleball";
-                        badgeIcon = "🎾";
+                        badgeIcon = "racket";
                         defaultImg = contextPath + "/assets/images/greenpickleballcourt.jfif";
                     } else if ("TABLE_TENNIS".equals(st)) {
                         badgeClass = "badge-tabletennis";
                         badgeText = "Sân Bóng bàn";
-                        badgeIcon = "🏓";
+                        badgeIcon = "racket";
                         defaultImg = contextPath + "/assets/images/greenpickleballcourt.jfif";
                     }
 
@@ -429,16 +429,16 @@
                         <img src="<%= imgSrc %>" alt="<%= f.getFieldName() %>" onerror="this.src='<%= defaultImg %>'">
                         <div class="court-banner-top-row">
                             <span class="court-sport-badge <%= badgeClass %>">
-                                <span><%= badgeIcon %></span> <%= badgeText %>
+                                <span class="app-icon icon-<%= badgeIcon %>" aria-hidden="true"></span> <%= badgeText %>
                             </span>
-                            <span class="court-rating-pill">★ 4.9 Đánh giá</span>
+                            <span class="court-rating-pill"><span class="app-icon icon-star" aria-hidden="true"></span> 4.9 Đánh giá</span>
                         </div>
                         <div class="court-banner-bottom-row">
                             <span class="court-product-pill">
-                                📦 Còn <%= fieldQty %> sân cho thuê (<%= fieldQty %> sản phẩm)
+                                <span class="app-icon icon-box" aria-hidden="true"></span> Còn <%= fieldQty %> sân cho thuê (<%= fieldQty %> sản phẩm)
                             </span>
                             <span class="court-hours-pill">
-                                🕒 <%= openTimeStr %> - <%= closeTimeStr %>
+                                <span class="app-icon icon-clock" aria-hidden="true"></span> <%= openTimeStr %> - <%= closeTimeStr %>
                             </span>
                         </div>
                     </div>
@@ -448,7 +448,7 @@
                         <div>
                             <h4 class="court-card-title" title="<%= f.getFieldName() %>"><%= f.getFieldName() %></h4>
                             <p class="court-card-address" title="<%= f.getAddress() %>">
-                                📍 <%= f.getAddress() != null ? f.getAddress() : "TP. Hồ Chí Minh" %>
+                                <span class="app-icon icon-pin" aria-hidden="true"></span> <%= f.getAddress() != null ? f.getAddress() : "TP. Hồ Chí Minh" %>
                             </p>
                         </div>
 
@@ -468,12 +468,12 @@
                         <!-- HỘP ĐÓNG KHUNG CÁC KHUNG GIỜ ĐÃ CÓ NGƯỜI ĐẶT CỦA SÂN NÀY -->
                         <div class="court-slots-panel">
                             <div class="court-slots-header">
-                                <span class="court-slots-title">🕒 Các khung giờ đã có người đặt:</span>
+                                <span class="court-slots-title"><span class="app-icon icon-clock" aria-hidden="true"></span> Các khung giờ đã có người đặt:</span>
                                 <span class="court-slots-badge"><%= fieldSlots.size() %> khung giờ</span>
                             </div>
                             <% if (fieldSlots.isEmpty()) { %>
                             <div class="court-slots-empty">
-                                ✅ Tất cả các khung giờ hiện đang trống đủ <strong><%= fieldQty %>/<%= fieldQty %> sân</strong> — Có thể đặt bất kỳ giờ nào!
+                                <span class="app-icon icon-check" aria-hidden="true"></span> Tất cả các khung giờ hiện đang trống đủ <strong><%= fieldQty %>/<%= fieldQty %> sân</strong> — Có thể đặt bất kỳ giờ nào!
                             </div>
                             <% } else { %>
                             <div class="court-slots-list">
@@ -482,14 +482,14 @@
                                 %>
                                 <% if (slotFull) { %>
                                 <div class="court-slot-item slot-is-full" title="Khung giờ này đã nhận đủ <%= slot.getFieldQuantity() %>/<%= slot.getFieldQuantity() %> đơn đặt, không thể đặt thêm">
-                                    <span class="slot-item-time">🚫 <%= slot.getDateStr() %> • <%= slot.getStartTimeStr() %> - <%= slot.getEndTimeStr() %></span>
+                                    <span class="slot-item-time"><span class="app-icon icon-ban" aria-hidden="true"></span> <%= slot.getDateStr() %> • <%= slot.getStartTimeStr() %> - <%= slot.getEndTimeStr() %></span>
                                     <span class="slot-item-status">Đã kín <%= slot.getBookedCount() %>/<%= slot.getFieldQuantity() %> sân (Khóa đặt)</span>
                                 </div>
                                 <% } else { %>
                                 <a href="<%= contextPath %>/field-booking?fieldId=<%= f.getFieldId() %>&date=<%= slot.getIsoDate() %>&startTime=<%= slot.getStartTimeStr() %>&endTime=<%= slot.getEndTimeStr() %>"
                                    class="court-slot-item slot-is-partial"
                                    title="Nhấn để đặt sân còn trống trong khung giờ này">
-                                    <span class="slot-item-time">⚡ <%= slot.getDateStr() %> • <%= slot.getStartTimeStr() %> - <%= slot.getEndTimeStr() %></span>
+                                    <span class="slot-item-time"><span class="app-icon icon-calendar-check" aria-hidden="true"></span> <%= slot.getDateStr() %> • <%= slot.getStartTimeStr() %> - <%= slot.getEndTimeStr() %></span>
                                     <span class="slot-item-status">Đã đặt <%= slot.getBookedCount() %>/<%= slot.getFieldQuantity() %> • Còn <%= slot.getRemainingCount() %> sân →</span>
                                 </a>
                                 <% } %>
@@ -509,7 +509,7 @@
                         </div>
 
                         <a href="<%= contextPath %>/field-booking?fieldId=<%= f.getFieldId() %>" class="btn-court-book">
-                            <span>📅</span> Chọn khung giờ & Đặt sân →
+                            <span><span class="app-icon icon-calendar" aria-hidden="true"></span></span> Chọn khung giờ & Đặt sân →
                         </a>
                     </div>
                 </article>
@@ -524,7 +524,7 @@
         <section class="home-section-block" id="booked-slots-schedule">
             <div class="section-header-bar">
                 <div>
-                    <h3 class="section-title">📋 Bảng tổng hợp đầy đủ các khung giờ đã có người đặt</h3>
+                    <h3 class="section-title"><span class="app-icon icon-file" aria-hidden="true"></span> Bảng tổng hợp đầy đủ các khung giờ đã có người đặt</h3>
                     <p class="section-desc">
                         Theo dõi trực tiếp công suất từng khung giờ trên toàn hệ thống. Những khung giờ đã nhận đủ số đơn tối đa (ví dụ <strong>4/4 sân</strong>) sẽ tự động khóa nút đặt.
                     </p>
@@ -538,7 +538,7 @@
 
             <% if (bookedSlots.isEmpty()) { %>
             <div class="empty-appt">
-                🎉 Hiện chưa có khung giờ nào được đặt. Tất cả các sân đều đang trống 100% công suất!
+                <span class="app-icon icon-check" aria-hidden="true"></span> Hiện chưa có khung giờ nào được đặt. Tất cả các sân đều đang trống 100% công suất!
             </div>
             <% } else { %>
             <div class="card-framed-box">
@@ -563,14 +563,14 @@
                             <td>
                                 <div style="font-weight: 800; color: #0f172a; font-size: 14px;"><%= slot.getFieldName() %></div>
                                 <small style="color: #64748b; font-weight: 600;">
-                                    📦 Quy mô: <strong><%= slot.getFieldQuantity() %> sản phẩm (sân)</strong> • Tối đa <%= slot.getFieldQuantity() %> đơn/giờ
+                                    <span class="app-icon icon-box" aria-hidden="true"></span> Quy mô: <strong><%= slot.getFieldQuantity() %> sản phẩm (sân)</strong> • Tối đa <%= slot.getFieldQuantity() %> đơn/giờ
                                 </small>
                             </td>
                             <td>
-                                <span class="date-badge">📅 <%= slot.getDateStr() %></span>
+                                <span class="date-badge"><span class="app-icon icon-calendar" aria-hidden="true"></span> <%= slot.getDateStr() %></span>
                             </td>
                             <td>
-                                <span class="time-range-badge">🕒 <%= slot.getStartTimeStr() %> - <%= slot.getEndTimeStr() %></span>
+                                <span class="time-range-badge"><span class="app-icon icon-clock" aria-hidden="true"></span> <%= slot.getStartTimeStr() %> - <%= slot.getEndTimeStr() %></span>
                             </td>
                             <td>
                                 <div class="capacity-meter-wrap">
@@ -601,23 +601,23 @@
                             <td>
                                 <% if (isFull) { %>
                                 <span class="status-pill status-rejected">
-                                    🚫 Đã đủ <%= slot.getBookedCount() %>/<%= slot.getFieldQuantity() %> sân (Khóa đặt)
+                                    <span class="app-icon icon-ban" aria-hidden="true"></span> Đã đủ <%= slot.getBookedCount() %>/<%= slot.getFieldQuantity() %> sân (Khóa đặt)
                                 </span>
                                 <% } else { %>
                                 <span class="status-pill status-confirmed">
-                                    ✅ Còn <%= slot.getRemainingCount() %>/<%= slot.getFieldQuantity() %> sân cho thuê
+                                    <span class="app-icon icon-check" aria-hidden="true"></span> Còn <%= slot.getRemainingCount() %>/<%= slot.getFieldQuantity() %> sân cho thuê
                                 </span>
                                 <% } %>
                             </td>
                             <td>
                                 <% if (isFull) { %>
                                 <button type="button" class="btn-slot-disabled" disabled title="Khung giờ này đã nhận đủ <%= slot.getFieldQuantity() %> đơn đặt thuê, không thể bấm đặt sân">
-                                    🔒 Đã kín chỗ
+                                    <span class="app-icon icon-lock" aria-hidden="true"></span> Đã kín chỗ
                                 </button>
                                 <% } else { %>
                                 <a href="<%= contextPath %>/field-booking?fieldId=<%= slot.getFieldId() %>&date=<%= slot.getIsoDate() %>&startTime=<%= slot.getStartTimeStr() %>&endTime=<%= slot.getEndTimeStr() %>"
                                    class="btn-slot-book">
-                                    ⚡ Đặt sân trống
+                                    <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Đặt sân trống
                                 </a>
                                 <% } %>
                             </td>
@@ -643,24 +643,24 @@
         <section class="home-section-block" id="my-booking-assets">
             <div class="section-header-bar">
                 <div>
-                    <h3 class="section-title">💎 Tài sản lịch đặt sân sở hữu của bạn (Đã xác nhận)</h3>
+                    <h3 class="section-title"><span class="app-icon icon-calendar-check" aria-hidden="true"></span> Tài sản lịch đặt sân sở hữu của bạn (Đã xác nhận)</h3>
                     <p class="section-desc">
                         Mỗi lịch đặt sân đã được chủ sân xác nhận là <strong>tài sản riêng của tài khoản <%= user != null ? user.getFullname() : "" %></strong>.
                         Bạn có thể <strong>chuyển quyền sở hữu</strong> cho bạn bè qua Tin nhắn hoặc <strong>đính kèm lên Newsfeed</strong> để rủ hội nhóm / rao bán lịch sân.
                     </p>
                 </div>
                 <span class="court-slots-badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-size:12.5px; padding:6px 14px; font-weight:800;">
-                    🎖️ Đang sở hữu <%= confirmedAssets.size() %> lịch sân đã xác nhận
+                    <span class="app-icon icon-check" aria-hidden="true"></span> Đang sở hữu <%= confirmedAssets.size() %> lịch sân đã xác nhận
                 </span>
             </div>
 
             <% if (confirmedAssets.isEmpty()) { %>
             <div class="empty-appt" style="background:#f8fafc; border:1.5px dashed #cbd5e1;">
-                💎 Hiện tài khoản của bạn chưa có lịch đặt sân nào ở trạng thái <strong>Đã xác nhận (CONFIRMED)</strong>.<br>
+                <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Hiện tài khoản của bạn chưa có lịch đặt sân nào ở trạng thái <strong>Đã xác nhận (CONFIRMED)</strong>.<br>
                 <small style="color:#64748b;">Khi bạn đặt sân và được chủ sân xác nhận (hoặc nhận chuyển nhượng từ tài khoản khác qua Tin nhắn), vé sân sẽ xuất hiện tại đây như tài sản riêng của bạn.</small>
             </div>
             <% } else { %>
-            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:18px; margin-bottom:10px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap:18px; margin-bottom:10px;">
                 <% for (Booking asset : confirmedAssets) {
                     String aDate = asset.getStartsAt() != null ? asset.getStartsAt().toLocalDate().format(dateFmt) : "";
                     String aStart = asset.getStartsAt() != null ? asset.getStartsAt().toLocalTime().format(timeFmt) : "";
@@ -673,40 +673,40 @@
                 %>
                 <div style="background:linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%); border:2px solid #86efac; border-radius:16px; padding:18px; box-shadow:0 8px 20px rgba(21,148,71,0.08); display:flex; flex-direction:column; justify-content:space-between; gap:14px;">
                     <div>
-                        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
                             <span style="background:#15803d; color:#fff; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; letter-spacing:0.4px;">
-                                💎 TÀI SẢN VÉ SÂN #<%= asset.getBookingCode() %>
+                                <span class="app-icon icon-calendar-check" aria-hidden="true"></span> TÀI SẢN VÉ SÂN #<%= asset.getBookingCode() %>
                             </span>
                             <span style="background:#dcfce7; color:#166534; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:8px; border:1px solid #bbf7d0;">
-                                ✅ Chủ sở hữu: <%= user != null ? user.getFullname() : asset.getCustomerName() %>
+                                <span class="app-icon icon-check" aria-hidden="true"></span> Chủ sở hữu: <%= user != null ? user.getFullname() : asset.getCustomerName() %>
                             </span>
                         </div>
                         <h4 style="margin:0 0 6px 0; font-size:17px; font-weight:800; color:#0f172a;"><%= aField %></h4>
                         <% if (!aAddr.isEmpty()) { %>
-                        <div style="font-size:12.5px; color:#475569; margin-bottom:10px;">📍 <%= aAddr %></div>
+                        <div style="font-size:12.5px; color:#475569; margin-bottom:10px;"><span class="app-icon icon-pin" aria-hidden="true"></span> <%= aAddr %></div>
                         <% } %>
                         <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                            <span class="court-assigned-pill">🏟️ Sân #<%= aCourt %> / <%= aMax %> (<%= aSport %>)</span>
-                            <span class="date-badge">📅 <%= aDate %></span>
-                            <span class="time-range-badge">🕒 <%= aStart %> - <%= aEnd %></span>
+                            <span class="court-assigned-pill"><span class="app-icon icon-court" aria-hidden="true"></span> Sân #<%= aCourt %> / <%= aMax %> (<%= aSport %>)</span>
+                            <span class="date-badge"><span class="app-icon icon-calendar" aria-hidden="true"></span> <%= aDate %></span>
+                            <span class="time-range-badge"><span class="app-icon icon-clock" aria-hidden="true"></span> <%= aStart %> - <%= aEnd %></span>
                         </div>
                         <div style="font-size:13.5px; color:#1e293b; font-weight:700;">
-                            💰 Giá trị lịch đặt: <span style="color:#15803d; font-size:15px; font-weight:800;"><%= vndFormat.format(asset.getTotalPrice()) %> đ</span>
+                            <span class="app-icon icon-wallet" aria-hidden="true"></span> Giá trị lịch đặt: <span style="color:#15803d; font-size:15px; font-weight:800;"><%= vndFormat.format(asset.getTotalPrice()) %> đ</span>
                         </div>
                     </div>
 
                     <div style="border-top:1px dashed #bbf7d0; padding-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
                         <a href="<%= contextPath %>/chat-friends?transferBookingId=<%= asset.getBookingId() %>"
                            style="flex:1; min-width:140px; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:8px 12px; border-radius:10px; font-size:12.5px; font-weight:700; box-shadow:0 3px 8px rgba(2,132,199,0.2);">
-                            🔁 Chuyển qua Tin nhắn
+                            <span class="app-icon icon-refresh" aria-hidden="true"></span> Chuyển qua Tin nhắn
                         </a>
                         <a href="<%= contextPath %>/newsfeed?shareBookingId=<%= asset.getBookingId() %>&purpose=TIM_DOI"
                            style="flex:1; min-width:120px; text-align:center; background:#159447; color:#fff; text-decoration:none; padding:8px 10px; border-radius:10px; font-size:12.5px; font-weight:700;">
-                            🤝 Rủ hội nhóm
+                            <span class="app-icon icon-users" aria-hidden="true"></span> Rủ hội nhóm
                         </a>
                         <a href="<%= contextPath %>/newsfeed?shareBookingId=<%= asset.getBookingId() %>&purpose=PASS_SAN"
                            style="flex:1; min-width:120px; text-align:center; background:#ea580c; color:#fff; text-decoration:none; padding:8px 10px; border-radius:10px; font-size:12.5px; font-weight:700;">
-                            🏷️ Rao bán sân
+                            <span class="app-icon icon-tag" aria-hidden="true"></span> Rao bán sân
                         </a>
                     </div>
                 </div>
@@ -721,7 +721,7 @@
         <section class="home-section-block" id="my-bookings">
             <div class="section-header-bar">
                 <div>
-                    <h3 class="section-title">📑 Toàn bộ lịch sử đơn đặt sân của bạn</h3>
+                    <h3 class="section-title"><span class="app-icon icon-file" aria-hidden="true"></span> Toàn bộ lịch sử đơn đặt sân của bạn</h3>
                     <p class="section-desc">Quản lý các yêu cầu đặt sân, chuyển nhượng lịch đã duyệt hoặc nhắn tin trực tiếp với chủ sân.</p>
                 </div>
                 <% if (!customerBookings.isEmpty()) { %>
@@ -731,7 +731,7 @@
 
             <% if (customerBookings.isEmpty()) { %>
             <div class="empty-appt">
-                📭 Bạn chưa có đơn đặt sân nào.<br>
+                <span class="app-icon icon-inbox" aria-hidden="true"></span> Bạn chưa có đơn đặt sân nào.<br>
                 <a href="#fields" style="color: #159447; font-weight: 700;">+ Chọn danh mục sân và đặt khung giờ ngay ở trên</a>
             </div>
             <% } else { %>
@@ -778,7 +778,7 @@
                             <td>
                                 <div style="font-weight: 700; color: #1e293b;"><%= fieldTitle %></div>
                                 <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
-                                    <span class="court-assigned-pill">🏟️ Sân #<%= courtNum %> / <%= maxCourts %></span>
+                                    <span class="court-assigned-pill"><span class="app-icon icon-court" aria-hidden="true"></span> Sân #<%= courtNum %> / <%= maxCourts %></span>
                                     <% if (b.getField() != null && b.getField().getSportType() != null) { %>
                                     <small style="color: #64748b; font-weight: 600;"><%= b.getField().getSportType() %></small>
                                     <% } %>
@@ -802,24 +802,25 @@
                                     <button type="button" class="btn-chat-order-sm"
                                             onclick="openOrderChat(<%= b.getBookingId() %>)"
                                             title="Nhắn tin trao đổi với chủ sân về đơn đặt này">
-                                        <span class="material-symbols-rounded">chat</span> Nhắn tin chủ sân
+                                        <span class="material-symbols-rounded app-icon icon-chat" aria-hidden="true"></span> Nhắn tin chủ sân
                                     </button>
                                     <% if ("CONFIRMED".equals(b.getStatus())) { %>
                                     <a href="<%= contextPath %>/chat-friends?transferBookingId=<%= b.getBookingId() %>"
                                        style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #bae6fd;"
                                        title="Chuyển quyền sở hữu lịch sân này cho tài khoản khác qua Tin nhắn">
-                                        🔁 Chuyển lịch sân
+                                        <span class="app-icon icon-refresh" aria-hidden="true"></span> Chuyển lịch sân
                                     </a>
                                     <a href="<%= contextPath %>/newsfeed?shareBookingId=<%= b.getBookingId() %>&purpose=TIM_DOI"
                                        style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:#fef3c7;color:#b45309;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #fde68a;"
                                        title="Đính kèm lịch sân này lên Newsfeed để rủ hội nhóm hoặc rao bán">
-                                        📢 Đăng Newsfeed
+                                        <span class="app-icon icon-news" aria-hidden="true"></span> Đăng Newsfeed
                                     </a>
                                     <% } %>
                                     <% if ("PENDING".equals(b.getStatus())) { %>
                                     <form method="post" action="<%= contextPath %>/field-booking/cancel" style="display:inline;"
                                           onsubmit="return confirm('Bạn có chắc chắn muốn hủy yêu cầu đặt sân này?');">
-                                        <input type="hidden" name="bookingId" value="<%= b.getBookingId() %>">
+                                        <input type="hidden" name="csrfToken" value="<%= com.sportify.util.Csrf.token(request) %>">
+<input type="hidden" name="bookingId" value="<%= b.getBookingId() %>">
                                         <button type="submit" class="btn-cancel-sm">Hủy đơn</button>
                                     </form>
                                     <% } %>
@@ -837,7 +838,7 @@
         <section class="home-section-block">
             <div class="section-header-bar">
                 <div>
-                    <h3 class="section-title">📅 Lịch hẹn cá nhân sắp tới</h3>
+                    <h3 class="section-title"><span class="app-icon icon-calendar" aria-hidden="true"></span> Lịch hẹn cá nhân sắp tới</h3>
                     <p class="section-desc">Các lịch tập luyện cá nhân và thuê dụng cụ của bạn.</p>
                 </div>
                 <a href="<%= contextPath %>/appointments" style="font-size: 13px; font-weight: 700; color: #159447; text-decoration: none;">Xem tất cả →</a>
@@ -845,7 +846,7 @@
 
             <% if (upcomingAppts.isEmpty()) { %>
             <div class="empty-appt">
-                📭 Chưa có lịch hẹn cá nhân nào sắp tới.<br>
+                <span class="app-icon icon-inbox" aria-hidden="true"></span> Chưa có lịch hẹn cá nhân nào sắp tới.<br>
                 <a href="<%= contextPath %>/appointments" style="color: #159447; font-weight: 700;">+ Thêm lịch hẹn ngay</a>
             </div>
             <% } else {
@@ -854,19 +855,19 @@
                     if (shown >= 3) break;
                     String itemType = a.getType() != null ? a.getType() : "court";
                     String bg = "#e0f2fe";
-                    String icon = "⚽";
+                    String icon = "soccer";
                     String meta = "Đặt sân";
                     if ("pt".equals(itemType)) {
                         bg = "#fef3c7";
-                        icon = "💪";
+                        icon = "gym";
                         meta = "Tập với PT";
                     } else if ("gear".equals(itemType)) {
                         bg = "#f3e8ff";
-                        icon = "🎒";
+                        icon = "bag";
                         meta = "Thuê Gear";
                     } else if ("clothing".equals(itemType)) {
                         bg = "#fce7f3";
-                        icon = "👕";
+                        icon = "shirt";
                         meta = "Thuê Trang phục";
                     }
                     shown++;
@@ -897,7 +898,7 @@
 
 <!-- NÚT NỔI CHAT VỚI CHỦ SÂN (GÓC MÀN HÌNH) -->
 <div class="order-chat-floating-btn" id="orderChatFloatingTrigger" onclick="openLatestOrderChat()" title="Mở tin nhắn với chủ sân">
-    <span class="material-symbols-rounded">forum</span>
+    <span class="material-symbols-rounded app-icon icon-chat" aria-hidden="true"></span>
     <span>Chat với Chủ sân</span>
     <span class="floating-unread-dot" id="floatingUnreadDot" style="display: none;"></span>
 </div>

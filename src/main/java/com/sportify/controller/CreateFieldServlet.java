@@ -16,7 +16,6 @@ import java.util.Set;
 @WebServlet("/owner/fields/create")
 public class CreateFieldServlet extends HttpServlet {
 
-    private static final Long DEMO_OWNER_ID = 1L;
 
     private static final Set<String> VALID_SPORT_TYPES = Set.of(
             "GYM",

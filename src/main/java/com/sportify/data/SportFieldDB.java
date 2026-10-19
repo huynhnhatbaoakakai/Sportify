@@ -4,6 +4,7 @@ import com.sportify.model.SportField;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.LockModeType;
 
 import java.util.List;
 
@@ -125,7 +126,7 @@ public final class SportFieldDB {
             SportField currentField =
                     em.find(
                         SportField.class,
-                        updatedField.getFieldId()
+                        updatedField.getFieldId(), LockModeType.PESSIMISTIC_WRITE
                     );
 
             if (currentField == null
@@ -140,6 +141,7 @@ public final class SportFieldDB {
 
             currentField.setSportType(
                     updatedField.getSportType());
+            if (!currentField.supportsAutoApproval()) currentField.setAutoApprove(false);
 
             currentField.setAddress(
                     updatedField.getAddress());
@@ -162,8 +164,12 @@ public final class SportFieldDB {
             currentField.setStatus(
                     updatedField.getStatus());
 
-            currentField.setQuantity(
-                    updatedField.getQuantity());
+            long reservedCourts = em.createQuery("SELECT COUNT(b) FROM Booking b WHERE b.field.fieldId=:field " +
+                            "AND b.courtNumber>:quantity AND b.status IN ('PENDING','CONFIRMED') AND b.endsAt>:now", Long.class)
+                    .setParameter("field", currentField.getFieldId()).setParameter("quantity", updatedField.getQuantity())
+                    .setParameter("now", java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"))).getSingleResult();
+            if (reservedCourts > 0) throw new IllegalArgumentException("Không thể giảm số lượng khi sân con vẫn có lịch đặt.");
+            currentField.setQuantity(updatedField.getQuantity());
 
             transaction.commit();
             return true;
@@ -188,7 +194,7 @@ public final class SportFieldDB {
             transaction.begin();
 
             SportField field =
-                    em.find(SportField.class, fieldId);
+                    em.find(SportField.class, fieldId, LockModeType.PESSIMISTIC_WRITE);
 
             if (field == null
                     || !ownerId.equals(field.getOwnerId())) {
@@ -219,5 +225,21 @@ public final class SportFieldDB {
         if (transaction != null && transaction.isActive()) {
             transaction.rollback();
         }
+    }
+
+    public static boolean setAutoApproval(Long fieldId, Long ownerId, boolean enabled) {
+        EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            SportField field = em.find(SportField.class, fieldId, LockModeType.PESSIMISTIC_WRITE);
+            if (field == null || !ownerId.equals(field.getOwnerId())) { transaction.rollback(); return false; }
+            if (enabled && !field.supportsAutoApproval()) throw new IllegalArgumentException("Tự xác nhận hiện áp dụng cho sân bóng rổ và pickleball.");
+            field.setAutoApprove(enabled);
+            transaction.commit();
+            return true;
+        } catch (RuntimeException exception) {
+            rollback(transaction); throw exception;
+        } finally { em.close(); }
     }
 }

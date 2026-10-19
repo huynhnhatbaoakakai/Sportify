@@ -187,6 +187,7 @@ Các script cần mở khi hỏi về database:
 - [init_all_postgresql.sql](database/init_all_postgresql.sql): schema nền, bảng tài khoản/sân/đơn/chat/Newsfeed, index và ràng buộc `ex_bookings_confirmed_time` chống trùng đơn đã xác nhận/hoàn thành.
 - [04_booking_automation_postgresql.sql](database/04_booking_automation_postgresql.sql): tự xác nhận, `field_blocks`, `booking_events`, `notifications`.
 - [05_user_profile_postgresql.sql](database/05_user_profile_postgresql.sql): bổ sung các cột hồ sơ người dùng cho database cũ.
+- [06_inventory_newsfeed_postgresql.sql](database/06_inventory_newsfeed_postgresql.sql): số lượng sân con, `court_number`, môn bóng bàn và bài viết gắn đơn đặt sân; ràng buộc chống trùng giờ áp dụng theo từng sân con.
 - Các script và backup SQL Server là tài liệu/dữ liệu giữ lại của nhóm. Cấu hình chạy hiện tại trong Java dùng PostgreSQL.
 
 ### 6. Muốn chỉ phần giao diện thì mở file nào?
@@ -234,7 +235,7 @@ Hai đoạn JSP dùng chung là [sidebar.jspf](src/main/webapp/WEB-INF/views/com
 6. Nếu sân bật tự xác nhận và `supportsAutoApproval()` cho phép: lưu `CONFIRMED`, nguồn `AUTOMATIC`. Nếu duyệt thủ công: lưu `PENDING`, nguồn `MANUAL`.
 7. `BookingActivityDB.record()` ghi lịch sử và thông báo trong cùng transaction với đơn; commit xong Servlet redirect về `/home` kèm kết quả, danh sách đơn được tải lại từ DB.
 
-**Ví dụ để giải thích chống trùng:** đơn 18:00–19:00 xung đột với 18:30–19:30; đơn 19:00–20:00 được xếp liền sau 18:00–19:00. Điều kiện giao nhau là `other.startsAt < endsAt && other.endsAt > startsAt`. Chỉ `CONFIRMED` và `COMPLETED` chiếm lịch; `PENDING` là yêu cầu chờ duyệt. Lịch trống trên trình duyệt là dữ liệu tại lúc tải; server vẫn kiểm tra lại khi lưu.
+**Ví dụ để giải thích chống trùng:** trên cùng sân con, đơn 18:00–19:00 xung đột với 18:30–19:30; đơn 19:00–20:00 được xếp liền sau 18:00–19:00. Điều kiện giao nhau là `other.startsAt < endsAt && other.endsAt > startsAt`. `PENDING`, `CONFIRMED` và `COMPLETED` được tính khi phân bổ sân con. Chủ sân vẫn phải duyệt đơn `PENDING`; ràng buộc PostgreSQL bảo vệ các đơn đã xác nhận/hoàn thành theo `(field_id, court_number)`. Lịch trống trên trình duyệt là dữ liệu tại lúc tải; server vẫn kiểm tra lại khi lưu.
 
 ### 3. Chủ sân xử lý đơn và khóa giờ
 
@@ -296,7 +297,7 @@ Fixture nằm trong [postgresql-fixtures.sql](src/test/resources/postgresql-fixt
 ## Những điểm dễ nhầm khi chỉ mã nguồn
 
 1. **`index.jsp` và `/home` là hai trang khác nhau.** `index.jsp` giới thiệu/lọc nhóm sân có sẵn trên trang; `/home` đi qua `HomeServlet` để tải sân, lịch nhắc và đơn của tài khoản từ DB.
-2. **Lịch nhắc không giữ chỗ.** `AppointmentDAO` lưu `appointments`; giữ lịch sân thực tế dùng `BookingDB` với `bookings`. Đơn `PENDING` vẫn chờ chủ sân và chưa chiếm lịch như đơn `CONFIRMED`.
+2. **Lịch nhắc không giữ chỗ.** `AppointmentDAO` lưu `appointments`; giữ lịch sân thực tế dùng `BookingDB` với `bookings`. Đơn `PENDING` vẫn chờ chủ sân nhưng được tính vào số lượng sân con đang nhận đặt.
 3. **`owner/` và `WEB-INF/views/owner/` đều đang được dùng.** Dashboard/đánh giá/khách hàng ở `webapp/owner/`; lịch sân ở `WEB-INF/views/owner/calendar.jsp`. JSP trong `WEB-INF` phải được Servlet forward, không mở trực tiếp bằng URL. [home.jsp](src/main/webapp/home.jsp) và [chat-friends.jsp](src/main/webapp/chat-friends.jsp) ở gốc chỉ chuyển tiếp URL cũ.
 4. **Có lớp dữ liệu cùng tên chức năng nhưng khác luồng.** Dashboard hiện gọi `data/SportFieldDB.java` dùng JPA; [dao/SportFieldDAO.java](src/main/java/com/sportify/dao/SportFieldDAO.java) là bản JDBC còn trong source và được integration test sử dụng. Xem import/call trong Servlet để xác định lớp đang chạy.
 5. **Có nhiều nhánh chat.** Luồng chính là `ChatPageServlet → ChatApiServlet → ChatService → ChatDAO → friend_messages`. [ChatServlet.java](src/main/java/com/sportify/controller/ChatServlet.java) ánh xạ `/chat-live` và [ChatMessageDB.java](src/main/java/com/sportify/data/ChatMessageDB.java) thuộc nhánh cũ dùng `chat_messages`, vẫn còn code xử lý. Chat dịch vụ mẫu trong `ChatService` còn mã nhưng các action dịch vụ tại `/chat-api` trả HTTP 410.
@@ -359,7 +360,8 @@ Các URL cũ còn ánh xạ trong source: `/chat-live` (GET/POST, nhánh chat c�
    - Mở **Query Tool** của `sporttrent` và chạy toàn bộ `database/init_all_postgresql.sql`.
    - Tiếp tục chạy `database/04_booking_automation_postgresql.sql` để bổ sung tự xác nhận, giờ khóa, lịch sử và thông báo. Cả hai script đều chạy lại được.
    - Script bổ sung bảng/cột/index còn thiếu, giữ dữ liệu sân, đánh giá, tin nhắn và đơn cũ. Với database đã cài trước đó, chạy thêm `database/05_user_profile_postgresql.sql` để bổ sung các trường hồ sơ (có thể chạy lại an toàn). Không tạo sẵn tài khoản demo; đăng ký tài khoản qua `/register`.
-   - Các file `01_init_schema.sql`, `02_sports_fields.sql`, `03_newsfeed.sql`, `init_all_sqlserver.sql` và các bản backup SQL Server được giữ cho thành viên dùng SQL Server. Không chạy chúng trong pgAdmin. Source ở nhánh làm việc này sử dụng PostgreSQL.
+   - Chạy tiếp `database/06_inventory_newsfeed_postgresql.sql` trước khi dùng code mới: bổ sung `quantity`, `court_number`, `posts.booking_id`, `posts.post_purpose` và môn bóng bàn. Script chạy lại được, không xóa sân/đơn/tài khoản; số lượng sân cũ chưa cấu hình được giữ ở 1, sân mới nhập số lượng trong biểu mẫu.
+   - `database/SportifyDB_backup.sql` là script SQL Server của nhóm. Không chạy file này trong pgAdmin. Source local sau khi gộp dùng PostgreSQL; cần chạy đủ các migration PostgreSQL kể trên.
 
 2. **Cấu hình kết nối CSDL**:
    - Sao chép `src/main/resources/database.properties.example` thành `src/main/resources/database.properties`.

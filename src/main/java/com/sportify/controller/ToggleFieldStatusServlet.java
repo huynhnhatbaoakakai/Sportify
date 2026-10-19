@@ -12,7 +12,6 @@ import java.io.IOException;
 @WebServlet("/owner/fields/toggle")
 public class ToggleFieldStatusServlet extends HttpServlet {
 
-    private static final Long DEMO_OWNER_ID = 1L;
 
     @Override
     protected void doPost(

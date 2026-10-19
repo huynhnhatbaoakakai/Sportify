@@ -29,16 +29,16 @@ public class Review implements Serializable {
     private SportField field;
 
     // TODO: replace customerName with a user relationship when user accounts exist.
-    @Column(name = "customer_name", nullable = false, length = 100, columnDefinition = "nvarchar(100)")
+    @Column(name = "customer_name", nullable = false, length = 100)
     private String customerName;
 
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "comment", nullable = false, columnDefinition = "nvarchar(max)")
+    @Column(name = "comment", nullable = false, columnDefinition = "text")
     private String comment;
 
-    @Column(name = "owner_reply", columnDefinition = "nvarchar(max)")
+    @Column(name = "owner_reply", columnDefinition = "text")
     private String ownerReply;
 
     @Column(name = "created_at", nullable = false, updatable = false)

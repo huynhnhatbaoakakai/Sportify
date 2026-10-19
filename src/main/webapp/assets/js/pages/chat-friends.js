@@ -79,7 +79,7 @@ function parseTransferPayload(text) {
 function formatPreviewText(text) {
     const parsed = parseTransferPayload(text);
     if (parsed) {
-        return '🎟️ Chuyển lịch sân #' + parsed.bookingCode + ' (' + parsed.fieldName + ')';
+        return 'Chuyển lịch sân #' + parsed.bookingCode + ' (' + parsed.fieldName + ')';
     }
     return text || '';
 }
@@ -96,7 +96,7 @@ function renderList() {
         const time = last ? last.time : '';
         const initial = f.partnerIcon || (f.partnerName ? f.partnerName[0].toUpperCase() : '?');
         const roleBadge = f.roleName === 'Chủ sân'
-            ? '<span class="badge-role-owner" style="font-size:10px;padding:1px 5px;background:#dcfce7;color:#15803d;border-radius:4px;margin-left:4px;font-weight:700;">🏟️ Chủ sân</span>' : '';
+            ? '<span class="badge-role-owner" style="font-size:10px;padding:1px 5px;background:#dcfce7;color:#15803d;border-radius:4px;margin-left:4px;font-weight:700;"><span class="app-icon icon-court" aria-hidden="true"></span> Chủ sân</span>' : '';
 
         const div = document.createElement('div');
         div.className = 'chat-item' + (f.id == currentFriendId ? ' active' : '');
@@ -127,7 +127,7 @@ function renderMessages() {
 
     const msgs = f.messages || [];
     if (msgs.length === 0) {
-        msgEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào. Hãy gửi tin đầu tiên hoặc bấm <b>🎟️ Chuyển lịch sân</b>!</div>';
+        msgEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào. Hãy gửi tin đầu tiên hoặc bấm <b><span class="app-icon icon-calendar-check" aria-hidden="true"></span> Chuyển lịch sân</b>!</div>';
         return;
     }
 
@@ -139,22 +139,22 @@ function renderMessages() {
                         <div style="background:linear-gradient(145deg,#ffffff,#f0fdf4); border:2px solid #22c55e; border-radius:16px; padding:14px 16px; color:#0f172a; box-shadow:0 6px 18px rgba(21,128,61,0.12);">
                             <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px;">
                                 <span style="background:#15803d; color:#fff; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px;">
-                                    🎟️ CHUYỂN NHƯỢNG TÀI SẢN LỊCH SÂN
+                                    <span class="app-icon icon-calendar-check" aria-hidden="true"></span> CHUYỂN NHƯỢNG TÀI SẢN LỊCH SÂN
                                 </span>
                                 <span style="font-size:12px; font-weight:800; color:#15803d;">#${escHtml(transfer.bookingCode)}</span>
                             </div>
                             <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:6px;">
-                                🏟️ ${escHtml(transfer.fieldName)} (Sân #${escHtml(transfer.courtNumber)})
+                                <span class="app-icon icon-court" aria-hidden="true"></span> ${escHtml(transfer.fieldName)} (Sân #${escHtml(transfer.courtNumber)})
                             </div>
                             <div style="font-size:12.5px; color:#334155; display:flex; flex-direction:column; gap:4px; background:#fff; padding:9px 11px; border-radius:10px; border:1px solid #dcfce7; margin-bottom:8px;">
-                                <div>📅 <b>Ngày đặt:</b> ${escHtml(transfer.dateStr)}</div>
-                                <div>🕒 <b>Khung giờ:</b> ${escHtml(transfer.timeStr)}</div>
-                                <div>💰 <b>Giá trị vé sân:</b> <span style="color:#15803d;font-weight:800;">${escHtml(transfer.priceFormatted)}</span></div>
-                                <div>🔄 <b>Chuyển quyền sở hữu:</b> ${escHtml(transfer.senderName)} → <b style="color:#0284c7;">${escHtml(transfer.receiverName)}</b></div>
+                                <div><span class="app-icon icon-calendar" aria-hidden="true"></span> <b>Ngày đặt:</b> ${escHtml(transfer.dateStr)}</div>
+                                <div><span class="app-icon icon-clock" aria-hidden="true"></span> <b>Khung giờ:</b> ${escHtml(transfer.timeStr)}</div>
+                                <div><span class="app-icon icon-wallet" aria-hidden="true"></span> <b>Giá trị vé sân:</b> <span style="color:#15803d;font-weight:800;">${escHtml(transfer.priceFormatted)}</span></div>
+                                <div><span class="app-icon icon-refresh" aria-hidden="true"></span> <b>Chuyển quyền sở hữu:</b> ${escHtml(transfer.senderName)} → <b style="color:#0284c7;">${escHtml(transfer.receiverName)}</b></div>
                             </div>
-                            ${transfer.note ? `<div style="font-size:12.5px; font-style:italic; color:#475569; margin-bottom:8px;">💬 "${escHtml(transfer.note)}"</div>` : ''}
+                            ${transfer.note ? `<div style="font-size:12.5px; font-style:italic; color:#475569; margin-bottom:8px;"><span class="app-icon icon-chat" aria-hidden="true"></span> "${escHtml(transfer.note)}"</div>` : ''}
                             <a href="${CTX}/home#my-booking-assets" style="display:block; text-align:center; background:#15803d; color:#fff; text-decoration:none; padding:7px 12px; border-radius:9px; font-size:12px; font-weight:700;">
-                                💎 Xem trong Kho tài sản lịch sân →
+                                <span class="app-icon icon-calendar-check" aria-hidden="true"></span> Xem trong Kho tài sản lịch sân →
                             </a>
                         </div>
                         <div class="message-time">${escHtml(msg.time)}</div>
@@ -185,7 +185,7 @@ function updateHeader() {
     } else {
         const initial = f.partnerIcon || f.partnerName[0].toUpperCase();
         const headerRole = f.roleName === 'Chủ sân'
-            ? '<span class="badge-role-owner" style="font-size:11.5px;padding:2px 8px;background:#dcfce7;color:#15803d;border-radius:6px;margin-left:8px;font-weight:700;">🏟️ Chủ sân • Phục vụ đơn hàng</span>' : '';
+            ? '<span class="badge-role-owner" style="font-size:11.5px;padding:2px 8px;background:#dcfce7;color:#15803d;border-radius:6px;margin-left:8px;font-weight:700;"><span class="app-icon icon-court" aria-hidden="true"></span> Chủ sân • Phục vụ đơn hàng</span>' : '';
         document.getElementById('currentAvatar').textContent = initial;
         document.getElementById('currentName').innerHTML = escHtml(f.partnerName) + headerRole;
         document.getElementById('currentStatus').textContent = 'Tin nhắn trực tiếp • Có thể chuyển nhượng lịch đặt sân';
@@ -262,7 +262,7 @@ async function openTransferBookingModal(preselectBookingId) {
         `<option value="${f.id}" ${f.id == currentFriendId ? 'selected' : ''}>${escHtml(f.partnerName)} (${escHtml(f.roleName || 'Thành viên')})</option>`
     ).join('');
 
-    listEl.innerHTML = '<div style="padding:16px; text-align:center; color:#64748b; font-size:13px;">⏳ Đang tải danh sách lịch đặt sân đã xác nhận của bạn...</div>';
+    listEl.innerHTML = '<div style="padding:16px; text-align:center; color:#64748b; font-size:13px;"><span class="app-icon icon-clock" aria-hidden="true"></span> Đang tải danh sách lịch đặt sân đã xác nhận của bạn...</div>';
 
     try {
         const res = await fetch(API + '?action=getMyConfirmedBookings');
@@ -272,7 +272,7 @@ async function openTransferBookingModal(preselectBookingId) {
         if (myConfirmedAssets.length === 0) {
             listEl.innerHTML = `
                 <div style="padding:18px; text-align:center; background:#f8fafc; border:1.5px dashed #cbd5e1; border-radius:12px; color:#475569; font-size:13px;">
-                    📭 Bạn hiện không có lịch đặt sân nào ở trạng thái <b>Đã xác nhận (CONFIRMED)</b> để chuyển nhượng.<br>
+                    <span class="app-icon icon-inbox" aria-hidden="true"></span> Bạn hiện không có lịch đặt sân nào ở trạng thái <b>Đã xác nhận (CONFIRMED)</b> để chuyển nhượng.<br>
                     <a href="${CTX}/home#fields" style="display:inline-block; margin-top:8px; color:#15803d; font-weight:700;">+ Đặt sân mới ngay</a>
                 </div>`;
             confirmBtn.disabled = true;
@@ -291,11 +291,11 @@ async function openTransferBookingModal(preselectBookingId) {
                     <input type="radio" name="transferBookingRadio" value="${b.bookingId}" ${checked} style="margin-top:4px; transform:scale(1.2);">
                     <div style="flex:1;">
                         <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                            <span style="font-weight:800; color:#0f172a; font-size:14.5px;">🏟️ ${escHtml(b.fieldName)} (Sân #${b.courtNumber})</span>
+                            <span style="font-weight:800; color:#0f172a; font-size:14.5px;"><span class="app-icon icon-court" aria-hidden="true"></span> ${escHtml(b.fieldName)} (Sân #${b.courtNumber})</span>
                             <span style="background:#15803d; color:#fff; font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px;">#${escHtml(b.bookingCode)}</span>
                         </div>
                         <div style="font-size:12.5px; color:#334155; margin-top:4px;">
-                            📅 <b>${escHtml(b.dateStr)}</b> • 🕒 <b>${escHtml(b.timeStr)}</b> • 💰 <b style="color:#15803d;">${escHtml(b.priceFormatted)}</b>
+                            <span class="app-icon icon-calendar" aria-hidden="true"></span> <b>${escHtml(b.dateStr)}</b> • <span class="app-icon icon-clock" aria-hidden="true"></span> <b>${escHtml(b.timeStr)}</b> • <span class="app-icon icon-wallet" aria-hidden="true"></span> <b style="color:#15803d;">${escHtml(b.priceFormatted)}</b>
                         </div>
                     </div>
                 </label>`;
@@ -351,7 +351,7 @@ async function submitBookingTransfer() {
         const data = await res.json();
 
         confirmBtn.disabled = false;
-        confirmBtn.textContent = '🎁 Xác nhận chuyển quyền sở hữu';
+        confirmBtn.innerHTML = '<span class="app-icon icon-refresh" aria-hidden="true"></span> Xác nhận chuyển quyền sở hữu';
 
         if (data.error) {
             errEl.textContent = data.error;
@@ -365,7 +365,7 @@ async function submitBookingTransfer() {
         await loadFriends(true);
     } catch (e) {
         confirmBtn.disabled = false;
-        confirmBtn.textContent = '🎁 Xác nhận chuyển quyền sở hữu';
+        confirmBtn.innerHTML = '<span class="app-icon icon-refresh" aria-hidden="true"></span> Xác nhận chuyển quyền sở hữu';
         errEl.textContent = 'Lỗi kết nối: ' + e.message;
         errEl.style.display = 'block';
     }

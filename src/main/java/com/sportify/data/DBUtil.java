@@ -1,23 +1,22 @@
 package com.sportify.data;
 
+import com.sportify.config.DatabaseConfig;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 public final class DBUtil {
+    private static EntityManagerFactory entityManagerFactory;
+    private DBUtil() { }
 
-    private static final EntityManagerFactory entityManagerFactory =
-            Persistence.createEntityManagerFactory("sportifyPU");
-
-    private DBUtil() {
-    }
-
-    public static EntityManagerFactory getEntityManagerFactory() {
+    public static synchronized EntityManagerFactory getEntityManagerFactory() {
+        if (entityManagerFactory == null || !entityManagerFactory.isOpen()) {
+            entityManagerFactory = Persistence.createEntityManagerFactory("sportifyPU", DatabaseConfig.getJpaProperties());
+        }
         return entityManagerFactory;
     }
 
-    public static void closeEntityManagerFactory() {
-        if (entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
+    public static synchronized void closeEntityManagerFactory() {
+        if (entityManagerFactory != null && entityManagerFactory.isOpen()) entityManagerFactory.close();
+        entityManagerFactory = null;
     }
 }

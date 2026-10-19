@@ -12,8 +12,8 @@ public class AppointmentDAO {
     // Lấy tất cả lịch hẹn sắp tới (hôm nay trở đi) của user
     public List<Appointment> getUpcomingAppointments(int userId) {
         List<Appointment> list = new ArrayList<>();
-        String sql = "SELECT * FROM Appointments WHERE user_id = ? " +
-                     "AND appointment_date >= CAST(GETDATE() AS DATE) " +
+        String sql = "SELECT * FROM Appointments WHERE user_id = ? AND type = 'court' " +
+                     "AND appointment_date >= CURRENT_DATE " +
                      "ORDER BY appointment_date ASC, appointment_time ASC";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -31,8 +31,8 @@ public class AppointmentDAO {
 
     // Đếm số lịch hẹn sắp tới
     public int countUpcoming(int userId) {
-        String sql = "SELECT COUNT(*) FROM Appointments WHERE user_id = ? " +
-                     "AND appointment_date >= CAST(GETDATE() AS DATE)";
+        String sql = "SELECT COUNT(*) FROM Appointments WHERE user_id = ? AND type = 'court' " +
+                     "AND appointment_date >= CURRENT_DATE";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -47,10 +47,10 @@ public class AppointmentDAO {
 
     // Tính tổng giờ tập trong tháng hiện tại (loại "pt")
     public int getTrainingHoursThisMonth(int userId) {
-        String sql = "SELECT ISNULL(SUM(duration_hours), 0) FROM TrainingSessions " +
+        String sql = "SELECT COALESCE(SUM(duration_hours), 0) FROM training_sessions " +
                      "WHERE user_id = ? " +
-                     "AND MONTH(session_date) = MONTH(GETDATE()) " +
-                     "AND YEAR(session_date) = YEAR(GETDATE())";
+                     "AND session_date >= date_trunc('month', CURRENT_DATE)::date " +
+                     "AND session_date < (date_trunc('month', CURRENT_DATE) + INTERVAL '1 month')::date";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -65,14 +65,15 @@ public class AppointmentDAO {
 
     // Tạo lịch hẹn mới
     public boolean createAppointment(Appointment a) {
+        if (a == null || !"court".equals(a.getType())) return false;
         String sql = "INSERT INTO Appointments (user_id, title, appointment_date, appointment_time, type, note) " +
                      "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, a.getUserId());
             ps.setString(2, a.getTitle());
-            ps.setString(3, a.getAppointmentDate());
-            ps.setString(4, a.getAppointmentTime());
+            ps.setObject(3, java.time.LocalDate.parse(a.getAppointmentDate()));
+            ps.setObject(4, java.time.LocalTime.parse(a.getAppointmentTime()));
             ps.setString(5, a.getType());
             ps.setString(6, a.getNote());
             return ps.executeUpdate() > 0;
@@ -84,7 +85,7 @@ public class AppointmentDAO {
 
     // Xóa lịch hẹn
     public boolean deleteAppointment(int id, int userId) {
-        String sql = "DELETE FROM Appointments WHERE id = ? AND user_id = ?";
+        String sql = "DELETE FROM Appointments WHERE id = ? AND user_id = ? AND type = 'court'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -99,7 +100,7 @@ public class AppointmentDAO {
     // Lấy tất cả lịch hẹn (kể cả cũ) để hiển thị lịch sử
     public List<Appointment> getAllAppointments(int userId) {
         List<Appointment> list = new ArrayList<>();
-        String sql = "SELECT * FROM Appointments WHERE user_id = ? " +
+        String sql = "SELECT * FROM Appointments WHERE user_id = ? AND type = 'court' " +
                      "ORDER BY appointment_date DESC, appointment_time DESC";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

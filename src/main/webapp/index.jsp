@@ -2,6 +2,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
 <%@ page import="com.sportify.model.User" %>
+<%@ page import="com.sportify.util.Html" %>
 
 <%
     String contextPath = request.getContextPath();
@@ -14,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sportify - Dịch vụ thể thao</title>
+    <title>Sportify - Đặt sân và kết nối</title>
     <link rel="stylesheet"
           href="<%= contextPath %>/assets/css/style.css">
 
@@ -36,20 +37,22 @@
         <nav class="header-menu">
             <a href="<%= contextPath %>/">Trang chủ</a>
             <a href="#sports">Môn thể thao</a>
-            <a href="#services">Dịch vụ</a>
+            <a href="#services">Đặt sân & kết nối</a>
             <a href="#featured">Nổi bật</a>
             <% if (currentUser != null) { %>
             <a href="<%= contextPath %>/newsfeed">Newsfeed</a>
-            <a href="<%= contextPath %>/appointments">Lịch hẹn</a>
+            <a href="<%= contextPath %>/appointments">Lịch nhắc</a>
             <a href="<%= contextPath %>/chat-friends">Tin nhắn</a>
             <% } %>
         </nav>
 
         <div class="header-actions">
+            <% if (currentUser != null && currentUser.isOwner()) { %>
             <a class="btn" style="background: #0d2d1c; color: white;"
                href="<%= contextPath %>/owner/fields">
-                <span class="app-icon icon-court" aria-hidden="true"></span> Quản lý dịch vụ
+                <span class="app-icon icon-court" aria-hidden="true"></span> Quản lý sân
             </a>
+            <% } %>
             <% if (currentUser == null) { %>
             <a class="btn btn-outline"
                href="<%= contextPath %>/login">Đăng nhập</a>
@@ -58,7 +61,7 @@
                href="<%= contextPath %>/register">Đăng ký</a>
             <% } else { %>
             <a class="btn btn-outline"
-               href="<%= contextPath %>/home"><span class="app-icon icon-home" aria-hidden="true"></span> <%= currentUser.getFullname() %></a>
+               href="<%= contextPath %>/home"><span class="app-icon icon-home" aria-hidden="true"></span> <%= Html.escape(currentUser.getFullname()) %></a>
             <a class="btn" style="background: #ef4444; color: white;"
                href="<%= contextPath %>/logout">Đăng xuất</a>
             <% } %>
@@ -76,27 +79,27 @@
                 <span class="eyebrow">TẬP LUYỆN DỄ DÀNG HƠN</span>
 
                 <h1>
-                    Mọi dịch vụ thể thao<br>
-                    trong một nền tảng
+                    Đặt sân dễ dàng<br>
+                    kết nối cùng đam mê
                 </h1>
 
                 <p>
-                    Tìm sân tập, thuê quần áo, dụng cụ và huấn luyện viên
-                    cho Gym, Bóng rổ, Bơi và Pickleball.
+                    Xem lịch trống, đặt sân và trao đổi trực tiếp với chủ sân.
+                    Cùng cộng đồng chơi Gym, Bóng rổ, Bơi và Pickleball.
                 </p>
 
                 <form class="search-box" id="searchForm">
                     <input
                         id="searchInput"
                         type="search"
-                        placeholder="Tìm sân, dụng cụ hoặc PT..."
-                        aria-label="Tìm kiếm dịch vụ">
+                        placeholder="Tìm sân hoặc môn thể thao..."
+                        aria-label="Tìm kiếm sân">
 
                     <button type="submit">Tìm kiếm</button>
                 </form>
 
                 <p class="search-hint">
-                    Gợi ý: Gym, Bóng rổ, Bơi, Pickleball, PT
+                    Gợi ý: Gym, Bóng rổ, Bơi, Pickleball
                 </p>
             </div>
 
@@ -120,7 +123,7 @@
                     <h2>Bạn muốn chơi môn gì?</h2>
                 </div>
 
-                <p>Chọn môn thể thao để xem các dịch vụ phù hợp.</p>
+                <p>Chọn môn thể thao để xem sân hoặc cơ sở phù hợp.</p>
             </div>
 
             <div class="grid four-columns">
@@ -129,7 +132,7 @@
                         data-query="gym">
                     <span class="category-icon app-icon icon-gym" aria-hidden="true"></span>
                     <strong>Gym</strong>
-                    <small>Phòng tập, quần áo và PT</small>
+                    <small>Khám phá phòng tập</small>
                 </button>
 
                 <button class="category-card filter-button"
@@ -137,7 +140,7 @@
                         data-query="bóng rổ">
                     <span class="category-icon app-icon icon-basketball" aria-hidden="true"></span>
                     <strong>Bóng rổ</strong>
-                    <small>Sân, bóng và trang phục</small>
+                    <small>Chọn sân và khung giờ</small>
                 </button>
 
                 <button class="category-card filter-button"
@@ -145,7 +148,7 @@
                         data-query="bơi">
                   <span class="category-icon app-icon icon-swimming" aria-hidden="true"></span>
                     <strong>Bơi</strong>
-                    <small>Hồ bơi, đồ bơi và HLV</small>
+                    <small>Tìm hồ bơi phù hợp</small>
                 </button>
 
                 <button class="category-card filter-button"
@@ -153,64 +156,39 @@
                         data-query="pickleball">
                   <span class="category-icon app-icon icon-racket" aria-hidden="true"></span>
                     <strong>Pickleball</strong>
-                    <small>Sân, vợt và huấn luyện viên</small>
+                    <small>Đặt sân cùng bạn bè</small>
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- SERVICE TYPES -->
+    <!-- ĐẶT SÂN VÀ KẾT NỐI -->
     <section class="section section-soft" id="services">
         <div class="container">
             <div class="section-heading">
                 <div>
-                    <span class="section-label">LOẠI DỊCH VỤ</span>
-                    <h2>Một nơi cho mọi nhu cầu</h2>
+                    <span class="section-label">ĐẶT SÂN & KẾT NỐI</span>
+                    <h2>Từ chọn sân đến buổi chơi</h2>
                 </div>
-
-                <p>Đặt lịch và quản lý dịch vụ nhanh chóng.</p>
+                <p>Chủ sân và khách hàng trao đổi ngay trên Sportify.</p>
             </div>
-
             <div class="grid four-columns">
-                <button class="service-type filter-button"
-                        type="button"
-                        data-query="venue">
+                <a class="service-type" href="<%= contextPath %>/home#fields">
                     <span class="type-icon app-icon icon-calendar" aria-hidden="true"></span>
-                    <div>
-                        <strong>Thuê sân/phòng tập</strong>
-                        <small>Chọn ngày và khung giờ</small>
-                    </div>
-                </button>
-
-                <button class="service-type filter-button"
-                        type="button"
-                        data-query="quần áo">   
-                    <span class="type-icon app-icon icon-user" aria-hidden="true"></span>
-                    <div>
-                        <strong>Thuê quần áo</strong>
-                        <small>Chọn kích thước và thời gian thuê</small>
-                    </div>
-                </button>
-
-                <button class="service-type filter-button"
-                        type="button"
-                        data-query="gear dụng cụ">
-                  <span class="type-icon app-icon icon-racket" aria-hidden="true"></span>
-                    <div>
-                        <strong>Thuê gear</strong>
-                        <small>Vợt, bóng và phụ kiện</small>
-                    </div>
-                </button>
-
-                <button class="service-type filter-button"
-                        type="button"
-                        data-query="pt huấn luyện viên">
-                    <span class="type-icon app-icon icon-gym" aria-hidden="true"></span>
-                    <div>
-                        <strong>Thuê PT</strong>
-                        <small>Đặt lịch huấn luyện cá nhân</small>
-                    </div>
-                </button>
+                    <div><strong>Tìm và đặt sân</strong><small>Xem giá và lịch còn trống</small></div>
+                </a>
+                <a class="service-type" href="<%= contextPath %>/<%= currentUser != null && currentUser.isOwner() ? "owner/fields" : "home#my-bookings" %>">
+                    <span class="type-icon app-icon icon-calendar-check" aria-hidden="true"></span>
+                    <div><strong><%= currentUser != null && currentUser.isOwner() ? "Quản lý sân" : "Theo dõi đơn đặt sân" %></strong><small>Lịch sân và trạng thái xác nhận</small></div>
+                </a>
+                <a class="service-type" href="<%= contextPath %>/chat-friends">
+                    <span class="type-icon app-icon icon-chat" aria-hidden="true"></span>
+                    <div><strong>Nhắn tin trực tiếp</strong><small>Kết nối chủ sân và khách hàng</small></div>
+                </a>
+                <a class="service-type" href="<%= contextPath %>/newsfeed">
+                    <span class="type-icon app-icon icon-users" aria-hidden="true"></span>
+                    <div><strong>Cộng đồng thể thao</strong><small>Chia sẻ, thích và bình luận</small></div>
+                </a>
             </div>
         </div>
     </section>
@@ -221,7 +199,7 @@
             <div class="section-heading">
                 <div>
                     <span class="section-label">ĐỀ XUẤT CHO BẠN</span>
-                    <h2>Dịch vụ nổi bật</h2>
+                    <h2>Khám phá sân theo môn</h2>
                 </div>
 
                 <button class="clear-filter" id="clearFilter" type="button">
@@ -230,7 +208,7 @@
             </div>
 
             <p class="result-message" id="resultMessage">
-                Đang hiển thị tất cả dịch vụ.
+                Đang hiển thị tất cả nhóm sân.
             </p>
 
             <div class="grid service-grid" id="serviceGrid">
@@ -238,17 +216,17 @@
                 <article class="service-card"
                          data-search="venue gym phòng tập quận 7">
                    <div class="service-image">
-                         <img src="<%= contextPath %>/assets/images/gymfitzone.jfif" alt="Phòng Gym FitZone">
+                         <img src="<%= contextPath %>/assets/images/gymfitzone.jfif" alt="Phòng tập Gym">
 </div>
 
                     <div class="service-body">
                         <span class="badge">Gym</span>
                         <h3>Phòng Gym FitZone</h3>
-                        <p>Quận 7, TP. Hồ Chí Minh</p>
+                        <p>Chọn cơ sở và khung giờ phù hợp.</p>
 
                         <div class="service-footer">
-                            <strong>60.000đ <small>/ giờ</small></strong>
-                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Phòng+Gym+FitZone&type=court">Đặt ngay</a>
+                            <strong>Giá theo sân</strong>
+                            <a class="btn-book" href="<%= contextPath %>/home#fields">Xem sân</a>
                         </div>
                     </div>
                 </article>
@@ -263,12 +241,12 @@
 
                     <div class="service-body">
                         <span class="badge">Bóng rổ</span>
-                        <h3>Sân bóng Sunrise</h3>
-                        <p>Quận 3, TP. Hồ Chí Minh</p>
+                        <h3>Sân bóng rổ</h3>
+                        <p>Chọn cơ sở và khung giờ phù hợp.</p>
 
                         <div class="service-footer">
-                            <strong>180.000đ <small>/ giờ</small></strong>
-                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Sân+bóng+Sunrise&type=court">Đặt ngay</a>
+                            <strong>Giá theo sân</strong>
+                            <a class="btn-book" href="<%= contextPath %>/home#fields">Xem sân</a>
                         </div>
                     </div>
                 </article>
@@ -278,17 +256,17 @@
                     <div class="service-image">
                                 <img
                                     src="<%= contextPath %>/assets/images/swimmingpoolaqua.jfif"
-                                    alt="Hồ bơi Aqua Center">
+                                    alt="Hồ bơi">
                             </div>
 
                     <div class="service-body">
                         <span class="badge">Bơi</span>
                         <h3>Hồ bơi Aqua Center</h3>
-                        <p>Quận 1, TP. Hồ Chí Minh</p>
+                        <p>Chọn cơ sở và khung giờ phù hợp.</p>
 
                         <div class="service-footer">
-                            <strong>50.000đ <small>/ lượt</small></strong>
-                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Hồ+bơi+Aqua+Center&type=court">Đặt ngay</a>
+                            <strong>Giá theo sân</strong>
+                            <a class="btn-book" href="<%= contextPath %>/home#fields">Xem sân</a>
                         </div>
                     </div>
                 </article>
@@ -298,87 +276,17 @@
                    <div class="service-image">
                     <img
                         src="<%= contextPath %>/assets/images/greenpickleballcourt.jfif"
-                        alt="Green Pickleball Court">
+                        alt="Sân Pickleball">
                 </div>
 
                     <div class="service-body">
                         <span class="badge">Pickleball</span>
                         <h3>Green Pickleball Court</h3>
-                        <p>Quận 7, TP. Hồ Chí Minh</p>
+                        <p>Chọn cơ sở và khung giờ phù hợp.</p>
 
                         <div class="service-footer">
-                            <strong>150.000đ <small>/ giờ</small></strong>
-                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Green+Pickleball+Court&type=court">Đặt ngay</a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="service-card"
-                         data-search="gear dụng cụ vợt pickleball">
-                                    <div class="service-image">
-                        <img
-                            src="<%= contextPath %>/assets/images/pickleballloan.jfif"
-                            alt="Bộ vợt Pickleball">
-                    </div>
-
-                    <div class="service-body">
-                        <span class="badge">Gear</span>
-                        <h3>Bộ vợt Pickleball</h3>
-                        <p>Hai vợt, bóng và túi đựng</p>
-
-                        <div class="service-footer">
-                            <strong>80.000đ <small>/ ngày</small></strong>
-                            <a class="btn-book" href="<%= contextPath %>/appointments?title=Bộ+vợt+Pickleball&type=gear">Thuê ngay</a>
-                        </div>
-                    </div>
-                </article>
-<article class="service-card"
-         data-search="quần áo đồ bơi mũ bơi kính bơi kiếng bơi phụ kiện">
-
-    <div class="service-image">
-        <img
-            src="<%= contextPath %>/assets/images/swimset.jfif"
-            alt="Combo đồ bơi trọn bộ">
-    </div>
-
-    <div class="service-body">
-        <span class="badge">Trang phục & phụ kiện</span>
-
-        <h3>Combo đồ bơi trọn bộ</h3>
-
-        <p>
-            Bao gồm đồ bơi, mũ bơi và kính bơi
-        </p>
-
-        <div class="service-footer">
-            <strong>
-                90.000đ <small>/ ngày</small>
-            </strong>
-
-            <a class="btn-book" href="<%= contextPath %>/appointments?title=Combo+đồ+bơi+trọn+bộ&type=clothing">Thuê ngay</a>
-        </div>
-    </div>
-</article>
-                        <article class="service-card"
-                        data-search="pt huấn luyện viên gym cá nhân">
-
-                    <div class="service-image">
-                        <img
-                            src="<%= contextPath %>/assets/images/pt1.png"
-                            alt="PT Nguyễn Minh Anh">
-                    </div>
-
-                    <div class="service-body">
-                        <span class="badge">PT</span>
-                        <h3>PT Nguyễn Minh Anh</h3>
-                        <p>5 năm kinh nghiệm huấn luyện</p>
-
-                        <div class="service-footer">
-                            <strong>
-                                250.000đ <small>/ buổi</small>
-                            </strong>
-
-                            <a class="btn-book" href="<%= contextPath %>/appointments?title=PT+Nguyễn+Minh+Anh&type=pt">Thuê PT</a>
+                            <strong>Giá theo sân</strong>
+                            <a class="btn-book" href="<%= contextPath %>/home#fields">Xem sân</a>
                         </div>
                     </div>
                 </article>
@@ -386,7 +294,7 @@
             </div>
 
             <div class="empty-state" id="emptyState" hidden>
-                Không tìm thấy dịch vụ phù hợp.
+                Không tìm thấy nhóm sân phù hợp.
             </div>
         </div>
     </section>
@@ -401,14 +309,14 @@
                 <span>SPORTIFY</span>
             </a>
 
-            <p>Nền tảng dịch vụ thể thao dành cho mọi người.</p>
+            <p>Đặt sân, quản lý sân và kết nối cộng đồng thể thao.</p>
         </div>
 
         <div>
-            <strong>Dịch vụ</strong>
+            <strong>Khám phá</strong>
             <a href="#sports">Môn thể thao</a>
-            <a href="#services">Loại dịch vụ</a>
-            <a href="#featured">Dịch vụ nổi bật</a>
+            <a href="#services">Đặt sân & kết nối</a>
+            <a href="#featured">Khám phá sân theo môn</a>
         </div>
 
         <div>

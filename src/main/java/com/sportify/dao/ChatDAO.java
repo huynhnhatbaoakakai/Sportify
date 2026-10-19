@@ -14,7 +14,7 @@ public class ChatDAO {
 
     public List<ChatSession> getUserChatSessions(int userId) {
         List<ChatSession> sessions = new ArrayList<>();
-        String sql = "SELECT * FROM ChatSessions WHERE user_id = ?";
+        String sql = "SELECT * FROM chat_sessions WHERE user_id = ? AND role_class = 'role-court'";
         try (Connection conn = DBContext.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -63,9 +63,9 @@ public class ChatDAO {
     }
 
     public void initializeDefaultSessions(int userId) {
-        // If user has 0 sessions, create 3 default ones
+        // Compatibility helper for the retired service chat; keep court sessions only.
         try (Connection conn = DBContext.getConnection()) {
-            String checkSql = "SELECT COUNT(*) FROM ChatSessions WHERE user_id = ?";
+            String checkSql = "SELECT COUNT(*) FROM chat_sessions WHERE user_id = ? AND role_class = 'role-court'";
             try (PreparedStatement ps = conn.prepareStatement(checkSql)) {
                 ps.setInt(1, userId);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -77,8 +77,6 @@ public class ChatDAO {
 
             // Create default sessions
             createSession(conn, userId, "Sân bóng Sunrise", "🏢", "Chủ sân", "role-court", true);
-            createSession(conn, userId, "PT Nguyễn Minh Anh", "💪", "Huấn luyện viên", "role-pt", false);
-            createSession(conn, userId, "Sport Gear Q7", "🎒", "Shop dụng cụ", "role-shop", true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,7 +85,7 @@ public class ChatDAO {
 
     private void createSession(Connection conn, int userId, String partnerName, String icon, String roleName,
             String roleClass, boolean isOnline) throws Exception {
-        String sql = "INSERT INTO ChatSessions (user_id, partner_name, partner_icon, role_name, role_class, is_online) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO chat_sessions (user_id, partner_name, partner_icon, role_name, role_class, is_online) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setString(2, partnerName);
@@ -116,10 +114,10 @@ public class ChatDAO {
             // Max 10 messages: delete oldest if count >= 10
             if (count >= 10) {
                 int limit = count - 9;
-                String deleteSql = "DELETE FROM Messages WHERE id IN (SELECT TOP (?) id FROM Messages WHERE session_id = ? ORDER BY id ASC)";
+                String deleteSql = "DELETE FROM Messages WHERE id IN (SELECT id FROM Messages WHERE session_id = ? ORDER BY id ASC LIMIT ?)";
                 try (PreparedStatement psDel = conn.prepareStatement(deleteSql)) {
-                    psDel.setInt(1, limit);
-                    psDel.setInt(2, sessionId);
+                    psDel.setInt(1, sessionId);
+                    psDel.setInt(2, limit);
                     psDel.executeUpdate();
                 }
             }
@@ -140,7 +138,7 @@ public class ChatDAO {
 
     public List<ChatMessage> getFriendMessages(int user1, int user2) {
         List<ChatMessage> messages = new ArrayList<>();
-        String sql = "SELECT * FROM FriendMessages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY id ASC";
+        String sql = "SELECT * FROM friend_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY id ASC";
         try (Connection conn = DBContext.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, user1);
@@ -165,12 +163,12 @@ public class ChatDAO {
     }
 
     public Integer findLatestOwnerChatPartner(int customerId) {
-        String sql = "SELECT TOP 1 CASE WHEN fm.sender_id = ? THEN fm.receiver_id ELSE fm.sender_id END AS partner_id " +
-                     "FROM FriendMessages fm " +
+        String sql = "SELECT CASE WHEN fm.sender_id = ? THEN fm.receiver_id ELSE fm.sender_id END AS partner_id " +
+                     "FROM friend_messages fm " +
                      "JOIN Users u ON u.id = (CASE WHEN fm.sender_id = ? THEN fm.receiver_id ELSE fm.sender_id END) " +
                      "WHERE (fm.sender_id = ? OR fm.receiver_id = ?) " +
                      "  AND (u.role = 'OWNER' OR u.role = 'ADMIN') " +
-                     "ORDER BY fm.id DESC";
+                     "ORDER BY fm.id DESC LIMIT 1";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, customerId);
@@ -191,7 +189,7 @@ public class ChatDAO {
     public void saveFriendMessage(int senderId, int receiverId, String text, String time) {
         try (Connection conn = DBContext.getConnection()) {
             // Check count
-            String countSql = "SELECT COUNT(*) FROM FriendMessages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)";
+            String countSql = "SELECT COUNT(*) FROM friend_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)";
             int count = 0;
             try (PreparedStatement psCount = conn.prepareStatement(countSql)) {
                 psCount.setInt(1, senderId);
@@ -208,19 +206,19 @@ public class ChatDAO {
             // Giữ tối đa 500 tin nhắn gần nhất
             if (count >= 500) {
                 int limit = count - 499;
-                String deleteSql = "DELETE FROM FriendMessages WHERE id IN (SELECT TOP (?) id FROM FriendMessages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY id ASC)";
+                String deleteSql = "DELETE FROM friend_messages WHERE id IN (SELECT id FROM friend_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY id ASC LIMIT ?)";
                 try (PreparedStatement psDel = conn.prepareStatement(deleteSql)) {
-                    psDel.setInt(1, limit);
-                    psDel.setInt(2, senderId);
+                    psDel.setInt(1, senderId);
+                    psDel.setInt(2, receiverId);
                     psDel.setInt(3, receiverId);
-                    psDel.setInt(4, receiverId);
-                    psDel.setInt(5, senderId);
+                    psDel.setInt(4, senderId);
+                    psDel.setInt(5, limit);
                     psDel.executeUpdate();
                 }
             }
 
             // Insert new
-            String insertSql = "INSERT INTO FriendMessages (sender_id, receiver_id, message_text, created_at) VALUES (?, ?, ?, ?)";
+            String insertSql = "INSERT INTO friend_messages (sender_id, receiver_id, message_text, created_at) VALUES (?, ?, ?, ?)";
             try (PreparedStatement psInsert = conn.prepareStatement(insertSql)) {
                 psInsert.setInt(1, senderId);
                 psInsert.setInt(2, receiverId);

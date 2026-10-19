@@ -21,36 +21,39 @@
         <class>com.sportify.model.SportField</class>
         <class>com.sportify.model.Review</class>
         <class>com.sportify.model.Booking</class>
+        <class>com.sportify.model.FieldBlock</class>
         <properties>
 
-            <!-- Kết nối SQL Server -->
+            <!-- PostgreSQL; DBUtil áp dụng cấu hình chung từ DatabaseConfig. -->
             <property
                 name="jakarta.persistence.jdbc.driver"
-                value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+                value="org.postgresql.Driver"/>
 
             <property
                 name="jakarta.persistence.jdbc.url"
-                value="jdbc:sqlserver://localhost:1433;instanceName=SQLEXPRESS;databaseName=SportifyDB;encrypt=true;trustServerCertificate=true;"/>
+                value="jdbc:postgresql://localhost:5432/sporttrent"/>
 
             <property
                 name="jakarta.persistence.jdbc.user"
-                value="sa"/>
+                value="postgres"/>
 
             <property
                 name="jakarta.persistence.jdbc.password"
-                value="123"/>
+                value=""/>
 
             <property
                 name="hibernate.dialect"
-                value="org.hibernate.dialect.SQLServerDialect"/>
+                value="org.hibernate.dialect.PostgreSQLDialect"/>
+
+            <property name="hibernate.default_schema" value="public"/>
 
             <property
                 name="hibernate.hbm2ddl.auto"
-                value="update"/>
+                value="validate"/>
 
             <property
                 name="hibernate.show_sql"
-                value="true"/>
+                value="false"/>
 
             <property
                 name="hibernate.format_sql"

@@ -26,7 +26,7 @@ body {
 .menu-icon { font-size: 20px; }
 
 /* MAIN */
-.main-wrapper { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+.main-wrapper { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; }
 .top-navbar {
     height: 62px; background: var(--white); border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
@@ -91,7 +91,10 @@ body {
 .create-post-input:focus { border-color: var(--primary); background: #fff; }
 .create-post-footer {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 12px;
 }
 .post-submit-btn {
@@ -129,8 +132,9 @@ body {
 .post-body {
     padding: 0 20px 14px;
     font-size: 15px; color: var(--text); line-height: 1.6;
-    white-space: pre-wrap; word-break: break-word;
+    white-space: normal; overflow-wrap: anywhere;
 }
+.post-text { white-space: pre-wrap; }
 
 .post-actions {
     display: flex; align-items: center; gap: 0;
@@ -203,3 +207,95 @@ body {
 .action-btn.liked { color: #287449; background: #edf7ef; }
 .comment-send-btn { display: inline-flex; align-items: center; justify-content: center; }
 .post-time .app-icon { font-size: 12px; }
+
+/* Keep booking markup separate from the user's preserved line breaks. */
+.booking-attachment {
+    margin-top: 14px;
+    padding: 16px;
+    border: 1px solid #cfe4d5;
+    border-radius: 12px;
+    background: #f8fcf9;
+    color: var(--dark);
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: normal;
+}
+.booking-attachment.is-transfer { border-color: #eadac8; background: #fffcf8; }
+.booking-attachment-header, .booking-selector-heading {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
+}
+.booking-purpose, .booking-code {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px; border-radius: 6px; font-size: 12px; font-weight: 600;
+}
+.booking-purpose { color: #166534; background: #e7f4eb; }
+.booking-purpose.purpose-transfer { color: #9a4a13; background: #fff0de; }
+.booking-code { color: #53645a; background: #fff; border: 1px solid var(--border); }
+.booking-attachment-title {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0; font-size: 16px; font-weight: 700; line-height: 1.5;
+}
+.booking-attachment-title .app-icon { color: var(--primary); }
+.booking-attachment-subtitle { margin: 3px 0 8px; color: var(--muted); }
+.booking-attachment-status { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 12px; color: var(--muted); }
+.booking-attachment-address { display: flex; align-items: baseline; gap: 6px; color: var(--muted); }
+.booking-attachment-details {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px 16px; margin: 14px 0; padding: 12px;
+    background: #fff; border: 1px solid var(--border); border-radius: 9px;
+}
+.booking-attachment-details dt { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.booking-attachment-details dd { margin: 3px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.booking-price { color: var(--primary-dark); }
+.booking-attachment-footer { display: flex; justify-content: flex-end; }
+.booking-contact-btn, .booking-attach-btn, .booking-small-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px;
+    font: inherit; font-size: 13px; font-weight: 600; line-height: 1.4; cursor: pointer;
+}
+.booking-contact-btn { color: #fff; background: var(--primary); border-color: var(--primary); }
+.booking-contact-btn:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+.booking-attach-btn { background: var(--primary-light); color: var(--primary-dark); }
+.booking-small-btn { padding: 6px 8px; background: #fff; color: var(--text); font-size: 12px; }
+.booking-small-btn:hover, .booking-attach-btn:hover { border-color: var(--primary); background: #e7f4eb; }
+.booking-remove { color: #ad3838; }
+.booking-purpose-switch { margin-top: 12px; }
+.booking-selector-panel { margin-top: 12px; padding: 12px; background: #f7faf8; border: 1px solid var(--border); border-radius: 12px; }
+.booking-selector-heading { font-size: 13px; }
+.booking-selector-item { padding: 12px; background: #fff; border: 1px solid var(--border); border-radius: 9px; }
+.booking-selector-item.is-selected { border-color: var(--primary); background: #f0faf3; }
+.booking-selector-title { font-size: 13px; font-weight: 600; }
+.booking-selector-title .booking-code { margin-left: 4px; }
+.booking-selector-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+.booking-selector-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+.booking-selector-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.booking-selector-empty { padding: 14px; text-align: center; background: #fff; border: 1px dashed var(--border); border-radius: 9px; color: var(--muted); font-size: 13px; }
+.booking-selector-empty a { display: inline-block; margin-top: 8px; color: var(--primary-dark); font-weight: 600; }
+.comment-bubble, .comment-input { min-width: 0; }
+@media (max-width: 900px) {
+    .sidebar { width: 220px; }
+    .menu-item { padding: 11px 12px; gap: 10px; }
+}
+@media (max-width: 640px) {
+    body { flex-direction: column; height: auto; min-height: 100vh; overflow: auto; }
+    .sidebar { width: 100%; padding: 8px 0; border-right: 0; border-bottom: 1px solid var(--border); }
+    .sidebar-brand, .sidebar-menu > div { display: none; }
+    .sidebar-menu { flex-direction: row; overflow-x: auto; gap: 4px; padding: 0 10px; }
+    .sidebar-menu .menu-item { flex-shrink: 0; white-space: nowrap; padding: 8px 10px; gap: 6px; font-size: 12px; }
+    .main-wrapper { overflow: visible; }
+    .top-navbar { min-height: 62px; padding: 10px 14px; gap: 12px; }
+    .page-title { font-size: 18px; }
+    .profile-name { display: none; }
+    .feed-content { padding: 16px 12px; }
+    .create-post-box { padding: 14px; }
+    .create-post-header { gap: 10px; font-size: 14px; }
+    .post-header { padding: 14px; }
+    .post-body { padding: 0 14px 14px; }
+    .booking-attachment { padding: 12px; }
+    .booking-attachment-title { font-size: 15px; }
+    .booking-contact-btn { width: 100%; }
+    .post-actions { padding: 8px; }
+    .action-btn { padding: 8px 10px; font-size: 13px; }
+    .comments-section { padding: 0 14px 14px; }
+}

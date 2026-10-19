@@ -1,5 +1,8 @@
 package com.sportify.filter;
 
+import com.sportify.model.User;
+import com.sportify.util.Csrf;
+import com.sportify.util.OwnerAccess;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,61 +11,31 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 
 @WebFilter("/owner/*")
 public class OwnerAccessFilter implements Filter {
-
-    private static final String SESSION_ATTRIBUTE =
-            "OWNER_DEMO_AUTHORIZED";
-
-    private static final String ACCESS_PATH =
-            "/owner/access";
-
-    private static final String LOGOUT_PATH =
-            "/owner/access/logout";
-
     @Override
-    public void doFilter(
-            ServletRequest servletRequest,
-            ServletResponse servletResponse,
-            FilterChain filterChain)
+    public void doFilter(ServletRequest source, ServletResponse target, FilterChain chain)
             throws IOException, ServletException {
-
-        HttpServletRequest request =
-                (HttpServletRequest) servletRequest;
-
-        HttpServletResponse response =
-                (HttpServletResponse) servletResponse;
-
-        String path = request.getServletPath();
-
-        if (ACCESS_PATH.equals(path)
-                || LOGOUT_PATH.equals(path)) {
-
-            filterChain.doFilter(request, response);
+        HttpServletRequest request = (HttpServletRequest) source;
+        HttpServletResponse response = (HttpServletResponse) target;
+        User user = OwnerAccess.currentUser(request);
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-
-        HttpSession session = request.getSession(false);
-
-        if (session != null) {
-            com.sportify.model.User user = (com.sportify.model.User) session.getAttribute("user");
-            if (user != null && ("OWNER".equalsIgnoreCase(user.getRole()) || "ADMIN".equalsIgnoreCase(user.getRole()))) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            if (Boolean.TRUE.equals(session.getAttribute(SESSION_ATTRIBUTE))) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+        if (!user.isOwner()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            request.setAttribute("errorMessage", "Tài khoản này chưa có quyền chủ sân. Hãy đăng nhập bằng tài khoản chủ sân của bạn.");
+            request.getRequestDispatcher("/WEB-INF/views/owner-access.jsp").forward(request, response);
+            return;
         }
-
-        response.sendRedirect(
-                request.getContextPath() + ACCESS_PATH
-        );
+        if ("POST".equals(request.getMethod()) && !Csrf.isValid(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Biểu mẫu đã hết hiệu lực. Vui lòng tải lại trang.");
+            return;
+        }
+        request.setAttribute("csrfToken", Csrf.token(request));
+        chain.doFilter(request, response);
     }
 }

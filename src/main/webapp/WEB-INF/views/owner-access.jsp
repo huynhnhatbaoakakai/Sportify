@@ -49,7 +49,7 @@
         <div class="owner-access-heading">
             <span class="owner-access-kicker">KHU VỰC QUẢN LÝ</span>
             <h1 id="owner-access-title">Truy cập khu vực chủ sân</h1>
-            <p>Nhập mật khẩu truy cập để quản lý thông tin và trạng thái các sân của bạn.</p>
+            <p>Khu vực này dành cho tài khoản có quyền chủ sân. Vui lòng đăng nhập bằng tài khoản chủ sân của bạn.</p>
         </div>
 
         <% if (errorMessage != null) { %>
@@ -58,19 +58,7 @@
         </p>
         <% } %>
 
-        <form class="owner-access-form"
-              method="post"
-              action="<%= contextPath %>/owner/access">
-            <label for="owner-password">Mật khẩu truy cập</label>
-            <input id="owner-password"
-                   name="password"
-                   type="password"
-                   required
-                   autocomplete="current-password"
-                   autofocus>
-
-            <button type="submit">Vào Dashboard</button>
-        </form>
+        <a class="owner-access-back" href="<%= contextPath %>/login">Đăng nhập tài khoản chủ sân</a>
 
         <a class="owner-access-back" href="<%= contextPath %>/home">
             Quay về trang chủ

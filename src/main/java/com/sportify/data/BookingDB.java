@@ -71,7 +71,7 @@ public final class BookingDB {
         if (bookingId == null || bookingId <= 0) {
             throw new IllegalArgumentException("Mã đơn không hợp lệ.");
         }
-        if (!"CONFIRMED".equals(status) && !"REJECTED".equals(status)) {
+        if (!"CONFIRMED".equals(status) && !"REJECTED".equals(status) && !"COMPLETED".equals(status)) {
             throw new IllegalArgumentException("Thao tác không hợp lệ.");
         }
         return changeStatus(DBUtil.getEntityManagerFactory().createEntityManager(),
@@ -98,7 +98,10 @@ public final class BookingDB {
                     || !field.getFieldId().equals(booking.getField().getFieldId())) {
                 return cancel(transaction, StatusChangeResult.NOT_FOUND);
             }
-            if (!"PENDING".equals(booking.getStatus())) {
+            if ("COMPLETED".equals(status)) {
+                if (!"CONFIRMED".equals(booking.getStatus())) return cancel(transaction, StatusChangeResult.NOT_PENDING);
+                if (booking.getEndsAt().isAfter(now)) return cancel(transaction, StatusChangeResult.INVALID_TIME);
+            } else if (!"PENDING".equals(booking.getStatus())) {
                 return cancel(transaction, StatusChangeResult.NOT_PENDING);
             }
 
@@ -113,18 +116,16 @@ public final class BookingDB {
                         || booking.getEndsAt().toLocalTime().isAfter(field.getCloseTime())) {
                     return cancel(transaction, StatusChangeResult.INVALID_TIME);
                 }
-                int maxQuantity = field.getQuantity();
+                if (booking.getCourtNumber() > field.getQuantity()) return cancel(transaction, StatusChangeResult.CONFLICT);
                 long conflicts = em.createQuery(
-                        "SELECT COUNT(other) FROM Booking other " +
-                        "WHERE other.field.fieldId = :fieldId AND other.bookingId <> :bookingId " +
-                        "AND other.status IN ('CONFIRMED', 'COMPLETED') " +
-                        "AND other.startsAt < :endsAt AND other.endsAt > :startsAt", Long.class)
-                        .setParameter("fieldId", field.getFieldId())
-                        .setParameter("bookingId", bookingId)
-                        .setParameter("startsAt", booking.getStartsAt())
-                        .setParameter("endsAt", booking.getEndsAt())
-                        .getSingleResult();
-                if (conflicts >= maxQuantity) return cancel(transaction, StatusChangeResult.CONFLICT);
+                        "SELECT COUNT(other) FROM Booking other WHERE other.field.fieldId=:fieldId " +
+                        "AND other.bookingId<>:bookingId AND other.courtNumber=:court " +
+                        "AND other.status IN ('CONFIRMED','COMPLETED') " +
+                        "AND other.startsAt<:endsAt AND other.endsAt>:startsAt", Long.class)
+                        .setParameter("fieldId", field.getFieldId()).setParameter("bookingId", bookingId)
+                        .setParameter("court", booking.getCourtNumber()).setParameter("startsAt", booking.getStartsAt())
+                        .setParameter("endsAt", booking.getEndsAt()).getSingleResult();
+                if (conflicts > 0) return cancel(transaction, StatusChangeResult.CONFLICT);
                 if (booking.getCustomerId() == null || booking.getCustomerId() <= 0) {
                     try {
                         int resolvedId = new com.sportify.dao.UserDAO().resolveOrCreateUser(
@@ -135,10 +136,18 @@ public final class BookingDB {
                     } catch (Exception ignored) {
                     }
                 }
+                if (FieldBlockDB.overlaps(em, field.getFieldId(), booking.getStartsAt(), booking.getEndsAt())) {
+                    return cancel(transaction, StatusChangeResult.BLOCKED);
+                }
+                booking.setConfirmationSource("MANUAL");
             }
 
+            String previousStatus = booking.getStatus();
             booking.setStatus(status);
             booking.setUpdatedAt(now);
+            BookingActivityDB.record(em, booking, previousStatus, "OWNER", Math.toIntExact(ownerId),
+                    "COMPLETED".equals(status) ? "Chủ sân xác nhận khách đã sử dụng sân." :
+                    "CONFIRMED".equals(status) ? "Chủ sân xác nhận yêu cầu đặt sân." : "Chủ sân từ chối yêu cầu đặt sân.");
             transaction.commit();
             return StatusChangeResult.UPDATED;
         } catch (RuntimeException exception) {
@@ -298,6 +307,11 @@ public final class BookingDB {
                 return rollback(transaction, CreateResult.INVALID_TIME);
             }
             if (!startsAt.isAfter(now)) return rollback(transaction, CreateResult.PAST_TIME);
+            if (startsAt.getSecond() != 0 || startsAt.getNano() != 0 || endsAt.getSecond() != 0 || endsAt.getNano() != 0
+                    || java.time.Duration.between(startsAt, endsAt).toMinutes() < 1) return rollback(transaction, CreateResult.INVALID_TIME);
+            if (customerId <= 0 || customerName == null || customerName.isBlank() || customerName.length() > 100
+                    || (customerPhone != null && customerPhone.length() > 20)) throw new IllegalArgumentException("Thông tin khách không hợp lệ.");
+            if (FieldBlockDB.overlaps(em, fieldId, startsAt, endsAt)) return rollback(transaction, CreateResult.BLOCKED);
 
             int maxQuantity = field.getQuantity();
             List<Booking> overlapping = em.createQuery(
@@ -311,43 +325,17 @@ public final class BookingDB {
                     .setParameter("endsAt", endsAt)
                     .getResultList();
 
-            // Kiểm tra số đơn trùng trong khung giờ đã đạt giới hạn sản phẩm (ví dụ 4 sân) hay chưa
-            if (overlapping.size() >= maxQuantity) {
-                return rollback(transaction, CreateResult.CONFLICT);
+            if (overlapping.stream().anyMatch(other -> other.getCustomerId() != null
+                    && other.getCustomerId() == customerId && "PENDING".equals(other.getStatus())
+                    && startsAt.equals(other.getStartsAt()) && endsAt.equals(other.getEndsAt())
+                    && (requestedCourtNumber == null || other.getCourtNumber() == requestedCourtNumber))) {
+                return rollback(transaction, CreateResult.DUPLICATE);
             }
-
-            // Kiểm tra chi tiết theo từng nấc 30 phút trong khoảng [startsAt, endsAt)
-            LocalDateTime cursor = startsAt;
-            while (cursor.isBefore(endsAt)) {
-                LocalDateTime nextStep = cursor.plusMinutes(30);
-                if (nextStep.isAfter(endsAt)) nextStep = endsAt;
-                int stepCount = 0;
-                for (Booking b : overlapping) {
-                    if (b.getStartsAt().isBefore(nextStep) && b.getEndsAt().isAfter(cursor)) {
-                        stepCount++;
-                    }
-                }
-                if (stepCount >= maxQuantity) {
-                    return rollback(transaction, CreateResult.CONFLICT);
-                }
-                cursor = nextStep;
+            if (requestedCourtNumber != null && (requestedCourtNumber < 1 || requestedCourtNumber > maxQuantity)) {
+                return rollback(transaction, CreateResult.INVALID_TIME);
             }
-
-            // Xác định các sân số (1..maxQuantity) đã có người đặt trong khung giờ này
             java.util.Set<Integer> usedCourts = new java.util.HashSet<>();
-            for (Booking b : overlapping) {
-                int c = b.getCourtNumber();
-                if (c >= 1 && c <= maxQuantity && !usedCourts.contains(c)) {
-                    usedCourts.add(c);
-                } else {
-                    for (int fallback = 1; fallback <= maxQuantity; fallback++) {
-                        if (!usedCourts.contains(fallback)) {
-                            usedCourts.add(fallback);
-                            break;
-                        }
-                    }
-                }
-            }
+            for (Booking other : overlapping) usedCourts.add(other.getCourtNumber());
 
             if (usedCourts.size() >= maxQuantity) {
                 return rollback(transaction, CreateResult.CONFLICT);
@@ -381,13 +369,21 @@ public final class BookingDB {
             booking.setStartsAt(startsAt);
             booking.setEndsAt(endsAt);
             booking.setTotalPrice(total);
-            booking.setStatus("PENDING");
             booking.setCourtNumber(assignedCourt);
+            boolean automatic = field.isAutoApprove() && field.supportsAutoApproval();
+            booking.setStatus(automatic ? "CONFIRMED" : "PENDING");
+            booking.setConfirmationSource(automatic ? "AUTOMATIC" : "MANUAL");
             em.persist(booking);
+            BookingActivityDB.record(em, booking, null, automatic ? "SYSTEM" : "CUSTOMER", automatic ? null : customerId,
+                    automatic ? "Sân hoạt động, đúng giờ mở cửa và còn trống; hệ thống tự xác nhận." : "Khách gửi yêu cầu, chờ chủ sân xác nhận.");
             transaction.commit();
-            return CreateResult.CREATED;
+            return automatic ? CreateResult.AUTO_CONFIRMED : CreateResult.CREATED;
         } catch (RuntimeException exception) {
             if (transaction.isActive()) transaction.rollback();
+            Throwable cause = exception;
+            for (int depth = 0; cause != null && depth < 20; depth++, cause = cause.getCause()) {
+                if (cause instanceof SQLException && "23P01".equals(((SQLException) cause).getSQLState())) return CreateResult.CONFLICT;
+            }
             throw exception;
         } finally {
             em.close();
@@ -410,10 +406,15 @@ public final class BookingDB {
 
     /** Khách hủy đơn của chính mình khi đơn còn ở trạng thái chờ xác nhận. */
     public static boolean cancelByCustomer(Long bookingId, int customerId) {
+        if (bookingId == null || bookingId <= 0 || customerId <= 0) throw new IllegalArgumentException("Mã đơn không hợp lệ.");
         EntityManager em = DBUtil.getEntityManagerFactory().createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            List<Long> fieldIds = em.createQuery("SELECT b.field.fieldId FROM Booking b WHERE b.bookingId=:id AND b.customerId=:customer", Long.class)
+                    .setParameter("id", bookingId).setParameter("customer", customerId).getResultList();
+            if (fieldIds.isEmpty()) { transaction.rollback(); return false; }
+            em.find(SportField.class, fieldIds.get(0), LockModeType.PESSIMISTIC_WRITE);
             Booking booking = em.find(Booking.class, bookingId, LockModeType.PESSIMISTIC_WRITE);
             if (booking == null || booking.getCustomerId() == null
                     || booking.getCustomerId() != customerId
@@ -423,6 +424,7 @@ public final class BookingDB {
             }
             booking.setStatus("CANCELLED");
             booking.setUpdatedAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            BookingActivityDB.record(em, booking, "PENDING", "CUSTOMER", customerId, "Khách hủy yêu cầu đang chờ duyệt.");
             transaction.commit();
             return true;
         } catch (RuntimeException exception) {
@@ -539,11 +541,11 @@ public final class BookingDB {
     }
 
     public enum CreateResult {
-        CREATED, FIELD_NOT_FOUND, FIELD_INACTIVE, INVALID_TIME, PAST_TIME, CONFLICT, DUPLICATE
+        CREATED, AUTO_CONFIRMED, FIELD_NOT_FOUND, FIELD_INACTIVE, INVALID_TIME, PAST_TIME, CONFLICT, DUPLICATE, BLOCKED
     }
 
     public enum StatusChangeResult {
-        UPDATED, NOT_FOUND, NOT_PENDING, FIELD_INACTIVE, INVALID_TIME, CONFLICT
+        UPDATED, NOT_FOUND, NOT_PENDING, FIELD_INACTIVE, INVALID_TIME, CONFLICT, BLOCKED
     }
 
     public static final class Summary {
