@@ -3,6 +3,16 @@
 <%
     String contextPath = request.getContextPath();
     User currentUser = (User) session.getAttribute("user");
+    long newsfeedAssetVersion = 1L;
+    for (String assetPath : new String[] {
+            "/assets/css/style.css", "/assets/css/pages/newsfeed.css",
+            "/assets/css/icons.css", "/assets/js/pages/newsfeed.js" }) {
+        java.net.URL asset = application.getResource(assetPath);
+        if (asset != null) {
+            newsfeedAssetVersion = Math.max(newsfeedAssetVersion,
+                    asset.openConnection().getLastModified());
+        }
+    }
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -10,9 +20,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newsfeed - Sportify</title>
-    <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css">
-    <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/newsfeed.css">
-    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/style.css?v=<%= newsfeedAssetVersion %>">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/pages/newsfeed.css?v=<%= newsfeedAssetVersion %>">
+    <link rel="stylesheet" href="<%= contextPath %>/assets/css/icons.css?v=<%= newsfeedAssetVersion %>">
 </head>
 <body>
 
@@ -78,7 +88,7 @@
     const ME_ID = <%= currentUser.getId() %>;
     const ME_NAME = <%= com.sportify.util.JsonResponse.getGson().toJson(currentUser.getFullname()) %>;
 </script>
-<script src="<%= contextPath %>/assets/js/pages/newsfeed.js?v=<%= System.currentTimeMillis() %>"></script>
+<script src="<%= contextPath %>/assets/js/pages/newsfeed.js?v=<%= newsfeedAssetVersion %>"></script>
 </body>
 </html>
 
